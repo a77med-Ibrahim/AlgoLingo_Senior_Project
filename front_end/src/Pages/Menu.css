@@ -1,26 +1,142 @@
 * {
   background-color: #5d7779;
 }
+
+.main-div {
+  display: flex;
+}
+
 .menu-bar {
   text-align: center;
   background-color: #d2d2d2;
-  width: 16em;
-  height: 60em;
+  width: 250px;
+  height: 960px;
   border: 2px solid grey;
   border-radius: 50px;
 }
+
 .algolingo-button {
-  height: 4.5em;
-  width: 12.15em;
+  height: 90px;
+  width: 250px;
   background-color: transparent;
   text-align: center;
   border: 2px solid gray;
   border-radius: 50px;
-  font-size: 2.5vh;
+  font-size: 25px;
 }
-/* Responsive styles */
-@media (max-width: 600px) {
-  .menu-bar {
-    width: 100%; /* Set to 100% for smaller screens */
-  }
+
+.levels-bar {
+  margin-left: 20px;
+  text-align: center;
+  background-color: #9ba79a;
+  width: 550px;
+  height: 960px;
+  border: 2px solid grey;
+  border-radius: 50px;
+}
+
+.levels-button {
+  height: 90px;
+  width: 550px;
+  background-color: transparent;
+  text-align: center;
+  border: 2px solid gray;
+  border-radius: 50px;
+  font-size: 35px;
+  font-weight: bold;
+}
+
+.start-bar {
+  margin-left: 30px;
+  text-align: center;
+  background-color: #ffffff;
+  width: 550px;
+  height: 960px;
+  border: 2px solid grey;
+  border-radius: 50px;
+}
+
+.start-button {
+  height: 90px;
+  width: 450px;
+  background-color: #589357;
+  text-align: center;
+  border: 2px solid gray;
+  border-radius: 50px;
+  font-size: 35px;
+  font-weight: bold;
+  color: aliceblue;
+  margin-top: 50px;
+}
+
+.levels-space {
+  background-color: transparent;
+  position: relative;
+}
+
+.circles {
+  background-color: #589357;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  font-size: 30px;
+  color: white;
+  border: 1px solid #589357;
+  position: relative;
+}
+
+.circles:hover::before,
+.circles:hover::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 20px;
+}
+
+.circles:hover::before {
+  border-color: transparent transparent transparent #589357;
+  top: 32%;
+  left: -31px;
+  margin-top: -10px;
+}
+
+.circles:hover::after {
+  border-color: transparent #589357 transparent transparent;
+  top: 32%;
+  right: -31px;
+  margin-top: -10px;
+}
+
+.circles.closed {
+  background-color: grey;
+  cursor: not-allowed;
+}
+
+.image-container {
+  height: 234px;
+  width: 500px;
+  border-radius: 50px;
+  border: 2px solid gray;
+  margin-top: 20px;
+  margin-left: 25px;
+  background-color: transparent;
+  align-items: center;
+}
+
+.image {
+  height: 234px;
+  width: 500px;
+  background-color: transparent;
+}
+
+/* Add this CSS to hide the content initially */
+.start-bar .image-container {
+  display: none;
+}
+
+/* Add this CSS to show the content when needed */
+.start-bar .image-container.visible {
+  display: block;
 }
