@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./Menu.css";
 
-import stackImage from "../Img/stackImg.webp";
-import queueImage from "../Img/queueImg.png";
+import stackImage from "./Img/stackImg.webp";
+import queueImage from "./Img/queueImg.png";
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
