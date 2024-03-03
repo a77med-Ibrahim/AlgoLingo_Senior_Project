@@ -12,7 +12,10 @@ function LandingPage() {
         <label>Password</label>
         <input type="password" placeholder="Enter your password" />
       </div>
-      <button>Login</button>
+      <div className="login-signup-buttons">
+        <button className="buttons-color">Login</button>
+        <button className="buttons-color">Sign up</button>
+      </div>
     </div>
   );
 }

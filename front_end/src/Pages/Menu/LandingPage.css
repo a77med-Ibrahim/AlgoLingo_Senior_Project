@@ -26,3 +26,11 @@ input {
   border-radius: 5px;
   font-size: 16px;
 }
+.login-signup-buttons {
+  background-color: inherit;
+  align-items: center;
+}
+.buttons-color {
+  background-color: rgb(48, 41, 45);
+  color: chocolate;
+}
