@@ -13,8 +13,8 @@ function Menu() {
     { id: 3, top: "220px", left: "-20px", isOpen: false, image: null },
   ];
 
-  const handleCircleHover = (circleId) => {
-    setActiveCircle(circleId);
+  const handleCircleClick = (circleId) => {
+    setActiveCircle(activeCircle === circleId ? null : circleId);
   };
 
   return (
@@ -30,8 +30,7 @@ function Menu() {
               key={circle.id}
               className={`circles ${circle.isOpen ? "" : "closed"}`}
               style={{ top: circle.top, left: circle.left }}
-              onMouseEnter={() => handleCircleHover(circle.id)}
-              onMouseLeave={() => setActiveCircle(null)}
+              onClick={() => handleCircleClick(circle.id)}
             >
               {circle.isOpen ? circle.id : "X"}
             </button>

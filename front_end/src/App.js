@@ -4,6 +4,7 @@ import MenuPage from "./Pages/Menu/Menu";
 import LandingPage from "./Pages/Menu/LandingPage";
 
 function App() {
+  //Change this to true to show Menu Content
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleSignIn = () => {
