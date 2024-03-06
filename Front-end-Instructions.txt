@@ -1,0 +1,10 @@
+*   If you need to show or unshow the landing page You go to 
+    1-App.js
+    2-Set useState to {true} || {false}
+*
+
+Tasks to Fix:
+*
+    The start Button always Navigate to the same page
+    The first Bar that has AlgoLingo should always be visible
+*
