@@ -5,6 +5,7 @@
 
 Tasks to Fix:
 *
+    Layout is for having the ALgoLingo bar always shown
     The start Button always Navigate to the same page
     The first Bar that has AlgoLingo should always be visible
 *
