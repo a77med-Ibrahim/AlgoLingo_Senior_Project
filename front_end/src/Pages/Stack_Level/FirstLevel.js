@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import "./FirstLevel.css";
+import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 
 function FirstLevel() {
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
-  const [stackValues, setStackValues] = useState([]);
+  const [stack, setStack] = useState(new StackImplementation()); // Initialize stack using StackImplementation
   const [poppedValues, setPoppedValues] = useState([]);
   const [questionText, setQuestionText] = useState(""); // State to hold question text
+  const [operations, setOperations] = useState([]); // State to hold the generated operations
+  const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
+  const [checkResult, setCheckResult] = useState(""); // State to hold check result
 
   // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
@@ -14,40 +18,56 @@ function FirstLevel() {
       { length: numberOfFieldsDynamic },
       (_, i) => Math.floor(Math.random() * 100)
     ); // Generate random values
-    setStackValues(newStackValues);
 
-    // Generate question after setting stack values
-    setQuestionText(generateQuestion(newStackValues));
+    const newOperations = [];
+
+    // Push up to four random values onto the stack
+    const numberOfValuesToPush = Math.min(
+      Math.floor(Math.random() * 4) + 1,
+      newStackValues.length
+    );
+    const valuesToPush = newStackValues.slice(0, numberOfValuesToPush);
+
+    // Push each value onto the stack
+    valuesToPush.forEach((value) => {
+      stack.push(value);
+      newOperations.push({ type: "push", values: [value] });
+    });
+
+    // Calculate the remaining capacity of the stack after push operations
+    const remainingCapacity = stack.stack.length - valuesToPush.length;
+
+    // Generate a random pop operation with a count greater than or equal to 1 and less than or equal to the remaining capacity,
+
+    const popCount = Math.min(
+      Math.floor(Math.random() * Math.min(remainingCapacity, 5)) + 1,
+      remainingCapacity
+    );
+    newOperations.push({ type: "pop", count: popCount });
+
+    setQuestionText(generateQuestion(valuesToPush, popCount));
+    setOperations(newOperations);
   };
 
   // Function to generate a random question
-  const generateQuestion = (stackValues) => {
-    const pushOrPop = Math.round(Math.random());
-    let question = "";
+  const generateQuestion = (stackValues, popCount) => {
+    const questionArray = [];
 
-    if (pushOrPop === 0) {
-      // Pop operation
-      const popCount = Math.floor(Math.random() * stackValues.length);
-      question = `Pop ${popCount} values from the stack bar`;
-    } else {
-      // Push operation
-      const numberOfValues = Math.floor(Math.random() * 3) + 1; // Random number between 1 and 3
-      const values = Array.from(
-        { length: numberOfValues },
-        () => Math.floor(Math.random() * 100) + 1
-      ); // Generate random values
+    // Push operation for the first sentence
+    questionArray.push(`Push ${stackValues.join(", ")}`);
 
-      // Format the string for the visible text
-      question = `Push ${values.join(", ")}`;
-    }
+    // Pop operation for the second sentence
+    questionArray.push(`Pop ${popCount} values`);
+
+    // Combine the questions
+    const question = questionArray.join(" AND ");
 
     return question;
   };
 
   useEffect(() => {
-    // Generate new stack values and question text when the component mounts or refreshes
     generateRandomValues();
-  }, []); // Empty dependency array ensures it only runs once on mount
+  }, []);
 
   // Function to handle clicking on a button
   const handleButtonClick = (index) => {
@@ -73,6 +93,66 @@ function FirstLevel() {
     return index === activeButtonIndex ? "#e74c3c" : "#3498db";
   };
 
+  // Log the generated stack and the stack after the operation is applied to the console
+  useEffect(() => {
+    console.log(applyOperationAndGetStack(stack.stack));
+  }, [operations]); // Only trigger the effect when the 'operations' state changes
+
+  const applyOperationAndGetStack = (currentStack) => {
+    let newStack = new StackImplementation(); // Create a new stack instance
+
+    // Copy the current stack elements to the new stack
+    currentStack.forEach((value) => {
+      newStack.push(value);
+    });
+
+    let newPoppedValues = []; // Initialize an empty array for new popped values
+
+    // Apply the operations
+    operations.forEach((operation) => {
+      if (operation.type === "pop") {
+        for (let i = 0; i < operation.count; i++) {
+          if (!newStack.isEmpty()) {
+            // Remove the last value from the stack and add it to the poppedValues array
+            newPoppedValues.push(newStack.pop());
+          }
+        }
+      } else if (operation.type === "push") {
+        operation.values.forEach((value) => {
+          newStack.push(value);
+        });
+      }
+    });
+
+    // Update the stack state with the new stack instance
+    setStack(newStack);
+
+    // Update the poppedValues state with the newPoppedValues array
+    setPoppedValues(newPoppedValues);
+
+    // Return the new stack after applying the operations
+    return newStack.stack;
+  };
+
+  // Function to handle clicking the "Check" button
+
+  const handleCheck = () => {
+    // Convert the user's answer to a number
+    const userAnswerNum = parseInt(userAnswer);
+
+    // Get the last popped value from the poppedValues array
+    const lastPoppedValue = poppedValues[poppedValues.length - 1];
+
+    // Check if the user's answer matches the last popped value
+    if (userAnswerNum === lastPoppedValue) {
+      // If correct, set check result to "Great!"
+      setCheckResult("Great!");
+    } else {
+      // If incorrect, set check result to "Failed"
+      setCheckResult("Failed");
+    }
+  };
+
   return (
     <div>
       <h1 className="title-styling">Stack</h1>
@@ -81,15 +161,18 @@ function FirstLevel() {
       <div className="button-bar">{renderButtons()}</div>
 
       {/* Existing stack bar */}
+
       <h2>Stack Bar:</h2>
       <div className="stack-bar">
-        {stackValues.map((value, index) => (
-          <div key={index} className="stack-field">
+        {/* Render popped values first */}
+        {poppedValues.map((value, index) => (
+          <div key={`popped-${index}`} className="stack-field popped">
             {value}
           </div>
         ))}
-        {poppedValues.map((value, index) => (
-          <div key={`popped-${index}`} className="stack-field popped">
+        {/* Render stack values */}
+        {[...stack.stack].reverse().map((value, index) => (
+          <div key={index} className="stack-field">
             {value}
           </div>
         ))}
@@ -97,10 +180,22 @@ function FirstLevel() {
 
       {/* The Question */}
       <h2>What will be the last popped value after</h2>
-
-      {/* Text field to display random data */}
       <div>
-        <p>{questionText} </p>
+        <p>{questionText}</p>
+        <h3>What will be the last popped value?</h3>
+        <input
+          type="number"
+          placeholder="Enter your answer"
+          min="0"
+          step="1"
+          value={userAnswer}
+          onChange={(e) => setUserAnswer(e.target.value)}
+        />
+        <button className="check-button" onClick={handleCheck}>
+          Check
+        </button>
+        {/* Display check result */}
+        {checkResult && <p>{checkResult}</p>}
       </div>
     </div>
   );
