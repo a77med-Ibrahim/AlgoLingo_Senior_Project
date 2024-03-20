@@ -41,6 +41,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'djoser',
     'back_end',
+    'corsheaders',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +62,7 @@ ROOT_URLCONF = 'back_end.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'build')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -66,6 +70,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect'
             ],
         },
     },
@@ -73,18 +79,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'back_end.wsgi.application'
 
+# app_password: ntrlrdcrymrqwtks
+# email: algolingo7@gmail.com
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'algolingo7@gmail.com'
+EMAIL_HOST_PASSWORD = 'ntrlrdcrymrqwtks'
+EMAIL_USE_TLS = True
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'LandingPage',
-        'USER': 'CMPE492',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'back_end',
+        'USER': 'postgres',
         'PASSWORD': 'AlgoLingo',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '5432',
     }
 }
 
@@ -159,7 +174,7 @@ DJOSER = {
     }
 
 }
-
+CORS_ORIGIN_ALLOW_ALL = True
 AUTH_USER_MODEL = 'back_end.UserAccount'
 
 # Default primary key field type
