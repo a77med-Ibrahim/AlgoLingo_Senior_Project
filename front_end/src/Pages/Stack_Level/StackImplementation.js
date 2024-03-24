@@ -9,7 +9,7 @@ class StackImplementation {
 
   pop() {
     if (this.isEmpty()) {
-      return null; // Return null or handle the case when the stack is empty
+      return null; 
     }
     return this.stack.pop();
   }

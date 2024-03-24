@@ -16,3 +16,9 @@ FirstLevel:
 *
    Style the level
 *
+To Bring Back FirstLevel page
+*
+    To Bring back the first level page, go to App.js anc uncomment the commented code about 
+    FirstLevel
+    and then go to the Menu.js and chage the Preperation-level to first-level
+*

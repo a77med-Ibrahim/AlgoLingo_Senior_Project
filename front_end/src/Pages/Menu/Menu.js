@@ -1,4 +1,3 @@
-import stackLevel from "../Stack_Level/FirstLevel.js";
 import { useNavigate } from "react-router-dom";
 import stackImage from "./Img/stackImg.webp";
 import queueImage from "./Img/queueImg.png";
@@ -55,7 +54,7 @@ function Menu() {
           )}
         </div>
         <button
-          onClick={() => navigate("/first-level")}
+          onClick={() => navigate("/preperation-level")}
           className={`start-button ${
             activeCircle && isLevelUnlocked(activeCircle) ? "" : "locked"
           }`}
