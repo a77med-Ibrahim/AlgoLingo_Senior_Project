@@ -1,19 +1,21 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./LevelBar.css";
 
 function LevelsBar({
   activeButtonIndex,
-  handleButtonClick,
   pushClicked,
   popClicked,
   peekClicked,
   isEmptyClicked,
 }) {
-  const levels = [1, 2, 3, 4, 5];
+  const navigate = useNavigate();
+
+  const levels = ["prep", 1, 2];
 
   const isUnlocked = (index) => {
     // Check if all required buttons are clicked
-    if (index === 0) {
+    if (index === 1) {
       // For the first button, check if all other required buttons are clicked
       return pushClicked && popClicked && peekClicked && isEmptyClicked;
     } else {
@@ -24,6 +26,16 @@ function LevelsBar({
 
   const getButtonColor = (index) => {
     return isUnlocked(index) ? "#3498db" : "grey";
+  };
+
+  const handleButtonClick = (index) => {
+    if (levels[index] === "prep") {
+      navigate("/preperation-level");
+    } else if (index === 1) {
+      navigate("/preperation-level/first-level");
+    } else {
+      // Handle navigation for other levels
+    }
   };
 
   const renderButtons = () => {

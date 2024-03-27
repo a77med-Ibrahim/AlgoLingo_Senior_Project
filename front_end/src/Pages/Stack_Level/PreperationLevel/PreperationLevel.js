@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "./PreperationLevel.css";
-import FirstLevel from "../FirstLevel";
 import { useNavigate } from "react-router-dom";
 import LevelsBar from "../LevelBar"; // Import the LevelsBar component
 
@@ -19,7 +18,7 @@ function PreperationLevel() {
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
     if (index === 0) {
-      navigate("/preperation-level/first-level");
+      navigate("/preperation-level");
     }
   };
 
