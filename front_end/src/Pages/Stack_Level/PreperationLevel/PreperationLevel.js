@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./PreperationLevel.css";
 import FirstLevel from "../FirstLevel";
 import { useNavigate } from "react-router-dom";
+import LevelsBar from "../LevelBar"; // Import the LevelsBar component
 
 let boxCount = 0;
 
@@ -15,45 +16,11 @@ function PreperationLevel() {
   const [peekClicked, setPeekClicked] = useState(false);
   const [isEmptyClicked, setIsEmptyClicked] = useState(false);
 
-  const getButtonColor = (index) => {
-    return index === activeButtonIndex ? "#e74c3c" : "#3498db";
-  };
-
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
     if (index === 0) {
       navigate("/preperation-level/first-level");
     }
-  };
-
-  const renderButtons = () => {
-    const levels = [1, 2, 3, 4, 5];
-
-    return levels.map((number, index) => {
-      const isUnlocked =
-        number === 1 &&
-        pushClicked &&
-        popClicked &&
-        peekClicked &&
-        isEmptyClicked;
-      const buttonContent = isUnlocked ? number : "X"; // Display number or Phi symbol based on unlock status
-      const buttonColor = isUnlocked ? "#3498db" : "grey"; // Change color based on unlock status
-
-      return (
-        <button
-          key={index}
-          className="level-buttons"
-          style={{
-            backgroundColor: buttonColor,
-            pointerEvents: isUnlocked ? "auto" : "none",
-          }}
-          onClick={() => handleButtonClick(index)}
-          disabled={!isUnlocked}
-        >
-          {buttonContent}
-        </button>
-      );
-    });
   };
 
   const handleButtonClickOnce = (type) => {
@@ -113,7 +80,7 @@ function PreperationLevel() {
     document.querySelector(".rectangle").appendChild(box);
 
     // Calculate the translateY value based on boxCount
-    const translateYValue = 610 - (70 + 3) * boxCount;
+    const translateYValue = 660 - (70 + 3) * boxCount;
 
     // Animate the box dropping
     setTimeout(() => {
@@ -205,8 +172,14 @@ function PreperationLevel() {
     <div>
       <h1 className="title">Stack</h1>
       <h2 className="title">Preparation</h2>
-
-      <div className="button-bar">{renderButtons()}</div>
+      <LevelsBar
+        activeButtonIndex={activeButtonIndex}
+        handleButtonClick={handleButtonClick}
+        pushClicked={pushClicked}
+        popClicked={popClicked}
+        peekClicked={peekClicked}
+        isEmptyClicked={isEmptyClicked}
+      />
 
       <div className="prep-level-container">
         <div className="button-group">

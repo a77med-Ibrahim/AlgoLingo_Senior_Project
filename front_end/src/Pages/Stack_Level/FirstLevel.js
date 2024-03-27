@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./FirstLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
+import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 
 function FirstLevel() {
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
@@ -156,9 +157,16 @@ function FirstLevel() {
   return (
     <div>
       <h1 className="title-styling">Stack</h1>
-      <h2>Levels</h2>
+
       {/* Levels bar*/}
-      <div className="button-bar">{renderButtons()}</div>
+      <LevelsBar
+        activeButtonIndex={activeButtonIndex}
+        handleButtonClick={handleButtonClick}
+        pushClicked={true} // Assuming the first button is always unlocked in the first level
+        popClicked={true} // Assuming the second button is always unlocked in the first level
+        peekClicked={true} // Assuming the third button is always unlocked in the first level
+        isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
+      />
 
       {/* Existing stack bar */}
 
