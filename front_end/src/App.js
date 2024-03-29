@@ -18,21 +18,24 @@ function App() {
     <Router>
       <div>
         {/* Render LandingPage if not authenticated */}
-        {!isAuthenticated && <LandingPage onSignIn={handleSignIn} />}
-
-        {/* Render MenuPage and other routes if authenticated */}
-        {isAuthenticated && (
-          <Routes>
-            <Route path="/" element={<MenuPage />} />
-            <Route path="/preperation-level/" element={<PreperationLevel />} />
-            <Route
-              path="/preperation-level/first-level"
-              element={<FirstLevel />}
-            />
-             <Route path="/register" element={<RegisterPage />} />
-
-          </Routes>
-        )}
+        <Routes>
+          <Route
+            path="/"
+            element={
+              !isAuthenticated ? (
+                <LandingPage onSignIn={handleSignIn} />
+              ) : (
+                <MenuPage />
+              )
+            }
+          />
+          <Route path="/preperation-level/" element={<PreperationLevel />} />
+          <Route
+            path="/preperation-level/first-level"
+            element={<FirstLevel />}
+          />
+          <Route path="/register" element={<RegisterPage />} />
+        </Routes>
       </div>
     </Router>
   );
