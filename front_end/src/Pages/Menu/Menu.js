@@ -27,6 +27,9 @@ function Menu() {
     <div className="main-div">
       <div className="menu-bar">
         <button className="algolingo-button">AlgoLingo</button>
+        <button onClick={() => navigate("/register")} className="register-button">
+          Register
+        </button>
       </div>
       <div className="levels-bar">
         <button className="levels-button">Levels</button>
