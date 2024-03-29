@@ -1,31 +1,32 @@
 // RegisterPage.js
 import React, { useState } from "react";
 import "./Register.css";
-import { registerUser } from "./api.js";
+import axios from 'axios';
 
 function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [re_Password, setRe_Password] = useState("");
+  const [re_password, setRe_Password] = useState("");
   const [error, setError] = useState("");
 
   const handleRegister = async () => {
     try {
-      if (password !== re_Password) {
+      if (password !== re_password) {
         setError("Passwords do not match");
         return;
       }
 
-      const userData = { name, email, password , re_Password};
-      const response = await registerUser(userData);
-      console.log("User registered successfully:", response);
-      // Redirect or show success message
-    } catch (error) {
-      console.error("Registration failed:", error);
-      // Handle error
-    }
-  };
+      const userData = { name, email, password, re_password };
+      const response = await axios.post('http://localhost:8000/auth/register/', userData); // Update the URL
+      console.log("User registered successfully:", response.data);
+            // Redirect or show success message
+        } catch (error) {
+            console.error("Registration failed:", error);
+            // Handle error
+            setError("Registration failed: " + error.message);
+        }
+    };
 
   return (
     <div className="container">
@@ -63,7 +64,7 @@ function RegisterPage() {
         <input
           type="password"
           placeholder="Re-enter your password"
-          value={re_Password}
+          value={re_password}
           onChange={(e) => setRe_Password(e.target.value)}
         />
       </div>
