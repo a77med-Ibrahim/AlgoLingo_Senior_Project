@@ -4,7 +4,7 @@ import MenuPage from "./Pages/Menu/Menu";
 import PreperationLevel from "./Pages/Stack_Level/PreperationLevel/PreperationLevel";
 import React, { useState } from "react";
 import FirstLevel from "./Pages/Stack_Level/FirstLevel";
-
+import RegisterPage from "./Pages/Menu/RegisterPage";
 import "./App.css";
 
 function App() {
@@ -29,6 +29,8 @@ function App() {
               path="/preperation-level/first-level"
               element={<FirstLevel />}
             />
+             <Route path="/register" element={<RegisterPage />} />
+
           </Routes>
         )}
       </div>
