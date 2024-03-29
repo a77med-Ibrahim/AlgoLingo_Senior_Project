@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import "./LandingPage.css";
+import { useNavigate } from "react-router-dom";
 import { registerUser, loginUser } from "./api.js";
 
 function LandingPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
@@ -53,9 +55,18 @@ function LandingPage() {
         <button className="buttons-color" onClick={handleLogin}>
           Login
         </button>
-        <button className="buttons-color" onClick={handleRegister}>
+        <button
+          className="buttons-color"
+          onClick={() => {
+            handleRegister();
+            navigate("/register");
+          }}
+        >
           Sign up
         </button>
+        {/* <button onClick={() => navigate("/register")} className="register-button">
+        Register
+      </button> */}
       </div>
     </div>
   );
