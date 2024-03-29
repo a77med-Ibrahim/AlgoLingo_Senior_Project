@@ -1,17 +1,23 @@
+import { useNavigate } from "react-router-dom";
+import stackImage from "./Img/stackImg.webp";
+import queueImage from "./Img/queueImg.png";
 import React, { useState } from "react";
 import "./Menu.css";
 
-import stackImage from "./Img/stackImg.webp";
-import queueImage from "./Img/queueImg.png";
-
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
+  const navigate = useNavigate();
 
   const circleData = [
     { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
     { id: 2, top: "150px", left: "-40px", isOpen: false, image: queueImage },
     { id: 3, top: "220px", left: "-20px", isOpen: false, image: null },
   ];
+
+  const isLevelUnlocked = (circleId) => {
+    const circle = circleData.find((circle) => circle.id === circleId);
+    return circle.isOpen;
+  };
 
   const handleCircleClick = (circleId) => {
     setActiveCircle(activeCircle === circleId ? null : circleId);
@@ -21,6 +27,9 @@ function Menu() {
     <div className="main-div">
       <div className="menu-bar">
         <button className="algolingo-button">AlgoLingo</button>
+        <button onClick={() => navigate("/register")} className="register-button">
+          Register
+        </button>
       </div>
       <div className="levels-bar">
         <button className="levels-button">Levels</button>
@@ -47,7 +56,14 @@ function Menu() {
             />
           )}
         </div>
-        <button className="start-button">Start</button>
+        <button
+          onClick={() => navigate("/preperation-level")}
+          className={`start-button ${
+            activeCircle && isLevelUnlocked(activeCircle) ? "" : "locked"
+          }`}
+        >
+          Start
+        </button>
       </div>
     </div>
   );

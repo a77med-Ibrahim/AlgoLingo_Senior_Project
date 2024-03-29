@@ -1,0 +1,50 @@
+/* RegisterPage.css */
+.container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+  }
+  
+  .input-group {
+    margin-bottom: 20px;
+    color: #ffffff;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .input-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ffffff;
+    color: #fff;
+  }
+  
+  .error {
+    color: red;
+    margin-bottom: 10px;
+  }
+  
+  .register-button {
+    text-align: center;
+  }
+  
+  .buttons-color {
+    background-color: #000000;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .buttons-color:hover {
+    background-color: #0056b3;
+  }
+  

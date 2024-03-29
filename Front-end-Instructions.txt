@@ -1,0 +1,24 @@
+*   If you need to show or unshow the landing page You go to 
+    1-App.js
+    2-Set const [isAuthenticated, setIsAuthenticated] = useState(false);
+    3-False if you wanna show the landing page 
+    4-True if you wanna hide the landing page
+*
+
+Tasks to Fix:
+*
+    Layout is for having the ALgoLingo bar always shown
+    The start Button always Navigate to the same page
+    The first Bar that has AlgoLingo should always be visible
+*
+
+FirstLevel:
+*
+   Style the level
+*
+To Bring Back FirstLevel page
+*
+    To Bring back the first level page, go to App.js anc uncomment the commented code about 
+    FirstLevel
+    and then go to the Menu.js and chage the Preperation-level to first-level
+*

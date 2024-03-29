@@ -140,3 +140,7 @@
 .start-bar .image-container.visible {
   display: block;
 }
+.start-bar .start-button.locked {
+  background-color: grey;
+  cursor: not-allowed;
+}
