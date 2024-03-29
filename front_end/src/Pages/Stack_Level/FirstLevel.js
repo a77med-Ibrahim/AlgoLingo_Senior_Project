@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./FirstLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
+import AlgoLingoBar from "../Menu/AlgoLingoBar";
 
 function FirstLevel() {
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
@@ -156,54 +157,60 @@ function FirstLevel() {
 
   return (
     <div>
-      <h1 className="title-styling">Stack</h1>
+      <div className="all-div">
+        <AlgoLingoBar />
+        <div className="other">
+          <h1 className="title-styling">Stack</h1>
+          <h2 className="title-styling">First Level</h2>
+          <LevelsBar
+            activeButtonIndex={activeButtonIndex}
+            handleButtonClick={handleButtonClick}
+            pushClicked={true} // Assuming the first button is always unlocked in the first level
+            popClicked={true} // Assuming the second button is always unlocked in the first level
+            peekClicked={true} // Assuming the third button is always unlocked in the first level
+            isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
+          />
 
-      {/* Levels bar*/}
-      <LevelsBar
-        activeButtonIndex={activeButtonIndex}
-        handleButtonClick={handleButtonClick}
-        pushClicked={true} // Assuming the first button is always unlocked in the first level
-        popClicked={true} // Assuming the second button is always unlocked in the first level
-        peekClicked={true} // Assuming the third button is always unlocked in the first level
-        isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
-      />
+          {/* Existing stack bar */}
 
-      {/* Existing stack bar */}
-
-      <h2>Stack Bar:</h2>
-      <div className="stack-bar">
-        {/* Render popped values first */}
-        {poppedValues.map((value, index) => (
-          <div key={`popped-${index}`} className="stack-field popped">
-            {value}
+          <h2>Stack Bar:</h2>
+          <div className="stack-bar">
+            {/* Render popped values first */}
+            {poppedValues.map((value, index) => (
+              <div key={`popped-${index}`} className="stack-field popped">
+                {value}
+              </div>
+            ))}
+            {/* Render stack values */}
+            {[...stack.stack].reverse().map((value, index) => (
+              <div key={index} className="stack-field">
+                {value}
+              </div>
+            ))}
           </div>
-        ))}
-        {/* Render stack values */}
-        {[...stack.stack].reverse().map((value, index) => (
-          <div key={index} className="stack-field">
-            {value}
-          </div>
-        ))}
-      </div>
 
-      {/* The Question */}
-      <h2>What will be the last popped value after</h2>
-      <div>
-        <p>{questionText}</p>
-        <h3>What will be the last popped value?</h3>
-        <input
-          type="number"
-          placeholder="Enter your answer"
-          min="0"
-          step="1"
-          value={userAnswer}
-          onChange={(e) => setUserAnswer(e.target.value)}
-        />
-        <button className="check-button" onClick={handleCheck}>
-          Check
-        </button>
-        {/* Display check result */}
-        {checkResult && <p>{checkResult}</p>}
+          {/* The Question */}
+          <h2>What will be the last popped value after</h2>
+          <div>
+            <p>{questionText}</p>
+            <h3>What will be the last popped value?</h3>
+            <input
+              type="number"
+              placeholder="Enter your answer"
+              min="0"
+              step="1"
+              value={userAnswer}
+              onChange={(e) => setUserAnswer(e.target.value)}
+              className="input-class"
+            />
+
+            {/* Display check result */}
+            {checkResult && <p>{checkResult}</p>}
+          </div>
+          <button className="check-button" onClick={handleCheck}>
+            Check
+          </button>
+        </div>
       </div>
     </div>
   );

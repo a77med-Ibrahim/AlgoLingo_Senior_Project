@@ -6,31 +6,12 @@
   display: flex;
 }
 
-.menu-bar {
-  text-align: center;
-  background-color: #d2d2d2;
-  width: 250px;
-  height: 960px;
-  border: 2px solid grey;
-  border-radius: 50px;
-}
-
-.algolingo-button {
-  height: 90px;
-  width: 250px;
-  background-color: transparent;
-  text-align: center;
-  border: 2px solid gray;
-  border-radius: 50px;
-  font-size: 25px;
-}
-
 .levels-bar {
   margin-left: 20px;
   text-align: center;
   background-color: #9ba79a;
   width: 550px;
-  height: 960px;
+  height: 100vh;
   border: 2px solid grey;
   border-radius: 50px;
 }
@@ -51,7 +32,7 @@
   text-align: center;
   background-color: #ffffff;
   width: 550px;
-  height: 960px;
+  height: 100vh;
   border: 2px solid grey;
   border-radius: 50px;
 }
