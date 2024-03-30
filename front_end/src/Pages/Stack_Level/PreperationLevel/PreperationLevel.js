@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./PreperationLevel.css";
 import { useNavigate } from "react-router-dom";
-import LevelsBar from "../LevelBar"; // Import the LevelsBar component
+import LevelsBar from "../LevelBar";
+import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 
 let boxCount = 0;
 
@@ -168,67 +169,71 @@ function PreperationLevel() {
   }
 
   return (
-    <div>
-      <h1 className="title">Stack</h1>
-      <h2 className="title">Preparation</h2>
-      <LevelsBar
-        activeButtonIndex={activeButtonIndex}
-        handleButtonClick={handleButtonClick}
-        pushClicked={pushClicked}
-        popClicked={popClicked}
-        peekClicked={peekClicked}
-        isEmptyClicked={isEmptyClicked}
-      />
+    <div className="all-div">
+      <AlgoLingoBar />
+      <div className="game-content">
+        <h1 className="title">Stack</h1>
+        <h2 className="title">Preparation</h2>
 
-      <div className="prep-level-container">
-        <div className="button-group">
-          <button
-            className="prep-level-buttons"
-            onMouseEnter={pushHandleHover}
-            onClick={() => {
-              pushOnClick();
-              handleButtonClickOnce("push");
-            }}
-          >
-            Push
-          </button>
-          <button
-            className="prep-level-buttons"
-            onMouseEnter={popHandleHover}
-            onClick={() => {
-              popOnClick();
-              handleButtonClickOnce("pop");
-            }}
-          >
-            Pop
-          </button>
-          <button
-            className="prep-level-buttons"
-            onMouseEnter={peekHandleHover}
-            onClick={() => {
-              peekOnClick();
-              handleButtonClickOnce("peek");
-            }}
-          >
-            Peek
-          </button>
-          <button
-            className="prep-level-buttons"
-            onMouseEnter={isEmptyHandleHover}
-            onClick={() => {
-              isEmptyOnClick();
-              handleButtonClickOnce("isEmpty");
-            }}
-          >
-            isEmpty
-          </button>
-          {isEmpty !== null && <p className="is-empty-result"> {isEmpty}</p>}
-        </div>
-        <div className="rectangle"></div>
-        <div className="code-bar">
-          <h1 className="title_code_style">Code</h1>
-          <h2 className="code_style"></h2>
-          <p className="code_description"></p>
+        <LevelsBar
+          activeButtonIndex={activeButtonIndex}
+          handleButtonClick={handleButtonClick}
+          pushClicked={pushClicked}
+          popClicked={popClicked}
+          peekClicked={peekClicked}
+          isEmptyClicked={isEmptyClicked}
+        />
+
+        <div className="prep-level-container">
+          <div className="button-group">
+            <button
+              className="prep-level-buttons"
+              onMouseEnter={pushHandleHover}
+              onClick={() => {
+                pushOnClick();
+                handleButtonClickOnce("push");
+              }}
+            >
+              Push
+            </button>
+            <button
+              className="prep-level-buttons"
+              onMouseEnter={popHandleHover}
+              onClick={() => {
+                popOnClick();
+                handleButtonClickOnce("pop");
+              }}
+            >
+              Pop
+            </button>
+            <button
+              className="prep-level-buttons"
+              onMouseEnter={peekHandleHover}
+              onClick={() => {
+                peekOnClick();
+                handleButtonClickOnce("peek");
+              }}
+            >
+              Peek
+            </button>
+            <button
+              className="prep-level-buttons"
+              onMouseEnter={isEmptyHandleHover}
+              onClick={() => {
+                isEmptyOnClick();
+                handleButtonClickOnce("isEmpty");
+              }}
+            >
+              isEmpty
+            </button>
+            {isEmpty !== null && <p className="is-empty-result"> {isEmpty}</p>}
+          </div>
+          <div className="rectangle"></div>
+          <div className="code-bar">
+            <h1 className="title_code_style">Code</h1>
+            <h2 className="code_style"></h2>
+            <p className="code_description"></p>
+          </div>
         </div>
       </div>
     </div>
