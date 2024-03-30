@@ -26,3 +26,8 @@
   height: 100%;
   background-color: #3498db;
 }
+.pushed-stack-field {
+  width: 20px;
+  height: 100%;
+  background-color: red;
+}

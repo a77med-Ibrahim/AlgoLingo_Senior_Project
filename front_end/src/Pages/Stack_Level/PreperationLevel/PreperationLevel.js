@@ -141,7 +141,8 @@ function PreperationLevel() {
     document.querySelector(".code-bar h1").innerText = "Peek";
     document.querySelector(".code-bar h2").innerText =
       " peek() {return null;}return this.stack[this.stack.length - 1];}";
-    document.querySelector(".code-bar p").innerText = "Description about Peek";
+    document.querySelector(".code-bar p").innerText =
+      "Returns the values inside of the stack starting from 0 - len-1";
   }
   function peekOnClick() {
     showNumbers = true; // Set the flag to show box numbers
