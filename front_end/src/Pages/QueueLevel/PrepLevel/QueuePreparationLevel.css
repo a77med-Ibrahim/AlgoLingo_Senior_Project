@@ -1,0 +1,11 @@
+.title-styling {
+  text-align: center;
+}
+.flexing {
+  flex: 1;
+  display: flex;
+}
+.width-of-objects {
+  padding-left: 3%;
+  width: 100%;
+}

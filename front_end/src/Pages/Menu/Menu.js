@@ -7,11 +7,12 @@ import "./Menu.css";
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
+  const [lastClickedCircle, setLastClickedCircle] = useState(null);
   const navigate = useNavigate();
 
   const circleData = [
     { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
-    { id: 2, top: "150px", left: "-40px", isOpen: false, image: queueImage },
+    { id: 2, top: "150px", left: "-40px", isOpen: true, image: queueImage },
     { id: 3, top: "220px", left: "-20px", isOpen: false, image: null },
   ];
 
@@ -22,6 +23,17 @@ function Menu() {
 
   const handleCircleClick = (circleId) => {
     setActiveCircle(activeCircle === circleId ? null : circleId);
+    setLastClickedCircle(circleId);
+  };
+
+  const handleStartButtonClick = () => {
+    if (lastClickedCircle && isLevelUnlocked(lastClickedCircle)) {
+      if (lastClickedCircle === 1) {
+        navigate("/preperation-level");
+      } else if (lastClickedCircle === 2) {
+        navigate("/queue-preparation");
+      }
+    }
   };
 
   return (
@@ -53,7 +65,7 @@ function Menu() {
           )}
         </div>
         <button
-          onClick={() => navigate("/preperation-level")}
+          onClick={handleStartButtonClick}
           className={`start-button ${
             activeCircle && isLevelUnlocked(activeCircle) ? "" : "locked"
           }`}
