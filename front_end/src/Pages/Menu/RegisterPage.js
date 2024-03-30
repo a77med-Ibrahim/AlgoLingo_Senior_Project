@@ -1,7 +1,7 @@
-// RegisterPage.js
 import React, { useState } from "react";
 import "./Register.css";
-import axios from 'axios';
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { firebaseApp } from "./firebaseConfig"; // Assume you have this configuration file
 
 function RegisterPage() {
   const [name, setName] = useState("");
@@ -11,16 +11,14 @@ function RegisterPage() {
   const [error, setError] = useState("");
 
   const handleRegister = async () => {
-    try {
-      if (password !== re_password) {
-        setError("Passwords do not match");
-        return;
-      }
+    if (password !== re_password) {
+      setError("Passwords do not match");
+      return;
+    }
 
-      const userData = { name, email, password, re_password };
-      const response = await axios.post('http://localhost:8000/auth/register/', userData); // Update the URL
-      console.log("User registered successfully:", response.data);
-            // Redirect or show success message
+    const auth = getAuth(firebaseApp);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
         } catch (error) {
             console.error("Registration failed:", error);
             // Handle error
