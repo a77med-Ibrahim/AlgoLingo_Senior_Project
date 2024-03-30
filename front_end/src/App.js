@@ -8,7 +8,7 @@ import RegisterPage from "./Pages/Menu/RegisterPage";
 import "./App.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Change initial state to false
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
   const handleSignIn = () => {
     setIsAuthenticated(true);

@@ -1,36 +1,24 @@
 import React, { useState } from "react";
 import "./LandingPage.css";
 import { useNavigate } from "react-router-dom";
-import { registerUser, loginUser } from "./api.js";
+import { firebaseAuth } from "./firebaseConfig";
 
 function LandingPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
+  const handleLogin = async () => {
     try {
-      const userData = { email, password };
-      const response = await registerUser(userData);
-      console.log("User registered successfully:", response);
+      await firebaseAuth.signInWithEmailAndPassword(email, password);
+      console.log("User logged in successfully");
       // Redirect or show success message
     } catch (error) {
-      console.error("Registration failed:", error);
-      // Handle error
+      console.error("Login failed:", error.message);
+      // Handle login error
     }
   };
 
-  const handleLogin = async () => {
-    try {
-      const userData = { email, password };
-      const response = await loginUser(userData);
-      console.log("User logged in successfully:", response);
-      // Redirect or show success message
-    } catch (error) {
-      console.error("Login failed:", error);
-      // Handle error
-    }
-  };
   return (
     <div className="container">
       <div className="input-group">
@@ -57,16 +45,10 @@ function LandingPage() {
         </button>
         <button
           className="buttons-color"
-          onClick={() => {
-            handleRegister();
-            navigate("/register");
-          }}
+          onClick={() => navigate("/register")}
         >
           Sign up
         </button>
-        {/* <button onClick={() => navigate("/register")} className="register-button">
-        Register
-      </button> */}
       </div>
     </div>
   );
