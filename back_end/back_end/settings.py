@@ -177,6 +177,7 @@ DJOSER = {
 CORS_ORIGIN_ALLOW_ALL = True
 AUTH_USER_MODEL = 'back_end.UserAccount'
 
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 

@@ -19,6 +19,7 @@ function App() {
       <div>
         {/* Render LandingPage if not authenticated */}
         <Routes>
+        <Route path="/menu" element={<MenuPage />} />
           <Route
             path="/"
             element={

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./LandingPage.css";
 import { useNavigate } from "react-router-dom";
-import { firebaseAuth } from "./firebaseConfig";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 function LandingPage() {
   const [email, setEmail] = useState("");
@@ -9,15 +9,22 @@ function LandingPage() {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    try {
-      await firebaseAuth.signInWithEmailAndPassword(email, password);
-      console.log("User logged in successfully");
-      // Redirect or show success message
-    } catch (error) {
-      console.error("Login failed:", error.message);
-      // Handle login error
-    }
-  };
+    const auth = getAuth();
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in
+    const user = userCredential.user;
+    // ...
+    navigate("/menu");
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // Display or log the error
+    console.error(errorCode, errorMessage);
+  });
+}
+
 
   return (
     <div className="container">
