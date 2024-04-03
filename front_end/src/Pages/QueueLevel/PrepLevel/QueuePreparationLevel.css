@@ -9,3 +9,17 @@
   padding-left: 3%;
   width: 100%;
 }
+.amongus {
+  width: 50%; /* Adjust the size as needed */
+  height: auto; /* Maintain aspect ratio */
+}
+.queue-rectangle {
+  margin-top: 30px;
+  background-color: inherit;
+  width: 57vh;
+  height: 20vh;
+  border-top: 10px solid rgb(17, 0, 128);
+  border-right: solid inherit;
+  border-left: solid inherit;
+  border-bottom: 10px solid rgb(17, 0, 128);
+}
