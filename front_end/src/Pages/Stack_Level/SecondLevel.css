@@ -1,75 +1,59 @@
-/* SecondLevel.css */
-
-.all-div {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
+.title-styling {
+    text-align: center;
   }
   
-  .game-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  .other {
+    padding-left: 3%;
+    width: 100%;
   }
   
-  .title {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .title {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  
-  .second-level-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 2rem;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 1rem;
-  }
-  
-  .second-level-buttons {
-    padding: 0.5rem 1rem;
-    margin: 0 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-  }
-  
-  .second-level-buttons:hover {
-    background-color: #2980b9;
+  .input-class {
+    width: 90%;
   }
   
   .stack-bar {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 1rem;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    width: 90%;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    padding: 5px;
   }
   
-  .stack-field {
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
-    font-size: 1rem;
-    background-color: #ecf0f1;
-    border: 1px solid #bdc3c7;
+  .stack-field,
+  .pushed-stack-field {
+    width: 20px;
+    height: 100%;
     border-radius: 5px;
   }
   
+  .stack-field {
+    background-color: #3498db;
+  }
+  
+  .pushed-stack-field {
+    background-color: red;
+  }
+  
   .question {
-    font-size: 1rem;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .check-button {
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .check-button:hover {
+    background-color: #27ae60;
   }
   

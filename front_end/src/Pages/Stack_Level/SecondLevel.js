@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./FirstLevel.css";
+import "./SecondLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
@@ -143,7 +143,7 @@ function FirstLevel() {
         <h1 className="title">Stack</h1>
         <h2 className="title">First Level</h2>
 
-        <div className="first-level-container">
+        <div className="second-level-container">
           <div className="stack-bar">
             {/* Render popped values first */}
             {poppedValues.map((value, index) => (
@@ -184,4 +184,4 @@ function FirstLevel() {
   );
 }
 
-export default FirstLevel;
+export default SecondLevel;
