@@ -76,20 +76,6 @@ function FirstLevel() {
     setActiveButtonIndex(index);
   };
 
-  // Function to render buttons
-  const renderButtons = () => {
-    return [1, 2, 3, 4, 5].map((number, index) => (
-      <button
-        key={index}
-        className="button"
-        style={{ backgroundColor: getButtonColor(index) }}
-        onClick={() => handleButtonClick(index)}
-      >
-        {number}
-      </button>
-    ));
-  };
-
   // Function to determine button color based on active state
   const getButtonColor = (index) => {
     return index === activeButtonIndex ? "#e74c3c" : "#3498db";
