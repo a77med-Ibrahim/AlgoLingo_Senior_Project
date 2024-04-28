@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
 import LandingPage from "./Pages/Menu/LandingPage";
 import MenuPage from "./Pages/Menu/Menu";
 import PreperationLevel from "./Pages/Stack_Level/PreperationLevel/PreperationLevel";
@@ -6,9 +6,14 @@ import React, { useState } from "react";
 import FirstLevel from "./Pages/Stack_Level/FirstLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
 import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
+import PrepLevel from "./Pages/Binary_search_level/PrepLevel/PrepLevel"
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import "./App.css";
 
+
 function App() {
+
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
   const handleSignIn = () => {
@@ -16,6 +21,7 @@ function App() {
   };
 
   return (
+    <DndProvider backend={HTML5Backend}>
     <Router>
       <div>
         {/* Render LandingPage if not authenticated */}
@@ -41,9 +47,13 @@ function App() {
             element={<QueuePreparationLevel />}
           />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/PrepLevel" element={<PrepLevel />} />
         </Routes>
       </div>
     </Router>
+    </DndProvider>
+    
+
   );
 }
 
