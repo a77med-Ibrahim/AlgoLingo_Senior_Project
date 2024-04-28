@@ -3,27 +3,54 @@ import stackImage from "./Img/stackImg.webp";
 import queueImage from "./Img/queueImg.png";
 import linkedList from "./Img/LL.png";
 import AlgoLingoBar from "./AlgoLingoBar";
-import React, { useState } from "react";
 import "./Menu.css";
+import React, { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
+import { firebaseAuth, db } from './firebaseConfig';  // Ensure these are correctly imported from your config file
+
+
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
   const [lastClickedCircle, setLastClickedCircle] = useState(null);
+
+  const [circleData, setCircleData] = useState([
+    { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
+    { id: 2, top: "150px", left: "-40px", isOpen: false, image: queueImage },
+    {id: 3,top: "220px",left: "-20px",isOpen: true,image: linkedList,size: "small"},
+  ]);
   const navigate = useNavigate();
 
-  const circleData = [
-    { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
-    { id: 2, top: "150px", left: "-40px", isOpen: true, image: queueImage },
-    {
-      id: 3,
-      top: "220px",
-      left: "-20px",
-      isOpen: true,
-      image: linkedList,
-      size: "small",
-    },
-  ];
+  useEffect(() => {
+    if (firebaseAuth.currentUser) {
+      const userId = firebaseAuth.currentUser.uid;
+      const userDocRef = doc(db, 'progress', userId);
+      getDoc(userDocRef)
+        .then(docSnap => {
+          if (docSnap.exists()) {
+            const userProgress = docSnap.data();
+            updateLevels(userProgress);
+          } else {
+            // Handle the case where there is no data
+            console.log("No such document!");
+          }
+        }).catch(error => {
+          console.error("Error fetching user progress:", error);
+        });
+    }
+  }, [firebaseAuth, db]); // Dependencies in the useEffect should be checked if they are necessary
+  
 
+  
+
+
+  const updateLevels = (userProgress) => {
+    const updatedCircles = circleData.map(circle => ({
+      ...circle,
+      isOpen: userProgress[circle.id] ? userProgress[circle.id].isOpen : false
+    }));
+    setCircleData(updatedCircles);
+  };
   const isLevelUnlocked = (circleId) => {
     const circle = circleData.find((circle) => circle.id === circleId);
     return circle.isOpen;

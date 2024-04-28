@@ -9,7 +9,7 @@ import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparation
 import "./App.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Change initial state to false
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
   const handleSignIn = () => {
     setIsAuthenticated(true);
@@ -20,6 +20,7 @@ function App() {
       <div>
         {/* Render LandingPage if not authenticated */}
         <Routes>
+        <Route path="/menu" element={<MenuPage />} />
           <Route
             path="/"
             element={

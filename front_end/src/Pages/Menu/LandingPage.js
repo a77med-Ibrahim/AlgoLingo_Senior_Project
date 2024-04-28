@@ -1,36 +1,31 @@
 import React, { useState } from "react";
 import "./LandingPage.css";
 import { useNavigate } from "react-router-dom";
-import { registerUser, loginUser } from "./api.js";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 function LandingPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async () => {
-    try {
-      const userData = { email, password };
-      const response = await registerUser(userData);
-      console.log("User registered successfully:", response);
-      // Redirect or show success message
-    } catch (error) {
-      console.error("Registration failed:", error);
-      // Handle error
-    }
-  };
-
   const handleLogin = async () => {
-    try {
-      const userData = { email, password };
-      const response = await loginUser(userData);
-      console.log("User logged in successfully:", response);
-      // Redirect or show success message
-    } catch (error) {
-      console.error("Login failed:", error);
-      // Handle error
-    }
-  };
+    const auth = getAuth();
+signInWithEmailAndPassword(auth, email, password)
+  .then((userCredential) => {
+    // Signed in
+    const user = userCredential.user;
+    // ...
+    navigate("/menu");
+  })
+  .catch((error) => {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    // Display or log the error
+    console.error(errorCode, errorMessage);
+  });
+}
+
+
   return (
     <div className="container">
       <div className="input-group">
@@ -57,16 +52,10 @@ function LandingPage() {
         </button>
         <button
           className="buttons-color"
-          onClick={() => {
-            handleRegister();
-            navigate("/register");
-          }}
+          onClick={() => navigate("/register")}
         >
           Sign up
         </button>
-        {/* <button onClick={() => navigate("/register")} className="register-button">
-        Register
-      </button> */}
       </div>
     </div>
   );
