@@ -177,7 +177,7 @@ function FirstLevel() {
           <div className="stack-bar">
             {/* Render popped values first */}
             {poppedValues.map((value, index) => (
-              <div key={`popped-${index}`} className="stack-field popped">
+              <div key={`popped-${index}`} className="pushed-stack-field ">
                 {value}
               </div>
             ))}

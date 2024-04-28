@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import stackImage from "./Img/stackImg.webp";
 import queueImage from "./Img/queueImg.png";
+import linkedList from "./Img/LL.png";
 import AlgoLingoBar from "./AlgoLingoBar";
 import "./Menu.css";
 import React, { useState, useEffect } from 'react';
@@ -11,10 +12,12 @@ import { firebaseAuth, db } from './firebaseConfig';  // Ensure these are correc
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
+  const [lastClickedCircle, setLastClickedCircle] = useState(null);
+
   const [circleData, setCircleData] = useState([
     { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
     { id: 2, top: "150px", left: "-40px", isOpen: false, image: queueImage },
-    { id: 3, top: "220px", left: "-20px", isOpen: false, image: null },
+    {id: 3,top: "220px",left: "-20px",isOpen: true,image: linkedList,size: "small"},
   ]);
   const navigate = useNavigate();
 
@@ -38,6 +41,9 @@ function Menu() {
   }, [firebaseAuth, db]); // Dependencies in the useEffect should be checked if they are necessary
   
 
+  
+
+
   const updateLevels = (userProgress) => {
     const updatedCircles = circleData.map(circle => ({
       ...circle,
@@ -52,6 +58,18 @@ function Menu() {
 
   const handleCircleClick = (circleId) => {
     setActiveCircle(activeCircle === circleId ? null : circleId);
+    setLastClickedCircle(circleId);
+  };
+
+  const handleStartButtonClick = () => {
+    if (lastClickedCircle && isLevelUnlocked(lastClickedCircle)) {
+      if (lastClickedCircle === 1) {
+        navigate("/preperation-level");
+      } else if (lastClickedCircle === 2) {
+        alert("Second level is not complete yet");
+        // navigate("/queue-preparation");
+      }
+    }
   };
 
   return (
@@ -83,7 +101,7 @@ function Menu() {
           )}
         </div>
         <button
-          onClick={() => navigate("/preperation-level")}
+          onClick={handleStartButtonClick}
           className={`start-button ${
             activeCircle && isLevelUnlocked(activeCircle) ? "" : "locked"
           }`}

@@ -5,6 +5,7 @@ import PreperationLevel from "./Pages/Stack_Level/PreperationLevel/PreperationLe
 import React, { useState } from "react";
 import FirstLevel from "./Pages/Stack_Level/FirstLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
+import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
 import "./App.css";
 
 function App() {
@@ -34,6 +35,10 @@ function App() {
           <Route
             path="/preperation-level/first-level"
             element={<FirstLevel />}
+          />
+          <Route
+            path="/queue-preparation/"
+            element={<QueuePreparationLevel />}
           />
           <Route path="/register" element={<RegisterPage />} />
         </Routes>
