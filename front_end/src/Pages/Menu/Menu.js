@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import stackImage from "./Img/stackImg.webp";
 import queueImage from "./Img/queueImg.png";
+import linkedList from "./Img/LL.png";
 import AlgoLingoBar from "./AlgoLingoBar";
 import React, { useState } from "react";
 import "./Menu.css";
@@ -13,7 +14,14 @@ function Menu() {
   const circleData = [
     { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
     { id: 2, top: "150px", left: "-40px", isOpen: true, image: queueImage },
-    { id: 3, top: "220px", left: "-20px", isOpen: false, image: null },
+    {
+      id: 3,
+      top: "220px",
+      left: "-20px",
+      isOpen: true,
+      image: linkedList,
+      size: "small",
+    },
   ];
 
   const isLevelUnlocked = (circleId) => {
@@ -31,7 +39,8 @@ function Menu() {
       if (lastClickedCircle === 1) {
         navigate("/preperation-level");
       } else if (lastClickedCircle === 2) {
-        navigate("/queue-preparation");
+        alert("Second level is not complete yet");
+        // navigate("/queue-preparation");
       }
     }
   };

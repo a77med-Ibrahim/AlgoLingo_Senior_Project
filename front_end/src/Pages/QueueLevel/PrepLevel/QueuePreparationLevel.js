@@ -50,14 +50,13 @@ function QueuePreparationLevel() {
             <button>Peek</button>
             <button>isEmpty</button>
           </div>
-          {/* <div className="queue-rectangle"> */}
           {showCircle && (
             <div className="circle">
               <p className="circle-names">{circleName}</p>
             </div>
           )}
-          {/* </div> */}
-          <div className="cashier-box"> Chashier  </div>
+
+          <div className="cashier-box"> Chashier </div>
         </div>
       </div>
     </div>
