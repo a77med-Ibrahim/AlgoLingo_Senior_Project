@@ -8,6 +8,7 @@ function LevelsBar({
   popClicked,
   peekClicked,
   isEmptyClicked,
+  checkResult,
 }) {
   const navigate = useNavigate();
 
@@ -18,7 +19,12 @@ function LevelsBar({
     if (index === 1) {
       // For the first button, check if all other required buttons are clicked
       return pushClicked && popClicked && peekClicked && isEmptyClicked;
-    } else {
+    }
+    else if (index === 2) {
+      return pushClicked && popClicked && peekClicked && isEmptyClicked;
+
+    } 
+    else {
       // For other buttons, check if all buttons before it are clicked
       return levels.slice(0, index).every((level) => level === "X");
     }
@@ -33,7 +39,10 @@ function LevelsBar({
       navigate("/preperation-level");
     } else if (index === 1) {
       navigate("/preperation-level/first-level");
-    } else {
+    } else if (index === 2) {
+      navigate("/preperation-level/second-level");
+    }
+    else {
       // Handle navigation for other levels
     }
   };
