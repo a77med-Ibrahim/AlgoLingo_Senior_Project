@@ -49,13 +49,20 @@ function SecondLevel() {
 
   return (
     <div className="all-div">
-      <AlgoLingoBar />
-      <div className="game-content">
-        <h1 className="title">Stack</h1>
-        <h2 className="title">Second Level</h2>
-
-        <div className="second-level-container">
-          <div className="bucket">
+        <AlgoLingoBar />
+        <div className="other">
+          <h1 className="title-styling">Stack</h1>
+          <h2 className="title-styling">Second Level</h2>
+ {/* Render LevelsBar component */}
+ <LevelsBar
+        pushClicked={false}
+        popClicked={false}
+        peekClicked={false}
+        isEmptyClicked={false}
+      />
+      <br></br>
+        <div className="second-level-container" >
+          <div className="bucket" align="center">
             {/* Render popped values */}
             <div className="popped-values">
               {poppedValues.map((value, index) => (
@@ -90,13 +97,7 @@ function SecondLevel() {
           </button>
         </div>
       </div>
-      {/* Render LevelsBar component */}
-      <LevelsBar
-        pushClicked={false}
-        popClicked={false}
-        peekClicked={false}
-        isEmptyClicked={false}
-      />
+     
     </div>
   );
 }
