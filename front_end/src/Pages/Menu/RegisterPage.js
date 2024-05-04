@@ -1,31 +1,30 @@
-// RegisterPage.js
 import React, { useState } from "react";
 import "./Register.css";
-import { registerUser } from "./api.js";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { firebaseApp } from "./firebaseConfig"; // Assume you have this configuration file
 
 function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [re_Password, setRe_Password] = useState("");
+  const [re_password, setRe_Password] = useState("");
   const [error, setError] = useState("");
 
   const handleRegister = async () => {
-    try {
-      if (password !== re_Password) {
-        setError("Passwords do not match");
-        return;
-      }
-
-      const userData = { name, email, password , re_Password};
-      const response = await registerUser(userData);
-      console.log("User registered successfully:", response);
-      // Redirect or show success message
-    } catch (error) {
-      console.error("Registration failed:", error);
-      // Handle error
+    if (password !== re_password) {
+      setError("Passwords do not match");
+      return;
     }
-  };
+
+    const auth = getAuth(firebaseApp);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        } catch (error) {
+            console.error("Registration failed:", error);
+            // Handle error
+            setError("Registration failed: " + error.message);
+        }
+    };
 
   return (
     <div className="container">
@@ -63,7 +62,7 @@ function RegisterPage() {
         <input
           type="password"
           placeholder="Re-enter your password"
-          value={re_Password}
+          value={re_password}
           onChange={(e) => setRe_Password(e.target.value)}
         />
       </div>

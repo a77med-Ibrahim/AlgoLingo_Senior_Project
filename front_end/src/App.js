@@ -6,10 +6,11 @@ import React, { useState } from "react";
 import FirstLevel from "./Pages/Stack_Level/FirstLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
 import SecondLevel from "./Pages/Stack_Level/SecondLevel";
+import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
 import "./App.css";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Change initial state to false
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
   const handleSignIn = () => {
     setIsAuthenticated(true);
@@ -20,6 +21,7 @@ function App() {
       <div>
         {/* Render LandingPage if not authenticated */}
         <Routes>
+        <Route path="/menu" element={<MenuPage />} />
           <Route
             path="/"
             element={
@@ -38,6 +40,10 @@ function App() {
           <Route
             path="/preperation-level/second-level"
             element={<SecondLevel />}
+            />
+            <Route
+            path="/queue-preparation/"
+            element={<QueuePreparationLevel />}
           />
           <Route path="/register" element={<RegisterPage />} />
         </Routes>

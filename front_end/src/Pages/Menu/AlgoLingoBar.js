@@ -6,7 +6,7 @@ function AlgoLingoBar() {
   const navigate = useNavigate();
 
   const goToMainPage = () => {
-    navigate("/");
+    navigate("/menu");
   };
 
   return (

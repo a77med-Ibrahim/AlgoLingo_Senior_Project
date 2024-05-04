@@ -62,7 +62,7 @@ ROOT_URLCONF = 'back_end.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'build')],
+        'DIRS': [BASE_DIR /'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,7 +97,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'back_end',
         'USER': 'postgres',
-        'PASSWORD': 'Daylight-8',
+        'PASSWORD': 'AlgoLingo',
         'HOST': 'localhost',
         'PORT': '5432',
     }
@@ -146,9 +146,9 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'back_end.authentication.FirebaseAuthentication',
+    ),
 }
 
 SIMPLE_JWT = {
@@ -176,6 +176,7 @@ DJOSER = {
 }
 CORS_ORIGIN_ALLOW_ALL = True
 AUTH_USER_MODEL = 'back_end.UserAccount'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
