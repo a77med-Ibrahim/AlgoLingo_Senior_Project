@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import FirstLevel from "./Pages/Stack_Level/FirstLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
 import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
+import LinkedListPrepLevel from "./Pages/LinkedList/Prep/LinkedListPrepLevel";
 import "./App.css";
 
 function App() {
@@ -20,7 +21,7 @@ function App() {
       <div>
         {/* Render LandingPage if not authenticated */}
         <Routes>
-        <Route path="/menu" element={<MenuPage />} />
+          <Route path="/menu" element={<MenuPage />} />
           <Route
             path="/"
             element={
@@ -41,6 +42,10 @@ function App() {
             element={<QueuePreparationLevel />}
           />
           <Route path="/register" element={<RegisterPage />} />
+          <Route
+            path="/LinkedListPrepLevel"
+            element={<LinkedListPrepLevel />}
+          ></Route>
         </Routes>
       </div>
     </Router>
