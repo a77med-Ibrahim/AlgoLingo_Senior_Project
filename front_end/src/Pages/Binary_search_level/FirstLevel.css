@@ -16,8 +16,6 @@
     justify-content: center;
     background-color: #f0f0f0;
     cursor: move;
-    transition: left 0.5s, top 0.5s;
-
   }
   
   .line {

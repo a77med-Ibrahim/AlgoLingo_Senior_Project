@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, BrowserRouter } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/Menu/LandingPage";
 import MenuPage from "./Pages/Menu/Menu";
 import PreperationLevel from "./Pages/Stack_Level/PreperationLevel/PreperationLevel";
@@ -7,6 +7,7 @@ import FirstLevel from "./Pages/Stack_Level/FirstLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
 import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
 import PrepLevel from "./Pages/Binary_search_level/PrepLevel/PrepLevel"
+import LevelOne from "./Pages/Binary_search_level/FirstLevel";
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import "./App.css";
@@ -48,6 +49,7 @@ function App() {
           />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/PrepLevel" element={<PrepLevel />} />
+          <Route path="/FirstLevel" element={<LevelOne />} />
         </Routes>
       </div>
     </Router>

@@ -1,166 +1,94 @@
+import React, { useState, useEffect } from "react";
 import LevelsBar from "../LevelBar";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
-import { useDrag, useDrop } from 'react-dnd';
-import React, { useState } from "react";
 
+function heapify(heap, n, i, comparator) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
 
-function DraggableNode({ id, number, onMoveNode, style }) {
-    const [{ isDragging }, drag] = useDrag(() => ({
-      type: 'node',
-      item: { id },
-      collect: monitor => ({
-        isDragging: !!monitor.isDragging(),
-      }),
-    }), [id]);
-  
-    const [, drop] = useDrop(() => ({
-      accept: 'node',
-      drop: (item) => {
-        if (item.id !== id) {
-          onMoveNode(item.id, id);
-        }
-      },
-    }), [id]);
-    const ref = React.useRef(null);
-    drag(drop(ref));
-  
-    // Define the style inside the component that uses isDragging
-    const nodeStyle = {
-      ...style,
-      opacity: isDragging ? 0.5 : 1,
-      fontWeight: 'bold',
-      cursor: 'move',
-      width: 50,
-      height: 50,
-      borderRadius: '50%',
-      backgroundColor: '#f0f0f0',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      margin: 10
-      // You will need to add 'position', 'left', and 'top' properties here after calculating the positions
-    };
-
-
-  
-    return (
-      <div ref={ref} style={{ ...nodeStyle, opacity: isDragging ? 0.5 : 1}}>
-        {number}
-      </div>
-    );
-  }
-  function heapify(heap, n, i, comparator) {
-    let largest = i; // Initialize largest as root
-    const left = 2 * i + 1; // left = 2*i + 1
-    const right = 2 * i + 2; // right = 2*i + 2
-
-    // If left child exists and is greater than root
-    if (left < n && comparator(heap[left].number, heap[largest].number)) {
+    if (left < n && comparator(heap[left], heap[largest])) {
         largest = left;
     }
-
-    // If right child exists and is greater than largest so far
-    if (right < n && comparator(heap[right].number, heap[largest].number)) {
+    if (right < n && comparator(heap[right], heap[largest])) {
         largest = right;
     }
-
-    // If largest is not root
     if (largest !== i) {
-        [heap[i], heap[largest]] = [heap[largest], heap[i]]; // Swap
-        // Recursively heapify the affected sub-tree
+        let temp = heap[i];
+        heap[i] = heap[largest];
+        heap[largest] = temp;
         heapify(heap, n, largest, comparator);
     }
 }
 
-
-
-
-  const nodePositions = [
-    {x: 500, y: 300},
-    {x: 450, y: 380},
-    {x: 550, y: 380},
-    {x: 400, y: 460},
-    {x: 600, y: 460},
-
-]
-   const initialHeap = [
-    { id: 0, number: 5, position: nodePositions[0] },
-    { id: 1, number: 3, position: nodePositions[1] },
-    { id: 2, number: 8, position: nodePositions[2] },
-    { id: 3, number: 1, position: nodePositions[3] },
-    { id: 4, number: 4, position: nodePositions[4] },
-  ];
-
-  function isMaxHeapFunction(heap) {
-    for (let i = 0; i < heap.length; i++) {
-        let left = 2 * i + 1;
-        let right = 2 * i + 2;
-        if ((left < heap.length && heap[i].number < heap[left].number) ||
-            (right < heap.length && heap[i].number < heap[right].number)) {
-            return false;
-        }
+function buildHeap(heap, comparator) {
+    const n = heap.length;
+    for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+        heapify(heap, n, i, comparator);
     }
-    return true;
+    return heap;
 }
 
+function PrepLevel() {
+    const initialPositions = [
+        { x: 800, y: 300 },
+        { x: 675, y: 380 },
+        { x: 925, y: 380 },
+        { x: 600, y: 460 },
+        { x: 1000, y: 460 },
+        { x: 750, y: 460 },
+        { x: 850, y: 460 },
+    ];
 
-function isMinHeap(heap) {
-    for (let i = 0; i < heap.length; i++) {
-        let left = 2 * i + 1;
-        let right = 2 * i + 2;
-        if ((left < heap.length && heap[i].number > heap[left].number) ||
-            (right < heap.length && heap[i].number > heap[right].number)) {
-            return false;
+    const generateRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
+
+    const initialHeap = initialPositions.map((position, index) => ({
+        id: index,
+        number: generateRandomNumber(1, 100),
+        position: position
+    }));
+
+    const [heap, setHeap] = useState(initialHeap);
+    const [maxHeapClicked, setMaxHeapClicked] = useState(false);
+    const [minHeapClicked, setMinHeapClicked] = useState(false);
+
+    useEffect(() => {
+        if (maxHeapClicked && minHeapClicked) {
         }
+    }, [maxHeapClicked, minHeapClicked]);
+
+    function handleMaxHeap() {
+        const newHeap = buildHeap([...heap], (a, b) => a.number > b.number);
+        animateHeap(newHeap);
+        setMaxHeapClicked(true);
     }
-    return true;
-}
 
-
-function PrepLevel(){
-    const [heap, setHeap] = useState([
-        { id: 0, number: 5, position: { x: 500, y: 300 } },
-        { id: 1, number: 3, position: { x: 450, y: 380 } },
-        { id: 2, number: 8, position: { x: 550, y: 380 } },
-        { id: 3, number: 1, position: { x: 400, y: 460 } },
-        { id: 4, number: 4, position: { x: 600, y: 460 } },
-    ]);
-    const [isMaxHeap, setIsMaxHeap] = useState(true); // Start with sorting a max heap
-    const [taskCompleted, setTaskCompleted] = useState(false);
-
-    function checkHeap() {
-        const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
-        if (isValidHeap) {
-            alert(`Correct! This is a ${isMaxHeap ? "max" : "min"} heap.`);
-            if (isMaxHeap) {
-                setIsMaxHeap(false); // Switch to min heap
-                setTaskCompleted(false); // Reset for the next task
-            } else {
-                setTaskCompleted(true); // Mark the min heap task as completed
-            }
-        } else {
-            alert(`Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`);
-        }
+    function handleMinHeap() {
+        const newHeap = buildHeap([...heap], (a, b) => a.number < b.number);
+        animateHeap(newHeap);
+        setMinHeapClicked(true);
     }
-    const moveNode = (fromId, toId) => {
-        const newHeap = [...heap]; // Clone the current state to avoid direct mutation
-        const fromIndex = newHeap.findIndex(node => node.id === fromId);
-        const toIndex = newHeap.findIndex(node => node.id === toId);
-    
-        if (fromIndex < 0 || toIndex < 0) {
-            console.error('Invalid indices', { fromIndex, toIndex });
-            return; // Exit if no valid indices were found
+
+    function animateHeap(newHeap) {
+        const animations = [];
+        for (let i = 0; i < newHeap.length; i++) {
+            animations.push({
+                id: newHeap[i].id,
+                position: initialPositions[i],
+            });
         }
-    
-        // Swap the numbers of the two nodes
-        const temp = newHeap[fromIndex].number; // Temporarily store the number from fromIndex
-        newHeap[fromIndex].number = newHeap[toIndex].number; // Assign toIndex number to fromIndex
-        newHeap[toIndex].number = temp; // Assign stored number to toIndex
-    
-        setHeap(newHeap); // Update the state
-    };
-  
-      
+        animations.forEach((animation, index) => {
+            setTimeout(() => {
+                setHeap((prevHeap) => {
+                    const updatedHeap = prevHeap.map((node) =>
+                        node.id === animation.id ? { ...node, position: animation.position } : node
+                    );
+                    return updatedHeap;
+                });
+            }, index * 500);
+        });
+    }
+
 
     return (
         <div className="flexing">
@@ -169,34 +97,46 @@ function PrepLevel(){
                 <h1 className="title-styling">Binary Search</h1>
                 <h2 className="title-styling">Preparation</h2>
                 <div className="navbar-line" />
-                <LevelsBar />
+                <LevelsBar
+                maxHeapClicked={maxHeapClicked}
+                minHeapClicked={minHeapClicked}
+                />
                 <div className="heap-container">
-                {heap.map((node, index) => {
-            const position = nodePositions[index];
-            const nodeStyle = {
-              position: 'absolute',
-              left: `${position.x}px`,
-              top: `${position.y}px`,
-              // ... rest of your styles
-            };
-
-            return (
-              <DraggableNode
-                key={node.id}
-                id={node.id}
-                number={node.number}
-                onMoveNode={moveNode}
-                style={nodeStyle}
-              />
-            );
-          })}
+                    {heap.map((node) => {
+                        const nodeStyle = {
+                            position: 'absolute',
+                            left: `${node.position.x}px`,
+                            top: `${node.position.y}px`,
+                            transition: 'left 0.5s ease, top 0.5s ease'
+                        };
+                        return (
+                            <div key={node.id} style={nodeStyle}>
+                                <div style={{
+                                    opacity: 1,
+                                    fontWeight: 'bold',
+                                    cursor: 'default',
+                                    width: 50,
+                                    height: 50,
+                                    borderRadius: '50%',
+                                    backgroundColor: '#f0f0f0',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    margin: 10
+                                }}>
+                                    {node.number}
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
-                <button onClick={checkHeap}>Check Heap</button>
-                <p>Current task: {isMaxHeap ? "Create a Max Heap" : "Create a Min Heap"}</p>
-                {taskCompleted && !isMaxHeap && <p>Well done! You've completed both tasks!</p>}
+                <button onClick={handleMaxHeap}>Create Max Heap</button>
+                <button onClick={handleMinHeap}>Create Min Heap</button>
+                {maxHeapClicked && <p>Max heap created successfully!</p>}
+                {minHeapClicked && <p>Min heap created successfully!</p>}
             </div>
         </div>
     );
 }
-export default PrepLevel;
 
+export default PrepLevel;
