@@ -30,7 +30,7 @@ function LevelsBar({
 
   const handleButtonClick = (index) => {
     if (levels[index] === "prep") {
-      navigate("/preperation-level");
+      navigate("/LinkedListPrepLevel");
     } else if (index === 1) {
       navigate("/preperation-level/first-level");
     } else {

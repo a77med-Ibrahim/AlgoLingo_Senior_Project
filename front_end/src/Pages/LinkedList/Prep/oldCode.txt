@@ -1,0 +1,175 @@
+import AlgoLingoBar from "../../Menu/AlgoLingoBar";
+import LevelsBar from "../LevelBar";
+import React, { useRef, useState } from "react";
+import Xarrow from "react-xarrows";
+import "./LinkedListPrepLevel.css";
+
+const boxStyle = {
+  position: "relative",
+  border: "red solid 2px",
+  borderRadius: "10px",
+  padding: "5px",
+  width: "20%",
+  height: "100px",
+  display: "inline-block",
+  boxSizing: "border-box",
+  marginRight: "10%",
+};
+
+const lineStyle = {
+  content: "''",
+  position: "absolute",
+  width: "2px",
+  height: "100%",
+  backgroundColor: "blue",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+};
+
+function LinkedListPrepLevel() {
+  const [boxRefs, setBoxRefs] = useState([
+    useRef(null),
+    useRef(null),
+    useRef(null),
+  ]);
+  const [arrowInfo, setArrowInfo] = useState([]);
+
+  const handleDragStart = () => {
+    console.log("Drag start");
+  };
+
+  const handleDrag = (newInfo) => {
+    console.log("Drag", newInfo);
+    setArrowInfo(newInfo);
+  };
+
+  const handleDragEnd = () => {
+    console.log("Drag end");
+  };
+
+  const pushToHeadFunction = (newBoxRef) => {
+    // Update the boxRefs array to include the new box ref at the beginning
+    setBoxRefs([newBoxRef, ...boxRefs]);
+
+    // Update the arrow info to point from the new box to the old first box
+    setArrowInfo([{ startRef: newBoxRef, endRef: boxRefs[0] }, ...arrowInfo]);
+  };
+
+  const newBoxRef = useRef(null); // Define the useRef for the new rectangle outside the function
+
+  return (
+    <div>
+      <div className="all-div">
+        <AlgoLingoBar />
+        <div className="other">
+          <h1 className="title-styling">Linked List</h1>
+          <h2 className="title-styling">Preparation</h2>
+          <div className="navbar-line" />
+          <LevelsBar />
+          <div className="ll-buttons">
+            <button onClick={() => pushToHeadFunction(newBoxRef)}>
+              Push to Head
+            </button>
+            <button>Push to Middle</button>
+            <button>Push to Tail</button>
+          </div>
+
+          <div className="game-container">
+            {/* Render boxes */}
+            {boxRefs.map((boxRef, index) => (
+              <div key={index} style={boxStyle} ref={boxRef}>
+                {index < boxRefs.length - 1 && (
+                  <Xarrow
+                    start={boxRef}
+                    end={boxRefs[index + 1]}
+                    lineColor="blue"
+                    arrowHeadSize={0}
+                    arrowBodyProps={{
+                      width: 5,
+                      height: 10,
+                      path: "smooth",
+                    }}
+                  />
+                )}
+                <div style={lineStyle} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default LinkedListPrepLevel;
+
+.title-styling {
+  text-align: center;
+}
+
+.all-div {
+  flex: 1;
+  display: flex;
+}
+
+.other {
+  padding-left: 3%;
+  width: 100%;
+}
+
+.navbar-line {
+  width: 100%;
+  background-color: black;
+  height: 5px;
+}
+
+.game-container {
+  padding-top: 10%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.linked-list-node {
+  margin: 7%;
+  width: 80px;
+  height: 80px;
+  border: 4px solid rgb(10, 144, 227);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.linked-list-value {
+  font-size: 18px;
+}
+
+.linked-list-arrow {
+  position: absolute;
+  top: 50%;
+  left: calc(50% - 2px);
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 10px solid rgb(227, 10, 57);
+  transform: translateY(-50%);
+}
+
+.linked-list-line {
+  position: absolute;
+  top: calc(50% - 2px);
+  left: calc(50% - 150px);
+  background-color: rgb(227, 10, 57);
+  width: 150px;
+  height: 4px;
+}
+.ll-buttons {
+}
+.push-to-head {
+}
+.push-to-middle {
+}
+.push-to-tail {
+}
