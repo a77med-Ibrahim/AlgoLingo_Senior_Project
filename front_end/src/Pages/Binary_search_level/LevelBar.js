@@ -6,6 +6,7 @@ function LevelsBar({
   maxHeapClicked,
   minHeapClicked,
   activeButtonIndex,
+  taskCompleted,
 }) {
   const navigate = useNavigate();
 
@@ -16,7 +17,11 @@ function LevelsBar({
     if (index === 1) {
       // For the first button, check if all other required buttons are clicked
       return maxHeapClicked && minHeapClicked;
-    } else {
+    } 
+    else if(index===2){
+      return taskCompleted;
+    }
+    else {
       // For other buttons, check if all buttons before it are clicked
       return levels.slice(0, index).every((level) => level === "X");
     }
@@ -32,7 +37,7 @@ function LevelsBar({
     } else if (index === 1) {
       navigate("/FirstLevel");
     } else {
-      // Handle navigation for other levels
+      navigate("/BSLevel2")
     }
   };
 

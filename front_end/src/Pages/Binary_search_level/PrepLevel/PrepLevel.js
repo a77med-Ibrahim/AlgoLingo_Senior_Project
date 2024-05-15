@@ -31,13 +31,13 @@ function buildHeap(heap, comparator) {
 
 function PrepLevel() {
     const initialPositions = [
-        { x: 800, y: 300 },
-        { x: 675, y: 380 },
-        { x: 925, y: 380 },
-        { x: 600, y: 460 },
-        { x: 1000, y: 460 },
-        { x: 750, y: 460 },
-        { x: 850, y: 460 },
+        { x: 41, y: 0 }, // Example positions in percentages
+        { x: 27.75, y: 20.33 },
+        { x: 55.25, y: 20.33 },
+        { x: 18.75, y: 40.67 },
+        { x: 36, y: 40.67 },
+        { x: 48.5, y: 40.67 },
+        { x: 62.5, y: 40.67 },
     ];
 
     const generateRandomNumber = (min, max) => Math.floor(Math.random() * (max - min + 1) + min);
@@ -89,7 +89,6 @@ function PrepLevel() {
         });
     }
 
-
     return (
         <div className="flexing">
             <AlgoLingoBar />
@@ -97,16 +96,13 @@ function PrepLevel() {
                 <h1 className="title-styling">Binary Search</h1>
                 <h2 className="title-styling">Preparation</h2>
                 <div className="navbar-line" />
-                <LevelsBar
-                maxHeapClicked={maxHeapClicked}
-                minHeapClicked={minHeapClicked}
-                />
-                <div className="heap-container">
+                <LevelsBar maxHeapClicked={maxHeapClicked} minHeapClicked={minHeapClicked} />
+                <div className="heap-container" style={{ position: 'relative', width: '100%', height: '100%' }}>
                     {heap.map((node) => {
                         const nodeStyle = {
                             position: 'absolute',
-                            left: `${node.position.x}px`,
-                            top: `${node.position.y}px`,
+                            left: `${node.position.x}%`,
+                            top: `${node.position.y}%`,
                             transition: 'left 0.5s ease, top 0.5s ease'
                         };
                         return (
@@ -115,25 +111,26 @@ function PrepLevel() {
                                     opacity: 1,
                                     fontWeight: 'bold',
                                     cursor: 'default',
-                                    width: 50,
-                                    height: 50,
+                                    width: '5vw', // using viewport width for responsive size
+                                    height: '5vw', // same as width to maintain aspect ratio
                                     borderRadius: '50%',
                                     backgroundColor: '#f0f0f0',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    margin: 10
+                                    margin: '1vw'
                                 }}>
                                     {node.number}
                                 </div>
                             </div>
                         );
                     })}
-                </div>
-                <button onClick={handleMaxHeap}>Create Max Heap</button>
+                                    <button onClick={handleMaxHeap}>Create Max Heap</button>
                 <button onClick={handleMinHeap}>Create Min Heap</button>
                 {maxHeapClicked && <p>Max heap created successfully!</p>}
                 {minHeapClicked && <p>Min heap created successfully!</p>}
+                </div>
+
             </div>
         </div>
     );
