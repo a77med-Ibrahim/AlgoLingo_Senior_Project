@@ -1,0 +1,62 @@
+
+
+.bucket {
+  align-self: center;
+  display: flex;
+  flex-direction: column-reverse;
+  width: 100px; 
+  height: 200px; 
+  background-color: #f0f0f0; 
+  border: 2px solid #999; 
+  border-radius: 10px; 
+  padding: 10px; 
+}
+
+.stack-value,
+.popped-value {
+  width: 100%;
+  height: 30px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px; 
+  background-color: #fff; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+}
+
+.question {
+  margin-left: 20px; 
+}
+
+.input-class {
+  margin-top: 10px;
+}
+
+.pop-button,
+.check-button {
+  margin-top: 10px; 
+}
+
+.stack-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 50px;
+  width: 90%;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.stack-field {
+  width: 20px;
+  height: 100%;
+  background-color: #3498db;
+}
+.pushed-stack-field {
+  width: 20px;
+  height: 100%;
+  background-color: red;
+}

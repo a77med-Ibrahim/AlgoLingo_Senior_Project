@@ -5,11 +5,19 @@ import PreperationLevel from "./Pages/Stack_Level/PreperationLevel/PreperationLe
 import React, { useState } from "react";
 import FirstLevel from "./Pages/Stack_Level/FirstLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
+import SecondLevel from "./Pages/Stack_Level/SecondLevel";
 import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
 import LinkedListPrepLevel from "./Pages/LinkedList/Prep/LinkedListPrepLevel";
+import PrepLevel from "./Pages/Binary_search_level/PrepLevel/PrepLevel"
+import LevelOne from "./Pages/Binary_search_level/FirstLevel";
+import BSLevel2 from "./Pages/Binary_search_level/BSLevel2";
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 import "./App.css";
 
+
 function App() {
+
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
   const handleSignIn = () => {
@@ -17,6 +25,7 @@ function App() {
   };
 
   return (
+    <DndProvider backend={HTML5Backend}>
     <Router>
       <div>
         {/* Render LandingPage if not authenticated */}
@@ -38,6 +47,10 @@ function App() {
             element={<FirstLevel />}
           />
           <Route
+            path="/preperation-level/second-level"
+            element={<SecondLevel />}
+            />
+            <Route
             path="/queue-preparation/"
             element={<QueuePreparationLevel />}
           />
@@ -46,9 +59,16 @@ function App() {
             path="/LinkedListPrepLevel"
             element={<LinkedListPrepLevel />}
           ></Route>
+          <Route path="/PrepLevel" element={<PrepLevel />} />
+          <Route path="/FirstLevel" element={<LevelOne />} />
+          <Route path="/BSLevel2" element= {<BSLevel2 />} />
+
         </Routes>
       </div>
     </Router>
+    </DndProvider>
+    
+
   );
 }
 

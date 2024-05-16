@@ -3,12 +3,10 @@ import { useNavigate } from "react-router-dom";
 import "./LevelBar.css";
 
 function LevelsBar({
+  maxHeapClicked,
+  minHeapClicked,
   activeButtonIndex,
-  pushClicked,
-  popClicked,
-  peekClicked,
-  isEmptyClicked,
-  checkResult,
+  taskCompleted,
 }) {
   const navigate = useNavigate();
 
@@ -18,12 +16,11 @@ function LevelsBar({
     // Check if all required buttons are clicked
     if (index === 1) {
       // For the first button, check if all other required buttons are clicked
-      return pushClicked && popClicked && peekClicked && isEmptyClicked;
-    }
-    else if (index === 2) {
-      return pushClicked && popClicked && peekClicked && isEmptyClicked;
-
+      return maxHeapClicked && minHeapClicked;
     } 
+    else if(index===2){
+      return taskCompleted;
+    }
     else {
       // For other buttons, check if all buttons before it are clicked
       return levels.slice(0, index).every((level) => level === "X");
@@ -36,14 +33,11 @@ function LevelsBar({
 
   const handleButtonClick = (index) => {
     if (levels[index] === "prep") {
-      navigate("/preperation-level");
+      navigate("/PrepLevel");
     } else if (index === 1) {
-      navigate("/preperation-level/first-level");
-    } else if (index === 2) {
-      navigate("/preperation-level/second-level");
-    }
-    else {
-      // Handle navigation for other levels
+      navigate("/FirstLevel");
+    } else {
+      navigate("/BSLevel2")
     }
   };
 

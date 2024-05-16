@@ -3,6 +3,7 @@ import stackImage from "./Img/stackImg.webp";
 import queueImage from "./Img/queueImg.png";
 import linkedList from "./Img/LL.png";
 import AlgoLingoBar from "./AlgoLingoBar";
+import Heap from "./Img/Heap1.png";
 import "./Menu.css";
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
@@ -23,7 +24,7 @@ function Menu() {
       image: linkedList,
       size: "small",
     },
-    { id: 4, top: "300px", left: "-175px", isOpen: true, image: null },
+    { id: 4, top: "300px", left: "-175px", isOpen: true, image: Heap },
   ]);
   const navigate = useNavigate();
 
@@ -73,6 +74,9 @@ function Menu() {
         // navigate("/queue-preparation");
       } else if (lastClickedCircle === 3) {
         navigate("/LinkedListPrepLevel");
+      }
+      else if (lastClickedCircle === 4){
+        navigate("/PrepLevel");
       }
     }
   };
