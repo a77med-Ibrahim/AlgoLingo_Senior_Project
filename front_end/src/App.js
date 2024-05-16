@@ -7,7 +7,6 @@ import FirstLevel from "./Pages/Stack_Level/FirstLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
 import SecondLevel from "./Pages/Stack_Level/SecondLevel";
 import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
-import LinkedListPrepLevel from "./Pages/LinkedList/Prep/LinkedListPrepLevel";
 import PrepLevel from "./Pages/Binary_search_level/PrepLevel/PrepLevel"
 import LevelOne from "./Pages/Binary_search_level/FirstLevel";
 import BSLevel2 from "./Pages/Binary_search_level/BSLevel2";
@@ -30,7 +29,7 @@ function App() {
       <div>
         {/* Render LandingPage if not authenticated */}
         <Routes>
-          <Route path="/menu" element={<MenuPage />} />
+        <Route path="/menu" element={<MenuPage />} />
           <Route
             path="/"
             element={
@@ -55,14 +54,9 @@ function App() {
             element={<QueuePreparationLevel />}
           />
           <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/LinkedListPrepLevel"
-            element={<LinkedListPrepLevel />}
-          ></Route>
           <Route path="/PrepLevel" element={<PrepLevel />} />
           <Route path="/FirstLevel" element={<LevelOne />} />
           <Route path="/BSLevel2" element= {<BSLevel2 />} />
-
         </Routes>
       </div>
     </Router>

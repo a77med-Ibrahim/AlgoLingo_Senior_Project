@@ -7,7 +7,7 @@ import Heap from "./Img/Heap1.png";
 import "./Menu.css";
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { firebaseAuth, db } from "./firebaseConfig";
+import { firebaseAuth, db } from "./firebaseConfig"; // Ensure these are correctly imported from your config file
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
@@ -72,8 +72,6 @@ function Menu() {
       } else if (lastClickedCircle === 2) {
         alert("Second level is not complete yet");
         // navigate("/queue-preparation");
-      } else if (lastClickedCircle === 3) {
-        navigate("/LinkedListPrepLevel");
       }
       else if (lastClickedCircle === 4){
         navigate("/PrepLevel");
