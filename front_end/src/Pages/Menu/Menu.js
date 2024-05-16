@@ -72,8 +72,9 @@ function Menu() {
       } else if (lastClickedCircle === 2) {
         alert("Second level is not complete yet");
         // navigate("/queue-preparation");
-      }
-      else if (lastClickedCircle === 4){
+      } else if (lastClickedCircle === 3) {
+        navigate("/LinkedListPrepLevel");
+      } else if (lastClickedCircle === 4) {
         navigate("/PrepLevel");
       }
     }
