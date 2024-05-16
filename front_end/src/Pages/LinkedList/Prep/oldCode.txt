@@ -1,0 +1,159 @@
+import AlgoLingoBar from "../../Menu/AlgoLingoBar";
+import LevelsBar from "../LevelBar";
+import React, { useRef, useState, useEffect, forwardRef } from "react";
+import Xarrow from "react-xarrows";
+import "./LinkedListPrepLevel.css";
+
+// Wrap Xarrow component with forwardRef
+const ForwardedXarrow = forwardRef((props, ref) => (
+  <Xarrow {...props} forwardRef={ref} />
+));
+
+function LinkedListPrepLevel() {
+  const [numberOfBoxes, setNumberOfBoxes] = useState(1);
+  const [boxReferences, setBoxReferences] = useState([]);
+
+  useEffect(() => {
+    // Update boxReferences whenever numberOfBoxes changes
+    setBoxReferences(
+      Array.from({ length: numberOfBoxes }, (_, index) => ({
+        id: `box-${index}`, // Assign unique ID
+      }))
+    );
+  }, [numberOfBoxes]);
+
+  const handlePushToTail = () => {
+    if (numberOfBoxes < 5) {
+      setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
+    } else {
+      alert("5 Nodes is the limit");
+    }
+  };
+
+  // Function to dynamically render the boxes and arrows
+  const renderBoxesAndArrows = () => {
+    return boxReferences.map((box, index) => (
+      <div
+        key={box.id}
+        id={box.id}
+        className={`box-style ${index === numberOfBoxes - 1 ? "animate" : ""}`}
+      >
+        <p>{index + 1}</p>
+        {index < boxReferences.length - 1 && (
+          <ForwardedXarrow
+            key={`arrow-${index}`}
+            start={box.id} // Use box ID as start point
+            end={boxReferences[index + 1].id} // Use next box ID as end point
+            lineColor="blue"
+            startAnchor="right"
+            endAnchor="left"
+          />
+        )}
+        <div className="line-style" />
+      </div>
+    ));
+  };
+  // Function to update arrows when number of boxes changes
+  return (
+    <div>
+      <div className="all-div">
+        <AlgoLingoBar />
+        <div className="other">
+          <h1 className="title-styling">Linked List</h1>
+          <h2 className="title-styling">Preparation</h2>
+          <div className="navbar-line" />
+          <LevelsBar />
+          <div className="ll-buttons">
+            <button> Push to Head </button>
+            <button> Push to Middle </button>
+            <button onClick={handlePushToTail}> Push to Tail </button>
+            <p>Number Of Nodes: {numberOfBoxes}</p>
+          </div>
+
+          <div className="game-container">
+            {/* Render dynamic boxes and arrows */}
+            {renderBoxesAndArrows()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default LinkedListPrepLevel;
+
+
+.title-styling {
+  text-align: center;
+}
+
+.all-div {
+  flex: 1;
+  display: flex;
+}
+
+.other {
+  padding-left: 3%;
+  width: 100%;
+}
+
+.navbar-line {
+  width: 100%;
+  background-color: black;
+  height: 5px;
+}
+
+.game-container {
+  padding-top: 10%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+.box-style {
+  position: relative;
+  border: red solid 2px;
+  border-radius: 10px;
+  padding: 5px;
+  width: 12%;
+  height: 80px;
+  display: inline-block;
+  box-sizing: border-box;
+  margin-right: 8%;
+  opacity: 0; /* Initially set opacity to 0 */
+  animation: fadeIn 1.5s forwards; /* Apply fadeIn animation */
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.line-style::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background-color: blue;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.fade-in {
+  opacity: 0;
+  transition: opacity 1s ease; /* Adjust duration and timing function as needed */
+}
+
+.fade-in.animate {
+  opacity: 1;
+}
+
+.ll-buttons {
+}
+.push-to-head {
+}
+.push-to-middle {
+}
+.push-to-tail {
+}
