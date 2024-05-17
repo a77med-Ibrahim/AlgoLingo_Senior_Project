@@ -142,6 +142,7 @@
   border-width: 4px 0 0;
   background: none;
 }
+
 .null-text {
   position: absolute;
   top: 50%;
@@ -152,6 +153,7 @@
   font-size: 12px; /* Adjust the font size as needed */
   color: #000000; /* Adjust the color as needed */
 }
+
 .head-text {
   position: absolute;
   top: -20px; /* Adjust the top distance as needed */
@@ -162,6 +164,12 @@
   font-size: 12px; /* Adjust the font size as needed */
   color: #000000; /* Adjust the color as needed */
 }
+
+.single-head {
+  left: 25%;
+  transform: translateX(-50%);
+}
+
 .tail-text {
   position: absolute;
   top: -20px; /* Adjust the top distance as needed */
@@ -171,4 +179,55 @@
   padding: 0;
   font-size: 12px; /* Adjust the font size as needed */
   color: #000000; /* Adjust the color as needed */
+}
+
+.single-tail {
+  left: 75%;
+  transform: translateX(-50%);
+}
+.input-field {
+  width: 10%;
+  -moz-appearance: textfield;
+}
+
+.input-field::-webkit-outer-spin-button,
+.input-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Existing styles */
+
+.temp-node {
+  animation: moveDown 2s forwards;
+}
+
+@keyframes moveDown {
+  0% {
+    top: -80px;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.fading-arrow {
+  animation: fade 2s forwards;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
