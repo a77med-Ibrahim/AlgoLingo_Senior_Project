@@ -11,26 +11,57 @@ const ForwardedXarrow = forwardRef((props, ref) => (
 
 function LinkedListPrepLevel() {
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
-  const [boxReferences, setBoxReferences] = useState([]);
+  const [boxReferences, setBoxReferences] = useState([
+    { id: `box-0`, value: Math.floor(Math.random() * 100) },
+  ]);
 
   useEffect(() => {
-    // Update boxReferences whenever numberOfBoxes changes
     setBoxReferences(
       Array.from({ length: numberOfBoxes }, (_, index) => ({
-        id: `box-${index}`, // Assign unique ID
+        id: `box-${index}`,
+        value: boxReferences[index]?.value ?? Math.floor(Math.random() * 100),
       }))
     );
   }, [numberOfBoxes]);
 
-  const handlePushToTail = () => {
+  const handlePushToHead = () => {
     if (numberOfBoxes < 5) {
+      const newValue = Math.floor(Math.random() * 100);
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
+      setBoxReferences((prevBoxReferences) => [
+        { id: `box-0`, value: newValue },
+        ...prevBoxReferences.map((box, index) => ({
+          ...box,
+          id: `box-${index + 1}`,
+        })),
+      ]);
     } else {
       alert("5 Nodes is the limit");
     }
   };
 
-  // Function to dynamically render the boxes and arrows
+  const handlePushToTail = () => {
+    if (numberOfBoxes < 5) {
+      const newValue = Math.floor(Math.random() * 100);
+      setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
+      setBoxReferences((prevBoxReferences) => [
+        ...prevBoxReferences,
+        { id: `box-${numberOfBoxes}`, value: newValue },
+      ]);
+    } else {
+      alert("5 Nodes is the limit");
+    }
+  };
+
+  const handleDeleteTail = () => {
+    if (numberOfBoxes > 0) {
+      setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
+      setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(0, -1));
+    } else {
+      alert("Add nodes to delete");
+    }
+  };
+
   const renderBoxesAndArrows = () => {
     return boxReferences.map((box, index) => (
       <div
@@ -38,12 +69,12 @@ function LinkedListPrepLevel() {
         id={box.id}
         className={`box-style ${index === numberOfBoxes - 1 ? "animate" : ""}`}
       >
-        <p>{index + 1}</p>
+        <p>{box.value}</p>
         {index < boxReferences.length - 1 && (
           <ForwardedXarrow
             key={`arrow-${index}`}
-            start={box.id} // Use box ID as start point
-            end={boxReferences[index + 1].id} // Use next box ID as end point
+            start={box.id}
+            end={boxReferences[index + 1].id}
             lineColor="blue"
             startAnchor="right"
             endAnchor="left"
@@ -53,7 +84,7 @@ function LinkedListPrepLevel() {
       </div>
     ));
   };
-  // Function to update arrows when number of boxes changes
+
   return (
     <div>
       <div className="all-div">
@@ -63,17 +94,26 @@ function LinkedListPrepLevel() {
           <h2 className="title-styling">Preparation</h2>
           <div className="navbar-line" />
           <LevelsBar />
-          <div className="ll-buttons">
-            <button> Push to Head </button>
-            <button> Push to Middle </button>
-            <button onClick={handlePushToTail}> Push to Tail </button>
-            <p>Number Of Nodes: {numberOfBoxes}</p>
+          <div>
+            <button onClick={handlePushToHead} className="push-buttons-styling">
+              Push to Head
+            </button>
+            <button className="push-buttons-styling">Push after a value</button>
+            <button onClick={handlePushToTail} className="push-buttons-styling">
+              Push to Tail
+            </button>
           </div>
-
-          <div className="game-container">
-            {/* Render dynamic boxes and arrows */}
-            {renderBoxesAndArrows()}
+          <div>
+            <button className="push-buttons-styling">Delete Head</button>
+            <button className="push-buttons-styling">
+              Delete after a value
+            </button>
+            <button className="push-buttons-styling" onClick={handleDeleteTail}>
+              Delete Tail
+            </button>
           </div>
+          <p>Number Of Nodes: {numberOfBoxes}</p>
+          <div className="game-container">{renderBoxesAndArrows()}</div>
         </div>
       </div>
     </div>
@@ -85,6 +125,8 @@ export default LinkedListPrepLevel;
 
 .title-styling {
   text-align: center;
+  color: #f9f9f9;
+  font-family: din-round, sans-serif;
 }
 
 .all-div {
@@ -148,12 +190,68 @@ export default LinkedListPrepLevel;
 .fade-in.animate {
   opacity: 1;
 }
+.push-buttons-styling {
+  appearance: button;
+  background-color: #294050;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #f9f9f9;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  line-height: 20px;
+  margin: 0 5px; /* Add margin here to create space between buttons */
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 20%;
+}
 
-.ll-buttons {
+.push-buttons-styling:after {
+  background-clip: padding-box;
+  background-color: #3498db;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
 }
-.push-to-head {
+
+.push-buttons-styling:main,
+.push-buttons-styling:focus {
+  user-select: auto;
 }
-.push-to-middle {
+
+.push-buttons-styling:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
 }
-.push-to-tail {
+
+.push-buttons-styling:disabled {
+  cursor: auto;
 }
+
+.push-buttons-styling:active {
+  border-width: 4px 0 0;
+  background: none;
+}
+
