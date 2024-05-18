@@ -22,6 +22,13 @@ function LinkedListPrepLevel() {
   const [value2, setValue2] = useState("");
   const [deleteValue, setDeleteValue] = useState("");
 
+  const [pushToHeadClicked, setPushToHeadClicked] = useState(false);
+  const [pushAfterValueClicked, setPushAfterValueClicked] = useState(false);
+  const [pushToTailClicked, setPushToTailClicked] = useState(false);
+  const [deleteHeadClicked, setDeleteHeadClicked] = useState(false);
+  const [deleteValueClicked, setDeleteValueClicked] = useState(false);
+  const [deleteTailClicked, setDeleteTailClicked] = useState(false);
+
   useEffect(() => {
     setBoxReferences(
       Array.from({ length: numberOfBoxes }, (_, index) => ({
@@ -44,6 +51,7 @@ function LinkedListPrepLevel() {
         })),
       ]);
       setAnimateBoxHead(newBox.id);
+      setPushToHeadClicked(true);
     } else {
       alert("5 Nodes is the limit");
     }
@@ -56,6 +64,7 @@ function LinkedListPrepLevel() {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
       setBoxReferences((prevBoxReferences) => [...prevBoxReferences, newBox]);
       setAnimateBoxTail(newBox.id);
+      setPushToTailClicked(true);
     } else {
       alert("5 Nodes is the limit");
     }
@@ -65,6 +74,7 @@ function LinkedListPrepLevel() {
     if (numberOfBoxes > 0) {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
       setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(0, -1));
+      setDeleteTailClicked(true);
     } else {
       alert("Add nodes to delete");
     }
@@ -74,6 +84,7 @@ function LinkedListPrepLevel() {
     if (numberOfBoxes > 0) {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
       setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(1));
+      setDeleteHeadClicked(true);
     } else {
       alert("No nodes to delete");
     }
@@ -81,10 +92,12 @@ function LinkedListPrepLevel() {
 
   const handlePushAfterAValue = () => {
     setInputVisible(true);
+    setPushAfterValueClicked(true);
   };
 
   const handleDeleteValue = () => {
     setDeleteInputVisible(true);
+    setDeleteValueClicked(true);
   };
 
   const handleChange1 = (event) => {
@@ -215,7 +228,14 @@ function LinkedListPrepLevel() {
           <h1 className="title-styling">Linked List</h1>
           <h2 className="title-styling">Preparation</h2>
           <div className="navbar-line" />
-          <LevelsBar />
+          <LevelsBar
+            pushClicked={pushToHeadClicked}
+            popClicked={deleteHeadClicked}
+            peekClicked={pushAfterValueClicked}
+            isEmptyClicked={deleteValueClicked}
+            deleteTailClicked={deleteTailClicked}
+            pushTailClicked={pushToTailClicked}
+          />
           <div>
             <button onClick={handlePushToHead} className="push-buttons-styling">
               Push to Head

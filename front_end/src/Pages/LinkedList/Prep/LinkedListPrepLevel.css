@@ -187,7 +187,6 @@
 }
 .input-field {
   width: 10%;
-  -moz-appearance: textfield;
 }
 
 .input-field::-webkit-outer-spin-button,
@@ -195,8 +194,6 @@
   -webkit-appearance: none;
   margin: 0;
 }
-
-/* Existing styles */
 
 .temp-node {
   animation: moveDown 2s forwards;

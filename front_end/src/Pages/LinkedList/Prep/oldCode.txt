@@ -17,8 +17,17 @@ function LinkedListPrepLevel() {
   const [animateBoxHead, setAnimateBoxHead] = useState(null);
   const [animateBoxTail, setAnimateBoxTail] = useState(null);
   const [isInputVisible, setInputVisible] = useState(false);
+  const [isDeleteInputVisible, setDeleteInputVisible] = useState(false);
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
+  const [deleteValue, setDeleteValue] = useState("");
+
+  const [pushToHeadClicked, setPushToHeadClicked] = useState(false);
+  const [pushAfterValueClicked, setPushAfterValueClicked] = useState(false);
+  const [pushToTailClicked, setPushToTailClicked] = useState(false);
+  const [deleteHeadClicked, setDeleteHeadClicked] = useState(false);
+  const [deleteValueClicked, setDeleteValueClicked] = useState(false);
+  const [deleteTailClicked, setDeleteTailClicked] = useState(false);
 
   useEffect(() => {
     setBoxReferences(
@@ -42,6 +51,7 @@ function LinkedListPrepLevel() {
         })),
       ]);
       setAnimateBoxHead(newBox.id);
+      setPushToHeadClicked(true);
     } else {
       alert("5 Nodes is the limit");
     }
@@ -54,6 +64,7 @@ function LinkedListPrepLevel() {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
       setBoxReferences((prevBoxReferences) => [...prevBoxReferences, newBox]);
       setAnimateBoxTail(newBox.id);
+      setPushToTailClicked(true);
     } else {
       alert("5 Nodes is the limit");
     }
@@ -63,6 +74,7 @@ function LinkedListPrepLevel() {
     if (numberOfBoxes > 0) {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
       setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(0, -1));
+      setDeleteTailClicked(true);
     } else {
       alert("Add nodes to delete");
     }
@@ -72,6 +84,7 @@ function LinkedListPrepLevel() {
     if (numberOfBoxes > 0) {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
       setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(1));
+      setDeleteHeadClicked(true);
     } else {
       alert("No nodes to delete");
     }
@@ -79,6 +92,12 @@ function LinkedListPrepLevel() {
 
   const handlePushAfterAValue = () => {
     setInputVisible(true);
+    setPushAfterValueClicked(true);
+  };
+
+  const handleDeleteValue = () => {
+    setDeleteInputVisible(true);
+    setDeleteValueClicked(true);
   };
 
   const handleChange1 = (event) => {
@@ -87,6 +106,10 @@ function LinkedListPrepLevel() {
 
   const handleChange2 = (event) => {
     setValue2(event.target.value);
+  };
+
+  const handleDeleteChange = (event) => {
+    setDeleteValue(event.target.value);
   };
 
   const handleSubmit = (event) => {
@@ -112,6 +135,29 @@ function LinkedListPrepLevel() {
     setInputVisible(false);
     setValue1("");
     setValue2("");
+  };
+
+  const handleDeleteSubmit = (event) => {
+    event.preventDefault();
+    const index = boxReferences.findIndex(
+      (box) => box.value === parseInt(deleteValue)
+    );
+    if (index !== -1) {
+      const newBoxReferences = [...boxReferences];
+      newBoxReferences.splice(index, 1);
+
+      // Update IDs of all subsequent boxes
+      for (let i = index; i < newBoxReferences.length; i++) {
+        newBoxReferences[i].id = `box-${i}`;
+      }
+
+      setNumberOfBoxes(newBoxReferences.length);
+      setBoxReferences(newBoxReferences);
+    } else {
+      alert("Value not found");
+    }
+    setDeleteInputVisible(false);
+    setDeleteValue("");
   };
 
   const renderBoxesAndArrows = () => {
@@ -182,7 +228,14 @@ function LinkedListPrepLevel() {
           <h1 className="title-styling">Linked List</h1>
           <h2 className="title-styling">Preparation</h2>
           <div className="navbar-line" />
-          <LevelsBar />
+          <LevelsBar
+            pushClicked={pushToHeadClicked}
+            popClicked={deleteHeadClicked}
+            peekClicked={pushAfterValueClicked}
+            isEmptyClicked={deleteValueClicked}
+            deleteTailClicked={deleteTailClicked}
+            pushTailClicked={pushToTailClicked}
+          />
           <div>
             <button onClick={handlePushToHead} className="push-buttons-styling">
               Push to Head
@@ -201,8 +254,11 @@ function LinkedListPrepLevel() {
             <button className="push-buttons-styling" onClick={handleDeleteHead}>
               Delete Head
             </button>
-            <button className="push-buttons-styling">
-              Delete after a value
+            <button
+              className="push-buttons-styling"
+              onClick={handleDeleteValue}
+            >
+              Delete value
             </button>
             <button className="push-buttons-styling" onClick={handleDeleteTail}>
               Delete Tail
@@ -227,6 +283,18 @@ function LinkedListPrepLevel() {
               <button type="submit">Submit</button>
             </form>
           )}
+          {isDeleteInputVisible && (
+            <form onSubmit={handleDeleteSubmit}>
+              <input
+                type="number"
+                value={deleteValue}
+                onChange={handleDeleteChange}
+                className="input-field"
+                placeholder="Enter the value to delete"
+              />
+              <button type="submit">Submit</button>
+            </form>
+          )}
           <p>Number Of Nodes: {numberOfBoxes}</p>
           <div className="game-container">{renderBoxesAndArrows()}</div>
         </div>
@@ -236,7 +304,6 @@ function LinkedListPrepLevel() {
 }
 
 export default LinkedListPrepLevel;
-
 
 
 .title-styling {
@@ -428,11 +495,44 @@ export default LinkedListPrepLevel;
 }
 .input-field {
   width: 10%;
-  -moz-appearance: textfield;
 }
 
 .input-field::-webkit-outer-spin-button,
 .input-field::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.temp-node {
+  animation: moveDown 2s forwards;
+}
+
+@keyframes moveDown {
+  0% {
+    top: -80px;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.fading-arrow {
+  animation: fade 2s forwards;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
