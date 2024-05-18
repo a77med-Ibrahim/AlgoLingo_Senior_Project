@@ -17,7 +17,7 @@ import "./App.css";
 import LinkedListFirstLevel from "./Pages/LinkedList/FirstLevel/LinkedListFirstLevel";
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
   const handleSignIn = () => {
     setIsAuthenticated(true);
@@ -40,10 +40,15 @@ function App() {
                 )
               }
             />
-            <Route path="/preperation-level/" element={<PreperationLevel />} />
             <Route
               path="/preperation-level/first-level"
               element={<FirstLevel />}
+            />
+            />
+            <Route path="/preperation-level/" element={<PreperationLevel />} />
+            <Route
+              path="/LinkedListFirstLevel"
+              element={<LinkedListFirstLevel />}
             />
             <Route
               path="/preperation-level/second-level"
@@ -53,16 +58,11 @@ function App() {
               path="/queue-preparation/"
               element={<QueuePreparationLevel />}
             />
-            <Route path="/register" element={<RegisterPage />} />
             <Route
               path="/LinkedListPrepLevel"
               element={<LinkedListPrepLevel />}
-            />
-            <Route
-              path="/LinkedListFirstLevel"
-              element={<LinkedListFirstLevel />}
-            />
-
+            ></Route>
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/PrepLevel" element={<PrepLevel />} />
             <Route path="/FirstLevel" element={<LevelOne />} />
             <Route path="/BSLevel2" element={<BSLevel2 />} />
