@@ -26,6 +26,7 @@
   justify-content: center;
   position: relative;
 }
+
 .box-style {
   position: relative;
   border: red solid 2px;
@@ -36,10 +37,9 @@
   display: inline-block;
   box-sizing: border-box;
   margin-right: 8%;
-  opacity: 0; /* Initially set opacity to 0 */
-  animation: fadeIn 1.5s forwards; /* Apply fadeIn animation */
 }
-@keyframes fadeIn {
+
+@keyframes fadeInHead {
   0% {
     opacity: 0;
   }
@@ -47,6 +47,26 @@
     opacity: 1;
   }
 }
+
+@keyframes fadeInTail {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-head {
+  opacity: 0;
+  animation: fadeInHead 1s forwards;
+}
+
+.animate-tail {
+  opacity: 0;
+  animation: fadeInTail 1s forwards;
+}
+
 .line-style::before {
   content: "";
   position: absolute;
@@ -57,14 +77,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.fade-in {
-  opacity: 0;
-  transition: opacity 1s ease; /* Adjust duration and timing function as needed */
-}
 
-.fade-in.animate {
-  opacity: 1;
-}
 .push-buttons-styling {
   appearance: button;
   background-color: #294050;
@@ -128,4 +141,90 @@
 .push-buttons-styling:active {
   border-width: 4px 0 0;
   background: none;
+}
+
+.null-text {
+  position: absolute;
+  top: 50%;
+  right: 5px; /* Adjust the right distance as needed */
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #000000; /* Adjust the color as needed */
+}
+
+.head-text {
+  position: absolute;
+  top: -20px; /* Adjust the top distance as needed */
+  left: 50%; /* Center the text horizontally */
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #000000; /* Adjust the color as needed */
+}
+
+.single-head {
+  left: 25%;
+  transform: translateX(-50%);
+}
+
+.tail-text {
+  position: absolute;
+  top: -20px; /* Adjust the top distance as needed */
+  left: 50%; /* Center the text horizontally */
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #000000; /* Adjust the color as needed */
+}
+
+.single-tail {
+  left: 75%;
+  transform: translateX(-50%);
+}
+.input-field {
+  width: 10%;
+}
+
+.input-field::-webkit-outer-spin-button,
+.input-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.temp-node {
+  animation: moveDown 2s forwards;
+}
+
+@keyframes moveDown {
+  0% {
+    top: -80px;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.fading-arrow {
+  animation: fade 2s forwards;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }

@@ -16,18 +16,8 @@ function LinkedListPrepLevel() {
   ]);
   const [animateBoxHead, setAnimateBoxHead] = useState(null);
   const [animateBoxTail, setAnimateBoxTail] = useState(null);
-  const [isInputVisible, setInputVisible] = useState(false);
-  const [isDeleteInputVisible, setDeleteInputVisible] = useState(false);
-  const [value1, setValue1] = useState("");
-  const [value2, setValue2] = useState("");
-  const [deleteValue, setDeleteValue] = useState("");
-
-  const [pushToHeadClicked, setPushToHeadClicked] = useState(false);
-  const [pushAfterValueClicked, setPushAfterValueClicked] = useState(false);
-  const [pushToTailClicked, setPushToTailClicked] = useState(false);
-  const [deleteHeadClicked, setDeleteHeadClicked] = useState(false);
-  const [deleteValueClicked, setDeleteValueClicked] = useState(false);
-  const [deleteTailClicked, setDeleteTailClicked] = useState(false);
+  const [showInputField, setShowInputField] = useState(false);
+  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
     setBoxReferences(
@@ -51,7 +41,6 @@ function LinkedListPrepLevel() {
         })),
       ]);
       setAnimateBoxHead(newBox.id);
-      setPushToHeadClicked(true);
     } else {
       alert("5 Nodes is the limit");
     }
@@ -64,7 +53,6 @@ function LinkedListPrepLevel() {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
       setBoxReferences((prevBoxReferences) => [...prevBoxReferences, newBox]);
       setAnimateBoxTail(newBox.id);
-      setPushToTailClicked(true);
     } else {
       alert("5 Nodes is the limit");
     }
@@ -74,7 +62,6 @@ function LinkedListPrepLevel() {
     if (numberOfBoxes > 0) {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
       setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(0, -1));
-      setDeleteTailClicked(true);
     } else {
       alert("Add nodes to delete");
     }
@@ -84,80 +71,51 @@ function LinkedListPrepLevel() {
     if (numberOfBoxes > 0) {
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
       setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(1));
-      setDeleteHeadClicked(true);
     } else {
       alert("No nodes to delete");
     }
   };
 
   const handlePushAfterAValue = () => {
-    setInputVisible(true);
-    setPushAfterValueClicked(true);
+    setShowInputField(true);
   };
 
-  const handleDeleteValue = () => {
-    setDeleteInputVisible(true);
-    setDeleteValueClicked(true);
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
   };
 
-  const handleChange1 = (event) => {
-    setValue1(event.target.value);
-  };
+  const handleSubmitValue = () => {
+    if (numberOfBoxes < 5) {
+      const valueToPushAfter = parseInt(inputValue, 10);
+      const newValue = Math.floor(Math.random() * 100);
+      const newBox = { id: `box-${numberOfBoxes}`, value: newValue };
 
-  const handleChange2 = (event) => {
-    setValue2(event.target.value);
-  };
+      const index = boxReferences.findIndex(
+        (box) => box.value === valueToPushAfter
+      );
 
-  const handleDeleteChange = (event) => {
-    setDeleteValue(event.target.value);
-  };
+      if (index !== -1) {
+        const updatedBoxReferences = [
+          ...boxReferences.slice(0, index + 1),
+          newBox,
+          ...boxReferences.slice(index + 1).map((box, idx) => ({
+            ...box,
+            id: `box-${index + 1 + idx + 1}`,
+          })),
+        ];
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const index = boxReferences.findIndex(
-      (box) => box.value === parseInt(value1)
-    );
-    if (index !== -1 && numberOfBoxes < 5) {
-      const newBox = { id: `box-${numberOfBoxes}`, value: parseInt(value2) };
-      const newBoxReferences = [...boxReferences];
-      newBoxReferences.splice(index + 1, 0, newBox);
-
-      // Update IDs of all subsequent boxes
-      for (let i = index + 1; i < newBoxReferences.length; i++) {
-        newBoxReferences[i].id = `box-${i}`;
+        setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
+        setBoxReferences(updatedBoxReferences);
+        setAnimateBoxTail(newBox.id);
+      } else {
+        alert("Value not found");
       }
-
-      setNumberOfBoxes(newBoxReferences.length);
-      setBoxReferences(newBoxReferences);
     } else {
-      alert("Either the value is not found or the limit of 5 nodes is reached");
+      alert("5 Nodes is the limit");
     }
-    setInputVisible(false);
-    setValue1("");
-    setValue2("");
-  };
 
-  const handleDeleteSubmit = (event) => {
-    event.preventDefault();
-    const index = boxReferences.findIndex(
-      (box) => box.value === parseInt(deleteValue)
-    );
-    if (index !== -1) {
-      const newBoxReferences = [...boxReferences];
-      newBoxReferences.splice(index, 1);
-
-      // Update IDs of all subsequent boxes
-      for (let i = index; i < newBoxReferences.length; i++) {
-        newBoxReferences[i].id = `box-${i}`;
-      }
-
-      setNumberOfBoxes(newBoxReferences.length);
-      setBoxReferences(newBoxReferences);
-    } else {
-      alert("Value not found");
-    }
-    setDeleteInputVisible(false);
-    setDeleteValue("");
+    setShowInputField(false);
+    setInputValue("");
   };
 
   const renderBoxesAndArrows = () => {
@@ -228,21 +186,14 @@ function LinkedListPrepLevel() {
           <h1 className="title-styling">Linked List</h1>
           <h2 className="title-styling">Preparation</h2>
           <div className="navbar-line" />
-          <LevelsBar
-            pushClicked={pushToHeadClicked}
-            popClicked={deleteHeadClicked}
-            peekClicked={pushAfterValueClicked}
-            isEmptyClicked={deleteValueClicked}
-            deleteTailClicked={deleteTailClicked}
-            pushTailClicked={pushToTailClicked}
-          />
+          <LevelsBar />
           <div>
             <button onClick={handlePushToHead} className="push-buttons-styling">
               Push to Head
             </button>
             <button
-              className="push-buttons-styling"
               onClick={handlePushAfterAValue}
+              className="push-buttons-styling"
             >
               Push after a value
             </button>
@@ -254,46 +205,23 @@ function LinkedListPrepLevel() {
             <button className="push-buttons-styling" onClick={handleDeleteHead}>
               Delete Head
             </button>
-            <button
-              className="push-buttons-styling"
-              onClick={handleDeleteValue}
-            >
-              Delete value
+            <button className="push-buttons-styling">
+              Delete after a value
             </button>
             <button className="push-buttons-styling" onClick={handleDeleteTail}>
               Delete Tail
             </button>
           </div>
-          {isInputVisible && (
-            <form onSubmit={handleSubmit}>
+          {showInputField && (
+            <div>
               <input
                 type="number"
-                value={value1}
-                onChange={handleChange1}
-                className="input-field"
-                placeholder="Enter the value to insert after"
+                value={inputValue}
+                onChange={handleInputChange}
+                placeholder="Enter value"
               />
-              <input
-                type="number"
-                value={value2}
-                onChange={handleChange2}
-                className="input-field"
-                placeholder="Enter the new node value"
-              />
-              <button type="submit">Submit</button>
-            </form>
-          )}
-          {isDeleteInputVisible && (
-            <form onSubmit={handleDeleteSubmit}>
-              <input
-                type="number"
-                value={deleteValue}
-                onChange={handleDeleteChange}
-                className="input-field"
-                placeholder="Enter the value to delete"
-              />
-              <button type="submit">Submit</button>
-            </form>
+              <button onClick={handleSubmitValue}>Submit</button>
+            </div>
           )}
           <p>Number Of Nodes: {numberOfBoxes}</p>
           <div className="game-container">{renderBoxesAndArrows()}</div>

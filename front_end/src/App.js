@@ -14,6 +14,7 @@ import BSLevel2 from "./Pages/Binary_search_level/BSLevel2";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "./App.css";
+import LinkedListFirstLevel from "./Pages/LinkedList/FirstLevel/LinkedListFirstLevel";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
@@ -39,10 +40,15 @@ function App() {
                 )
               }
             />
-            <Route path="/preperation-level/" element={<PreperationLevel />} />
             <Route
               path="/preperation-level/first-level"
               element={<FirstLevel />}
+            />
+            />
+            <Route path="/preperation-level/" element={<PreperationLevel />} />
+            <Route
+              path="/LinkedListFirstLevel"
+              element={<LinkedListFirstLevel />}
             />
             <Route
               path="/preperation-level/second-level"

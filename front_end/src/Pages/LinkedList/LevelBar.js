@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LevelBar.css";
 
@@ -8,19 +8,46 @@ function LevelsBar({
   popClicked,
   peekClicked,
   isEmptyClicked,
+  deleteTailClicked,
+  pushTailClicked,
 }) {
   const navigate = useNavigate();
 
   const levels = ["prep", 1, 2];
 
+  useEffect(() => {
+    // Check if all preparation steps are completed
+    const allPrepCompleted =
+      pushClicked &&
+      popClicked &&
+      peekClicked &&
+      isEmptyClicked &&
+      deleteTailClicked &&
+      pushTailClicked;
+
+    // If all preparation steps are completed, unlock level 1
+    if (allPrepCompleted) {
+      localStorage.setItem("level1Unlocked", true);
+    }
+  }, [
+    pushClicked,
+    popClicked,
+    peekClicked,
+    isEmptyClicked,
+    deleteTailClicked,
+    pushTailClicked,
+  ]);
+
   const isUnlocked = (index) => {
-    // Check if all required buttons are clicked
-    if (index === 1) {
-      // For the first button, check if all other required buttons are clicked
-      return pushClicked && popClicked && peekClicked && isEmptyClicked;
+    if (index === 0) {
+      // "prep" level is always unlocked
+      return true;
+    } else if (index === 1) {
+      // Level 1 is unlocked only if all prep level buttons are clicked
+      return localStorage.getItem("level1Unlocked") === "true";
     } else {
-      // For other buttons, check if all buttons before it are clicked
-      return levels.slice(0, index).every((level) => level === "X");
+      // Level 2 is always locked
+      return false;
     }
   };
 
@@ -32,9 +59,14 @@ function LevelsBar({
     if (levels[index] === "prep") {
       navigate("/LinkedListPrepLevel");
     } else if (index === 1) {
-      navigate("/preperation-level/first-level");
+      if (isUnlocked(index)) {
+        navigate("/LinkedListFirstLevel");
+      } else {
+        alert("Complete all preparation steps to unlock this level");
+      }
     } else {
-      // Handle navigation for other levels
+      // For level 2 and others, currently do nothing or handle accordingly
+      alert("This level is locked.");
     }
   };
 

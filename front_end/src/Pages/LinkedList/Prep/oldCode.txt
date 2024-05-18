@@ -1,6 +1,6 @@
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 import LevelsBar from "../LevelBar";
-import React, { useRef, useState, useEffect, forwardRef } from "react";
+import React, { useState, useEffect, forwardRef } from "react";
 import Xarrow from "react-xarrows";
 import "./LinkedListPrepLevel.css";
 
@@ -11,39 +11,185 @@ const ForwardedXarrow = forwardRef((props, ref) => (
 
 function LinkedListPrepLevel() {
   const [numberOfBoxes, setNumberOfBoxes] = useState(1);
-  const [boxReferences, setBoxReferences] = useState([]);
+  const [boxReferences, setBoxReferences] = useState([
+    { id: `box-0`, value: Math.floor(Math.random() * 100) },
+  ]);
+  const [animateBoxHead, setAnimateBoxHead] = useState(null);
+  const [animateBoxTail, setAnimateBoxTail] = useState(null);
+  const [isInputVisible, setInputVisible] = useState(false);
+  const [isDeleteInputVisible, setDeleteInputVisible] = useState(false);
+  const [value1, setValue1] = useState("");
+  const [value2, setValue2] = useState("");
+  const [deleteValue, setDeleteValue] = useState("");
+
+  const [pushToHeadClicked, setPushToHeadClicked] = useState(false);
+  const [pushAfterValueClicked, setPushAfterValueClicked] = useState(false);
+  const [pushToTailClicked, setPushToTailClicked] = useState(false);
+  const [deleteHeadClicked, setDeleteHeadClicked] = useState(false);
+  const [deleteValueClicked, setDeleteValueClicked] = useState(false);
+  const [deleteTailClicked, setDeleteTailClicked] = useState(false);
 
   useEffect(() => {
-    // Update boxReferences whenever numberOfBoxes changes
     setBoxReferences(
       Array.from({ length: numberOfBoxes }, (_, index) => ({
-        id: `box-${index}`, // Assign unique ID
+        id: `box-${index}`,
+        value: boxReferences[index]?.value ?? Math.floor(Math.random() * 100),
       }))
     );
   }, [numberOfBoxes]);
 
-  const handlePushToTail = () => {
+  const handlePushToHead = () => {
     if (numberOfBoxes < 5) {
+      const newValue = Math.floor(Math.random() * 100);
+      const newBox = { id: `box-0`, value: newValue };
       setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
+      setBoxReferences((prevBoxReferences) => [
+        newBox,
+        ...prevBoxReferences.map((box, index) => ({
+          ...box,
+          id: `box-${index + 1}`,
+        })),
+      ]);
+      setAnimateBoxHead(newBox.id);
+      setPushToHeadClicked(true);
     } else {
       alert("5 Nodes is the limit");
     }
   };
 
-  // Function to dynamically render the boxes and arrows
+  const handlePushToTail = () => {
+    if (numberOfBoxes < 5) {
+      const newValue = Math.floor(Math.random() * 100);
+      const newBox = { id: `box-${numberOfBoxes}`, value: newValue };
+      setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes + 1);
+      setBoxReferences((prevBoxReferences) => [...prevBoxReferences, newBox]);
+      setAnimateBoxTail(newBox.id);
+      setPushToTailClicked(true);
+    } else {
+      alert("5 Nodes is the limit");
+    }
+  };
+
+  const handleDeleteTail = () => {
+    if (numberOfBoxes > 0) {
+      setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
+      setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(0, -1));
+      setDeleteTailClicked(true);
+    } else {
+      alert("Add nodes to delete");
+    }
+  };
+
+  const handleDeleteHead = () => {
+    if (numberOfBoxes > 0) {
+      setNumberOfBoxes((prevNumberOfBoxes) => prevNumberOfBoxes - 1);
+      setBoxReferences((prevBoxReferences) => prevBoxReferences.slice(1));
+      setDeleteHeadClicked(true);
+    } else {
+      alert("No nodes to delete");
+    }
+  };
+
+  const handlePushAfterAValue = () => {
+    setInputVisible(true);
+    setPushAfterValueClicked(true);
+  };
+
+  const handleDeleteValue = () => {
+    setDeleteInputVisible(true);
+    setDeleteValueClicked(true);
+  };
+
+  const handleChange1 = (event) => {
+    setValue1(event.target.value);
+  };
+
+  const handleChange2 = (event) => {
+    setValue2(event.target.value);
+  };
+
+  const handleDeleteChange = (event) => {
+    setDeleteValue(event.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const index = boxReferences.findIndex(
+      (box) => box.value === parseInt(value1)
+    );
+    if (index !== -1 && numberOfBoxes < 5) {
+      const newBox = { id: `box-${numberOfBoxes}`, value: parseInt(value2) };
+      const newBoxReferences = [...boxReferences];
+      newBoxReferences.splice(index + 1, 0, newBox);
+
+      // Update IDs of all subsequent boxes
+      for (let i = index + 1; i < newBoxReferences.length; i++) {
+        newBoxReferences[i].id = `box-${i}`;
+      }
+
+      setNumberOfBoxes(newBoxReferences.length);
+      setBoxReferences(newBoxReferences);
+    } else {
+      alert("Either the value is not found or the limit of 5 nodes is reached");
+    }
+    setInputVisible(false);
+    setValue1("");
+    setValue2("");
+  };
+
+  const handleDeleteSubmit = (event) => {
+    event.preventDefault();
+    const index = boxReferences.findIndex(
+      (box) => box.value === parseInt(deleteValue)
+    );
+    if (index !== -1) {
+      const newBoxReferences = [...boxReferences];
+      newBoxReferences.splice(index, 1);
+
+      // Update IDs of all subsequent boxes
+      for (let i = index; i < newBoxReferences.length; i++) {
+        newBoxReferences[i].id = `box-${i}`;
+      }
+
+      setNumberOfBoxes(newBoxReferences.length);
+      setBoxReferences(newBoxReferences);
+    } else {
+      alert("Value not found");
+    }
+    setDeleteInputVisible(false);
+    setDeleteValue("");
+  };
+
   const renderBoxesAndArrows = () => {
     return boxReferences.map((box, index) => (
       <div
         key={box.id}
         id={box.id}
-        className={`box-style ${index === numberOfBoxes - 1 ? "animate" : ""}`}
+        className={`box-style ${
+          box.id === animateBoxHead ? "animate-head" : ""
+        } ${box.id === animateBoxTail ? "animate-tail" : ""}`}
       >
-        <p>{index + 1}</p>
+        {index === 0 && (
+          <p
+            className={`head-text ${numberOfBoxes === 1 ? "single-head" : ""}`}
+          >
+            Head
+          </p>
+        )}
+        {index === numberOfBoxes - 1 && (
+          <p
+            className={`tail-text ${numberOfBoxes === 1 ? "single-tail" : ""}`}
+          >
+            Tail
+          </p>
+        )}
+        <p>{box.value}</p>
+        {index === numberOfBoxes - 1 && <p className="null-text">null</p>}
         {index < boxReferences.length - 1 && (
           <ForwardedXarrow
             key={`arrow-${index}`}
-            start={box.id} // Use box ID as start point
-            end={boxReferences[index + 1].id} // Use next box ID as end point
+            start={box.id}
+            end={boxReferences[index + 1].id}
             lineColor="blue"
             startAnchor="right"
             endAnchor="left"
@@ -53,7 +199,27 @@ function LinkedListPrepLevel() {
       </div>
     ));
   };
-  // Function to update arrows when number of boxes changes
+
+  useEffect(() => {
+    if (animateBoxHead !== null) {
+      const timer = setTimeout(() => {
+        setAnimateBoxHead(null);
+      }, 1000); // Duration of animation in ms
+
+      return () => clearTimeout(timer);
+    }
+  }, [animateBoxHead]);
+
+  useEffect(() => {
+    if (animateBoxTail !== null) {
+      const timer = setTimeout(() => {
+        setAnimateBoxTail(null);
+      }, 1000); // Duration of animation in ms
+
+      return () => clearTimeout(timer);
+    }
+  }, [animateBoxTail]);
+
   return (
     <div>
       <div className="all-div">
@@ -62,18 +228,75 @@ function LinkedListPrepLevel() {
           <h1 className="title-styling">Linked List</h1>
           <h2 className="title-styling">Preparation</h2>
           <div className="navbar-line" />
-          <LevelsBar />
-          <div className="ll-buttons">
-            <button> Push to Head </button>
-            <button> Push to Middle </button>
-            <button onClick={handlePushToTail}> Push to Tail </button>
-            <p>Number Of Nodes: {numberOfBoxes}</p>
+          <LevelsBar
+            pushClicked={pushToHeadClicked}
+            popClicked={deleteHeadClicked}
+            peekClicked={pushAfterValueClicked}
+            isEmptyClicked={deleteValueClicked}
+            deleteTailClicked={deleteTailClicked}
+            pushTailClicked={pushToTailClicked}
+          />
+          <div>
+            <button onClick={handlePushToHead} className="push-buttons-styling">
+              Push to Head
+            </button>
+            <button
+              className="push-buttons-styling"
+              onClick={handlePushAfterAValue}
+            >
+              Push after a value
+            </button>
+            <button onClick={handlePushToTail} className="push-buttons-styling">
+              Push to Tail
+            </button>
           </div>
-
-          <div className="game-container">
-            {/* Render dynamic boxes and arrows */}
-            {renderBoxesAndArrows()}
+          <div>
+            <button className="push-buttons-styling" onClick={handleDeleteHead}>
+              Delete Head
+            </button>
+            <button
+              className="push-buttons-styling"
+              onClick={handleDeleteValue}
+            >
+              Delete value
+            </button>
+            <button className="push-buttons-styling" onClick={handleDeleteTail}>
+              Delete Tail
+            </button>
           </div>
+          {isInputVisible && (
+            <form onSubmit={handleSubmit}>
+              <input
+                type="number"
+                value={value1}
+                onChange={handleChange1}
+                className="input-field"
+                placeholder="Enter the value to insert after"
+              />
+              <input
+                type="number"
+                value={value2}
+                onChange={handleChange2}
+                className="input-field"
+                placeholder="Enter the new node value"
+              />
+              <button type="submit">Submit</button>
+            </form>
+          )}
+          {isDeleteInputVisible && (
+            <form onSubmit={handleDeleteSubmit}>
+              <input
+                type="number"
+                value={deleteValue}
+                onChange={handleDeleteChange}
+                className="input-field"
+                placeholder="Enter the value to delete"
+              />
+              <button type="submit">Submit</button>
+            </form>
+          )}
+          <p>Number Of Nodes: {numberOfBoxes}</p>
+          <div className="game-container">{renderBoxesAndArrows()}</div>
         </div>
       </div>
     </div>
@@ -85,6 +308,8 @@ export default LinkedListPrepLevel;
 
 .title-styling {
   text-align: center;
+  color: #f9f9f9;
+  font-family: din-round, sans-serif;
 }
 
 .all-div {
@@ -109,6 +334,7 @@ export default LinkedListPrepLevel;
   justify-content: center;
   position: relative;
 }
+
 .box-style {
   position: relative;
   border: red solid 2px;
@@ -119,10 +345,9 @@ export default LinkedListPrepLevel;
   display: inline-block;
   box-sizing: border-box;
   margin-right: 8%;
-  opacity: 0; /* Initially set opacity to 0 */
-  animation: fadeIn 1.5s forwards; /* Apply fadeIn animation */
 }
-@keyframes fadeIn {
+
+@keyframes fadeInHead {
   0% {
     opacity: 0;
   }
@@ -130,6 +355,26 @@ export default LinkedListPrepLevel;
     opacity: 1;
   }
 }
+
+@keyframes fadeInTail {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-head {
+  opacity: 0;
+  animation: fadeInHead 1s forwards;
+}
+
+.animate-tail {
+  opacity: 0;
+  animation: fadeInTail 1s forwards;
+}
+
 .line-style::before {
   content: "";
   position: absolute;
@@ -140,20 +385,154 @@ export default LinkedListPrepLevel;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.fade-in {
-  opacity: 0;
-  transition: opacity 1s ease; /* Adjust duration and timing function as needed */
+
+.push-buttons-styling {
+  appearance: button;
+  background-color: #294050;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #f9f9f9;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  line-height: 20px;
+  margin: 0 5px; /* Add margin here to create space between buttons */
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 20%;
 }
 
-.fade-in.animate {
-  opacity: 1;
+.push-buttons-styling:after {
+  background-clip: padding-box;
+  background-color: #3498db;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
 }
 
-.ll-buttons {
+.push-buttons-styling:main,
+.push-buttons-styling:focus {
+  user-select: auto;
 }
-.push-to-head {
+
+.push-buttons-styling:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
 }
-.push-to-middle {
+
+.push-buttons-styling:disabled {
+  cursor: auto;
 }
-.push-to-tail {
+
+.push-buttons-styling:active {
+  border-width: 4px 0 0;
+  background: none;
+}
+
+.null-text {
+  position: absolute;
+  top: 50%;
+  right: 5px; /* Adjust the right distance as needed */
+  transform: translateY(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #000000; /* Adjust the color as needed */
+}
+
+.head-text {
+  position: absolute;
+  top: -20px; /* Adjust the top distance as needed */
+  left: 50%; /* Center the text horizontally */
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #000000; /* Adjust the color as needed */
+}
+
+.single-head {
+  left: 25%;
+  transform: translateX(-50%);
+}
+
+.tail-text {
+  position: absolute;
+  top: -20px; /* Adjust the top distance as needed */
+  left: 50%; /* Center the text horizontally */
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0;
+  font-size: 12px; /* Adjust the font size as needed */
+  color: #000000; /* Adjust the color as needed */
+}
+
+.single-tail {
+  left: 75%;
+  transform: translateX(-50%);
+}
+.input-field {
+  width: 10%;
+}
+
+.input-field::-webkit-outer-spin-button,
+.input-field::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.temp-node {
+  animation: moveDown 2s forwards;
+}
+
+@keyframes moveDown {
+  0% {
+    top: -80px;
+  }
+  100% {
+    top: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.fading-arrow {
+  animation: fade 2s forwards;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
