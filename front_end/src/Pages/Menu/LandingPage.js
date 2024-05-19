@@ -6,28 +6,31 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 function LandingPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     const auth = getAuth();
-signInWithEmailAndPassword(auth, email, password)
-  .then((userCredential) => {
-    // Signed in
-    const user = userCredential.user;
-    // ...
-    navigate("/menu");
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    // Display or log the error
-    console.error(errorCode, errorMessage);
-  });
-}
-
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in
+        navigate("/menu");
+      })
+      .catch((error) => {
+        console.error("Error during sign in:", error);
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (error.code === 'auth/invalid-credential') {
+          setError("Invalid credentials. Please check your email and password.");
+        } else {
+          setError(errorMessage); // Display the actual Firebase error message
+        }
+      });
+  };
 
   return (
     <div className="container">
+      {error && <div className="error-message">{error}</div>}
       <div className="input-group">
         <label>Email</label>
         <input
@@ -43,7 +46,10 @@ signInWithEmailAndPassword(auth, email, password)
           type="password"
           placeholder="Enter your password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setError(""); // Reset error message on input change
+            setPassword(e.target.value);
+          }}
         />
       </div>
       <div className="login-signup-buttons">
