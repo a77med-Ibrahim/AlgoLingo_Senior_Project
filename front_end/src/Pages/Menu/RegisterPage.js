@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./Register.css";
 import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { firebaseApp } from "./firebaseConfig"; // Assume you have this configuration file
+import { useNavigate } from "react-router-dom";
 
 function RegisterPage() {
   const [name, setName] = useState("");
@@ -9,6 +10,7 @@ function RegisterPage() {
   const [password, setPassword] = useState("");
   const [re_password, setRe_Password] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     if (password !== re_password) {
@@ -19,6 +21,7 @@ function RegisterPage() {
     const auth = getAuth(firebaseApp);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      navigate('/menu');
         } catch (error) {
             console.error("Registration failed:", error);
             // Handle error
