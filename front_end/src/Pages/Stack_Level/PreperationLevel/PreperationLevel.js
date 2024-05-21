@@ -56,7 +56,7 @@ function PreperationLevel() {
   }
 
   function pushOnClick() {
-    const boxes = []; // Array to store references to the boxes
+   
     // Check if the maximum number of boxes has been reached
     if (boxCount >= 6) {
       return; // Exit the function if the limit is reached
@@ -90,20 +90,7 @@ function PreperationLevel() {
     // Calculate the translateY value
     const translateYValue = -1 + availableHeight - (boxHeight + margin) * (boxCount + 1);
     
-    function updateBoxPositions() {
-      const rectangle = document.querySelector(".rectangle");
-      const boxHeight = 70; // Assuming the height of each box is 70px
-      const margin = 3; // Assuming the margin between boxes is 3px
-      const availableHeight = rectangle.clientHeight; // Get the height of the rectangle
-    
-      // Update the translateY value for each box
-      boxes.forEach((box, index) => {
-        const translateYValue = availableHeight - (boxHeight + margin) * (index + 1);
-        const adjustedTranslateYValue = Math.max(0, translateYValue);
-        box.style.transform = `translateY(${adjustedTranslateYValue}px)`;
-      });
-    }
-    window.addEventListener("resize", updateBoxPositions);
+  
 
     // Animate the box dropping
     setTimeout(() => {
