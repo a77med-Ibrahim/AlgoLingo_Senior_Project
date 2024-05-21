@@ -80,7 +80,7 @@ function PreperationLevel() {
     document.querySelector(".rectangle").appendChild(box);
 
     // Calculate the translateY value based on boxCount
-    const translateYValue = 660 - (70 + 3) * boxCount;
+    const translateYValue = (660 - (70 + 3) * boxCount);
 
     // Animate the box dropping
     setTimeout(() => {

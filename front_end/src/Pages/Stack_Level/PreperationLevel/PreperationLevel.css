@@ -1,14 +1,37 @@
+/* General Styles */
 .title {
   text-align: center;
 }
-.all-div {
-  flex: 1;
-  display: flex;
+
+.container {
+  margin: 1em;
 }
+
+/* Media Queries */
+@media screen and (min-width: 80rem) {
+  .container {
+    margin: 1em 2em;
+  }
+}
+
+/* Flexbox Layouts */
+.all-div {
+  display: flex;
+  flex: 1;
+  flex-direction: column; /* Stack items vertically on small screens */
+}
+
+@media screen and (min-width: 48rem) {
+  .all-div {
+    flex-direction: row; /* Row layout on medium and larger screens */
+  }
+}
+
 .game-content {
   width: 100%;
   padding-left: 3%;
 }
+
 .level-buttons {
   width: 60px;
   height: 100%;
@@ -17,19 +40,29 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
 .prep-level-container {
-  padding-top: 4%;
   display: flex;
-  flex: 1;
+  flex-direction: column; /* Stack items vertically on small screens */
   gap: 15%;
-  height: 450px;
+  height: auto; /* Remove fixed height for responsiveness */
+  padding-top: 4%;
 }
+
+@media screen and (min-width: 48rem) {
+  .prep-level-container {
+    flex-direction: row; /* Row layout on medium and larger screens */
+    height: 450px; /* Apply fixed height only on larger screens */
+  }
+}
+
 .button-group {
-  padding-top: 5%;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding-top: 5%;
 }
+
 .prep-level-buttons {
   background-color: #d9d9d9;
   font-size: 1.5rem;
@@ -38,33 +71,55 @@
   border-radius: 45%;
   border: none;
 }
+
+
 .rectangle {
   background-color: inherit;
-  width: 15%;
-  height: 57vh;
+  width: 100%; /* Full width on small screens */
+  height: auto; /* Remove fixed height for responsiveness */
   border-top: 5px solid inherit;
   border-right: 10px solid rgb(17, 0, 128);
   border-left: 10px solid rgb(17, 0, 128);
   border-bottom: 10px solid rgb(17, 0, 128);
+  margin: 1em 0; /* Add margin for spacing */
+  position: relative; /* Make this the positioning context for .box */
 }
+
+@media screen and (min-width: 48rem) {
+  .rectangle {
+    width: 15%; /* Set width on medium and larger screens */
+    height: 57vh; /* Set height on medium and larger screens */
+  }
+}
+
 .code-bar {
   text-align: center;
   background-color: #d2d2d2;
-  width: 30%;
+  width: 100%; /* Full width on small screens */
   border: 2px solid grey;
   border-radius: 20px;
   padding: 20px;
+  margin: 1em 0; /* Add margin for spacing */
 }
+
+@media screen and (min-width: 48rem) {
+  .code-bar {
+    width: 30%; /* Set width on medium and larger screens */
+  }
+}
+
 .title_code_style {
   background-color: inherit;
   color: red;
   margin: 0;
 }
+
 .code_style {
   background-color: inherit;
   color: blue;
   margin-top: 10px;
 }
+
 .code_description {
   background-color: inherit;
   color: purple;
@@ -73,23 +128,26 @@
 }
 
 .box {
-  width: 11%;
+  width: 100%; 
   height: 70px;
   background-color: red;
-  position: absolute;
+  position: absolute; 
   top: 0;
-  left: 44.5%;
+  left: 0;
+  bottom: 100; 
   transition: transform 0.5s ease-in-out;
   display: flex;
   justify-content: center;
-  align-items: center; /* Center the content vertically */
+  align-items: center; 
 }
+
 .box-number {
-  font-size: 20px; /* Change the font size as desired */
-  color: white; /* Set the color of the number */
-  font-weight: bold; /* Optionally, set the font weight */
+  font-size: 20px; 
+  color: white; 
+  font-weight: bold; 
   background-color: inherit;
 }
+
 .is-empty-result {
   color: rgb(46, 37, 37);
   font-size: 30px;
