@@ -10,6 +10,7 @@ function LevelsBar({
   isEmptyClicked,
   deleteTailClicked,
   pushTailClicked,
+  taskCompleted,
 }) {
   const navigate = useNavigate();
 
@@ -38,6 +39,8 @@ function LevelsBar({
     pushTailClicked,
   ]);
 
+
+
   const isUnlocked = (index) => {
     if (index === 0) {
       // "prep" level is always unlocked
@@ -45,9 +48,11 @@ function LevelsBar({
     } else if (index === 1) {
       // Level 1 is unlocked only if all prep level buttons are clicked
       return localStorage.getItem("level1Unlocked") === "true";
+    } else if (index === 2){
+      return taskCompleted;
     } else {
-      // Level 2 is always locked
-      return false;
+      // For other buttons, check if all buttons before it are clicked
+      return levels.slice(0, index).every((level) => level === "X");
     }
   };
 
@@ -64,9 +69,8 @@ function LevelsBar({
       } else {
         alert("Complete all preparation steps to unlock this level");
       }
-    } else {
-      // For level 2 and others, currently do nothing or handle accordingly
-      alert("This level is locked.");
+    } else if(index === 2){
+      navigate("/LinkedListSecondLevel");
     }
   };
 
