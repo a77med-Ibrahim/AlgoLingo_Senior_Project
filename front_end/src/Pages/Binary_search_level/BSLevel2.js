@@ -78,10 +78,11 @@ function BSLevel2() {
     })));
     const [isMaxHeap, setIsMaxHeap] = useState(true); // Start with sorting a max heap
     const [taskCompleted, setTaskCompleted] = useState(false);
+    const [message, setMessage] = useState("")
     function checkHeap() {
         const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
         if (isValidHeap) {
-            alert(`Correct! This is a ${isMaxHeap ? "max" : "min"} heap.`);
+            setMessage(`Correct! This is a ${isMaxHeap ? "max" : "min"} heap.`);
             if (isMaxHeap) {
                 setIsMaxHeap(false); // Switch to min heap
                 setTaskCompleted(false); // Reset for the next task
@@ -89,7 +90,7 @@ function BSLevel2() {
                 setTaskCompleted(true); // Mark the min heap task as completed
             }
         } else {
-            alert(`Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`);
+            setMessage(`Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`);
         }
     }
 
@@ -151,6 +152,7 @@ function BSLevel2() {
                 </div>
                 <button onClick={checkHeap}>Check Heap</button>
                 <p>Current task: {isMaxHeap ? "Create a Max Heap" : "Create a Min Heap"}</p>
+                {message && <p>{message}</p>}
                 {taskCompleted && !isMaxHeap && <p>Well done! You've completed both tasks!</p>}
             </div>
         </div>

@@ -1,0 +1,29 @@
+.game-container {
+    display: flex;
+    justify-content: center;
+    position: relative;
+  }
+  
+  .box-style {
+    position: relative;
+    border: 2px solid black; /* Change from red to black */
+    border-radius: 10px;
+    padding: 5px;
+    width: 12%;
+    height: 80px;
+    display: inline-block;
+    box-sizing: border-box;
+    margin-right: 8%;
+  }
+  
+  .input-field {
+    margin-top: 10px; /* Add space above the input field */
+    width: 50%; /* Adjust as necessary */
+  }
+  
+  .result-message {
+    margin-top: 10px;
+    font-size: 16px;
+    color: #000000;
+  }
+  
