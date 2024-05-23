@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./FirstLevel.css";
+import "./SecondLevel.css"; // Use the same CSS as SecondLevel
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
@@ -40,7 +40,6 @@ function FirstLevel() {
     const remainingCapacity = stack.stack.length - valuesToPush.length;
 
     // Generate a random pop operation with a count greater than or equal to 1 and less than or equal to the remaining capacity,
-
     const popCount = Math.min(
       Math.floor(Math.random() * Math.min(remainingCapacity, 5)) + 1,
       remainingCapacity
@@ -74,25 +73,6 @@ function FirstLevel() {
   // Function to handle clicking on a button
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
-  };
-
-  // Function to render buttons
-  const renderButtons = () => {
-    return [1, 2, 3, 4, 5].map((number, index) => (
-      <button
-        key={index}
-        className="button"
-        style={{ backgroundColor: getButtonColor(index) }}
-        onClick={() => handleButtonClick(index)}
-      >
-        {number}
-      </button>
-    ));
-  };
-
-  // Function to determine button color based on active state
-  const getButtonColor = (index) => {
-    return index === activeButtonIndex ? "#e74c3c" : "#3498db";
   };
 
   // Log the generated stack and the stack after the operation is applied to the console
@@ -137,7 +117,6 @@ function FirstLevel() {
   };
 
   // Function to handle clicking the "Check" button
-
   const handleCheck = () => {
     // Convert the user's answer to a number
     const userAnswerNum = parseInt(userAnswer);
@@ -156,44 +135,39 @@ function FirstLevel() {
   };
 
   return (
-    <div>
-      <div className="all-div">
-        <AlgoLingoBar />
-        <div className="other">
-          <h1 className="title-styling">Stack</h1>
-          <h2 className="title-styling">First Level</h2>
-          <LevelsBar
-            activeButtonIndex={activeButtonIndex}
-            handleButtonClick={handleButtonClick}
-            pushClicked={true} // Assuming the first button is always unlocked in the first level
-            popClicked={true} // Assuming the second button is always unlocked in the first level
-            peekClicked={true} // Assuming the third button is always unlocked in the first level
-            isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
-          />
-
-          {/* Existing stack bar */}
-
-          <h2>Stack Bar:</h2>
-          <div className="stack-bar">
-            {/* Render popped values first */}
-            {poppedValues.map((value, index) => (
-              <div key={`popped-${index}`} className="pushed-stack-field ">
-                {value}
-              </div>
-            ))}
+    <div className="all-div">
+      <AlgoLingoBar />
+      <div className="other">
+        <h1 className="title-styling">Stack</h1>
+        <h2 className="title-styling">First Level</h2>
+        {/* Render LevelsBar component */}
+        <LevelsBar
+          pushClicked={true} // Assuming the first button is always unlocked in the first level
+          popClicked={true} // Assuming the second button is always unlocked in the first level
+          peekClicked={true} // Assuming the third button is always unlocked in the first level
+          isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
+        />
+        <br></br>
+        <div className="second-level-container">
+          <div className="bucket" align="center">
+            {/* Render popped values */}
+            <div className="popped-values">
+              {poppedValues.map((value, index) => (
+                <div key={`popped-${index}`} className="popped-value">
+                  {value}
+                </div>
+              ))}
+            </div>
             {/* Render stack values */}
             {[...stack.stack].reverse().map((value, index) => (
-              <div key={index} className="stack-field">
+              <div key={index} className="stack-value">
                 {value}
               </div>
             ))}
           </div>
-
-          {/* The Question */}
-          <h2>What will be the last popped value after</h2>
-          <div>
+          <div className="question">
+            <h3>What will be the last popped value after</h3>
             <p>{questionText}</p>
-            <h3>What will be the last popped value?</h3>
             <input
               type="number"
               placeholder="Enter your answer"
@@ -203,7 +177,6 @@ function FirstLevel() {
               onChange={(e) => setUserAnswer(e.target.value)}
               className="input-class"
             />
-
             {/* Display check result */}
             {checkResult && <p>{checkResult}</p>}
           </div>
