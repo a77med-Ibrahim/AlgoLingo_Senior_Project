@@ -55,10 +55,10 @@
 
   color: aliceblue;
   margin-top: 20px;
-  font-family: "Leckerli One", cursive;
-  /* font-family: "Major Mono Display", monospace;
+  /* font-family: "Leckerli One", cursive; */
+  font-family: "Major Mono Display", monospace;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
-  font-weight: bold; */
+  font-weight: bold;
 }
 
 .start-button.locked {

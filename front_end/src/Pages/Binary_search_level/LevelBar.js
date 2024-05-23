@@ -17,18 +17,12 @@ function LevelsBar({
     if (index === 1) {
       // For the first button, check if all other required buttons are clicked
       return maxHeapClicked && minHeapClicked;
-    } 
-    else if(index===2){
+    } else if (index === 2) {
       return taskCompleted;
-    }
-    else {
+    } else {
       // For other buttons, check if all buttons before it are clicked
       return levels.slice(0, index).every((level) => level === "X");
     }
-  };
-
-  const getButtonColor = (index) => {
-    return isUnlocked(index) ? "#3498db" : "grey";
   };
 
   const handleButtonClick = (index) => {
@@ -37,16 +31,16 @@ function LevelsBar({
     } else if (index === 1) {
       navigate("/FirstLevel");
     } else {
-      navigate("/BSLevel2")
+      navigate("/BSLevel2");
     }
   };
-
   const renderButtons = () => {
     return levels.map((number, index) => (
       <button
         key={index}
-        className={`buttonsss ${index === activeButtonIndex ? "active" : ""}`}
-        style={{ backgroundColor: getButtonColor(index) }}
+        className={`linkedlist-level-bar-buttons ${
+          index === activeButtonIndex ? "active" : ""
+        } ${isUnlocked(index) ? "" : "locked"}`}
         onClick={() => handleButtonClick(index)}
         disabled={!isUnlocked(index)}
       >
@@ -58,7 +52,7 @@ function LevelsBar({
   return (
     <div>
       <h2>Levels</h2>
-      <div className="button-bar">{renderButtons()}</div>
+      <div className="button-bar-linkedlist-level">{renderButtons()}</div>
     </div>
   );
 }

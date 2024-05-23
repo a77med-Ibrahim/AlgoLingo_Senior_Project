@@ -54,7 +54,7 @@ function LevelsBar({
   return (
     <div>
       <h2>Levels</h2>
-      <div className="button-bar">{renderButtons()}</div>
+      <div className="button-bar-stack-level">{renderButtons()}</div>
     </div>
   );
 }

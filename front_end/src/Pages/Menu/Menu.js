@@ -110,7 +110,7 @@ function Menu() {
     <div className="main-div">
       <AlgoLingoBar />
       <div className="levels-bar">
-        <button className="levels-button">Levels</button>
+        <button className="levels-button">levels</button>
         <div className="levels-space">
           {circleData.map((circle) => (
             <button
@@ -144,7 +144,7 @@ function Menu() {
             activeCircle && isLevelUnlocked(activeCircle) ? "" : "locked"
           }`}
         >
-          Start
+          start
         </button>
       </div>
     </div>
