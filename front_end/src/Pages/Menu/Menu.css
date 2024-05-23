@@ -23,7 +23,10 @@
   text-align: center;
   border: 2px solid gray;
   border-radius: 50px;
-  font-size: 35px;
+  font-size: 45px;
+  /* font-family: "Leckerli One", cursive; */
+  font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
   font-weight: bold;
 }
 
@@ -35,6 +38,10 @@
   height: 100vh;
   border: 2px solid grey;
   border-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 5px;
 }
 
 .start-button {
@@ -44,10 +51,19 @@
   text-align: center;
   border: 2px solid gray;
   border-radius: 50px;
-  font-size: 35px;
-  font-weight: bold;
+  font-size: 45px;
+
   color: aliceblue;
-  margin-top: 50px;
+  margin-top: 20px;
+  font-family: "Leckerli One", cursive;
+  /* font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold; */
+}
+
+.start-button.locked {
+  background-color: grey;
+  cursor: not-allowed;
 }
 
 .levels-space {
@@ -101,8 +117,9 @@
   border-radius: 50px;
   border: 2px solid gray;
   margin-top: 20px;
-  margin-left: 25px;
   background-color: transparent;
+  display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -112,16 +129,27 @@
   background-color: transparent;
 }
 
-/* Add this CSS to hide the content initially */
 .start-bar .image-container {
   display: none;
 }
 
-/* Add this CSS to show the content when needed */
 .start-bar .image-container.visible {
-  display: block;
+  display: flex;
 }
-.start-bar .start-button.locked {
-  background-color: grey;
-  cursor: not-allowed;
+
+.level-name {
+  color: black;
+  font-family: din-round, sans-serif;
+  background-color: transparent;
+  margin-top: 20px;
+}
+
+.level-definition {
+  color: rgb(0, 0, 0);
+  font-family: din-round, sans-serif;
+  background-color: transparent;
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: 20px;
+  margin-top: 10px;
 }

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import stackImage from "./Img/stackImg.webp";
+import stackImage from "./Img/stackImg.png";
 import queueImage from "./Img/queueImg.png";
 import linkedList from "./Img/LL.png";
 import AlgoLingoBar from "./AlgoLingoBar";
@@ -7,11 +7,13 @@ import Heap from "./Img/Heap1.png";
 import "./Menu.css";
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { firebaseAuth, db } from "./firebaseConfig"; // Ensure these are correctly imported from your config file
+import { firebaseAuth, db } from "./firebaseConfig";
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
   const [lastClickedCircle, setLastClickedCircle] = useState(null);
+  const [definitionOfLevel, setDefinitionOfLevel] = useState("");
+  const [nameOfLevel, setNameOfLevel] = useState("");
 
   const [circleData, setCircleData] = useState([
     { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
@@ -46,7 +48,7 @@ function Menu() {
           console.error("Error fetching user progress:", error);
         });
     }
-  }, [firebaseAuth, db]); // Dependencies in the useEffect should be checked if they are necessary
+  }, [firebaseAuth, db]);
 
   const updateLevels = (userProgress) => {
     const updatedCircles = circleData.map((circle) => ({
@@ -55,6 +57,7 @@ function Menu() {
     }));
     setCircleData(updatedCircles);
   };
+
   const isLevelUnlocked = (circleId) => {
     const circle = circleData.find((circle) => circle.id === circleId);
     return circle.isOpen;
@@ -63,6 +66,29 @@ function Menu() {
   const handleCircleClick = (circleId) => {
     setActiveCircle(activeCircle === circleId ? null : circleId);
     setLastClickedCircle(circleId);
+    if (circleId === 1) {
+      setNameOfLevel("Stack");
+      setDefinitionOfLevel(
+        'A stack is a linear data structure in which elements are added and removed from only one end, called the "top" of the stack, following the Last In, First Out (LIFO) principle. This means that the most recently added element is the first one to be removed. Basic operations for a stack include `push`, which adds an element to the top, `pop`, which removes the top element, and `peek`, which shows the values inside of the Stack. Stacks are commonly used in scenarios such as expression evaluation, syntax parsing, and maintaining function calls (call stack) in programming languages. They are typically implemented using arrays or linked lists.'
+      );
+    } else if (circleId === 2) {
+      setNameOfLevel("Queue");
+      setDefinitionOfLevel(
+        'A queue is a linear data structure that follows the First In, First Out (FIFO) principle, where elements are added at one end, called the "rear," and removed from the other end, called the "front." This means that the element added earliest is the first to be removed. The basic operations of a queue include `enqueue`, which adds an element to the rear, and `dequeue`, which removes an element from the front. Queues are widely used in various applications such as scheduling processes in operating systems, handling requests in web servers, and managing tasks in asynchronous data processing. They can be implemented using arrays, linked lists.'
+      );
+    } else if (circleId === 3) {
+      setNameOfLevel("Linked List");
+      setDefinitionOfLevel(
+        "A linked list is a fundamental data structure in computer science used to organize data in a linear sequence, where each element, called a node, contains a data value and a reference (or pointer) to the next node in the sequence. Operations on linked lists include pushing to the head, where a new node is inserted at the beginning of the list, deleting the head, which removes the first node, push after a given value, inserting a new node immediately after a specified node, delete  by value, removing the first node that contains a specified value, push to tail involves adding a new node at the end of the list, delete tail requires removing the last node. These operations make linked lists versatile and dynamic structures suitable for various applications."
+      );
+    } else if (circleId === 4) {
+      setNameOfLevel("Heap sort");
+      setDefinitionOfLevel(
+        "Heap sort is a comparison-based sorting algorithm that uses a binary heap data structure to create a sorted array. It begins by building a max heap from the input data, where the largest element is at the root of the heap. The heap property ensures that each parent node is greater than or equal to its child nodes, and the reverse is true for a min heap, where the smallest element is at the root."
+      );
+    } else {
+      setDefinitionOfLevel("");
+    }
   };
 
   const handleStartButtonClick = () => {
@@ -108,6 +134,10 @@ function Menu() {
             />
           )}
         </div>
+        {nameOfLevel && <h1 className="level-name">{nameOfLevel}</h1>}
+        {definitionOfLevel && (
+          <p className="level-definition">{definitionOfLevel}</p>
+        )}
         <button
           onClick={handleStartButtonClick}
           className={`start-button ${

@@ -13,5 +13,8 @@
   text-align: center;
   border: 2px solid gray;
   border-radius: 50px;
-  font-size: 25px;
+  font-size: 30px;
+  font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
 }
