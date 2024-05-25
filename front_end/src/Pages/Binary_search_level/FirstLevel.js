@@ -1,7 +1,8 @@
 import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import { useDrag, useDrop } from "react-dnd";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import Celebration from "../Celebration/Celebration";
 import Xarrow from "react-xarrows";
 import "./FirstLevel.css";
 
@@ -113,6 +114,12 @@ function FirstLevel() {
   const [isMaxHeap, setIsMaxHeap] = useState(true);
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [message, setMessage] = useState("");
+  const [celebrate, setCelebrate] = useState(false);
+  useEffect(() => {
+    if (taskCompleted) {
+      setCelebrate(true);
+    }
+  }, [taskCompleted]);
 
   function checkHeap() {
     const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
@@ -220,6 +227,7 @@ function FirstLevel() {
         {taskCompleted && !isMaxHeap && (
           <p>Well done! You've completed both tasks!</p>
         )}
+        <Celebration active={celebrate} />
       </div>
     </div>
   );

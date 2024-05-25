@@ -2,6 +2,7 @@ import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 import LevelsBar from "../LevelBar";
 import React, { useState, useEffect, forwardRef } from "react";
 import Xarrow from "react-xarrows";
+import Celebration from "../../Celebration/Celebration";
 import "./LinkedListPrepLevel.css";
 
 // Wrap Xarrow component with forwardRef
@@ -21,6 +22,7 @@ function LinkedListPrepLevel() {
   const [value1, setValue1] = useState("");
   const [value2, setValue2] = useState("");
   const [deleteValue, setDeleteValue] = useState("");
+  const [celebrate, setCelebrate] = useState(false);
 
   const [pushToHeadClicked, setPushToHeadClicked] = useState(false);
   const [pushAfterValueClicked, setPushAfterValueClicked] = useState(false);
@@ -37,6 +39,25 @@ function LinkedListPrepLevel() {
       }))
     );
   }, [numberOfBoxes]);
+  useEffect(() => {
+    if (
+      pushToHeadClicked &&
+      pushAfterValueClicked &&
+      pushToTailClicked &&
+      deleteHeadClicked &&
+      deleteValueClicked &&
+      deleteTailClicked
+    ) {
+      setCelebrate(true);
+    }
+  }, [
+    pushToHeadClicked,
+    pushAfterValueClicked,
+    pushToTailClicked,
+    deleteHeadClicked,
+    deleteValueClicked,
+    deleteTailClicked,
+  ]);
 
   const handlePushToHead = () => {
     if (numberOfBoxes < 5) {
@@ -229,12 +250,12 @@ function LinkedListPrepLevel() {
           <h2 className="title-styling">Preparation</h2>
           <div className="navbar-line" />
           <LevelsBar
-            pushClicked={pushToHeadClicked}
-            popClicked={deleteHeadClicked}
-            peekClicked={pushAfterValueClicked}
-            isEmptyClicked={deleteValueClicked}
+            pushToHeadClicked={pushToHeadClicked}
+            deleteHeadClicked={deleteHeadClicked}
+            pushAfterValueClicked={pushAfterValueClicked}
+            deleteValueClicked={deleteValueClicked}
             deleteTailClicked={deleteTailClicked}
-            pushTailClicked={pushToTailClicked}
+            pushToTailClicked={pushToTailClicked}
           />
           <div>
             <button onClick={handlePushToHead} className="push-buttons-styling">
@@ -296,7 +317,10 @@ function LinkedListPrepLevel() {
             </form>
           )}
           <p>Number Of Nodes: {numberOfBoxes}</p>
-          <div className="game-container">{renderBoxesAndArrows()}</div>
+          <div className="game-container">
+            {renderBoxesAndArrows()}
+            <Celebration active={celebrate} />
+          </div>
         </div>
       </div>
     </div>

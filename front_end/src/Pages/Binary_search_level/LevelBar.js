@@ -9,18 +9,14 @@ function LevelsBar({
   taskCompleted,
 }) {
   const navigate = useNavigate();
-
   const levels = ["prep", 1, 2];
 
   const isUnlocked = (index) => {
-    // Check if all required buttons are clicked
     if (index === 1) {
-      // For the first button, check if all other required buttons are clicked
       return maxHeapClicked && minHeapClicked;
     } else if (index === 2) {
       return taskCompleted;
     } else {
-      // For other buttons, check if all buttons before it are clicked
       return levels.slice(0, index).every((level) => level === "X");
     }
   };

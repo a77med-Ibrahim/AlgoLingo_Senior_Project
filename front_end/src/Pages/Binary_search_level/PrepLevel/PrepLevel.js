@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import LevelsBar from "../LevelBar";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
+import Celebration from "../../Celebration/Celebration";
 import "./PrepLevel.css";
 
 function heapify(heap, n, i, comparator) {
@@ -32,7 +33,7 @@ function buildHeap(heap, comparator) {
 
 function PrepLevel() {
   const initialPositions = [
-    { x: 41, y: 0 }, // Example positions in percentages
+    { x: 41, y: 0 },
     { x: 27.75, y: 20.33 },
     { x: 55.25, y: 20.33 },
     { x: 18.75, y: 40.67 },
@@ -54,9 +55,11 @@ function PrepLevel() {
   const [maxHeapClicked, setMaxHeapClicked] = useState(false);
   const [minHeapClicked, setMinHeapClicked] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
 
   useEffect(() => {
     if (maxHeapClicked && minHeapClicked) {
+      setCelebrate(true);
     }
   }, [maxHeapClicked, minHeapClicked]);
 
@@ -127,8 +130,8 @@ function PrepLevel() {
                     opacity: 1,
                     fontWeight: "bold",
                     cursor: "default",
-                    width: "5vw", // using viewport width for responsive size
-                    height: "5vw", // same as width to maintain aspect ratio
+                    width: "5vw",
+                    height: "5vw",
                     borderRadius: "50%",
                     backgroundColor: "#f0f0f0",
                     display: "flex",
@@ -161,6 +164,7 @@ function PrepLevel() {
           {maxHeapClicked && <p>Max heap created successfully!</p>}
           {minHeapClicked && <p>Min heap created successfully!</p>}
         </div>
+        <Celebration active={celebrate} />
       </div>
     </div>
   );

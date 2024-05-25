@@ -1,8 +1,9 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import { useDrag, useDrop } from "react-dnd";
 import Xarrow from "react-xarrows";
+import Celebration from "../Celebration/Celebration";
 import "./BSLevel2.css";
 
 function DraggableNode({ id, number, onMoveNode, style }) {
@@ -93,6 +94,14 @@ function BSLevel2() {
   const [isMaxHeap, setIsMaxHeap] = useState(true); // Start with sorting a max heap
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [message, setMessage] = useState("");
+  const [celebrate, setCelebrate] = useState(false);
+
+  useEffect(() => {
+    if (taskCompleted) {
+      setCelebrate(true);
+    }
+  }, [taskCompleted]);
+
   function checkHeap() {
     const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
     if (isValidHeap) {
@@ -199,6 +208,7 @@ function BSLevel2() {
         {taskCompleted && !isMaxHeap && (
           <p>Well done! You've completed both tasks!</p>
         )}
+        <Celebration active={celebrate} />
       </div>
     </div>
   );
