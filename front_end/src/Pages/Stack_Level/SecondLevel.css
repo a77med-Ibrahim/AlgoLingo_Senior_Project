@@ -78,10 +78,18 @@
 
 .push-arrow {
   left: -50px; /* Adjust the positioning as needed */
+  margin-right: 10px;
 }
 
 .pop-arrow {
   right: -50px; /* Adjust the positioning as needed */
+  margin-left: 10px;
+}
+
+.popped-values.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  
 }
 
 .arrow-up::before,

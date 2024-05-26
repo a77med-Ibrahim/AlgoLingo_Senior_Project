@@ -11,7 +11,9 @@ function FirstLevel() {
   const [questionText, setQuestionText] = useState(""); // State to hold question text
   const [operations, setOperations] = useState([]); // State to hold the generated operations
   const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
-  const [checkResult, setCheckResult] = useState(""); // State to hold check result
+  const [checkResult, setCheckResult] = useState("");
+  const [firstLevelCompleted, setFirstLevelCompleted] = useState(false); // State to track first level completion
+  
 
   // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
@@ -24,7 +26,7 @@ function FirstLevel() {
     // Push initial random values onto the stack
     initialStackValues.forEach((value) => newStack.push(value));
 
-    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5 for additional push values
+    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
     const newStackValues = Array.from(
       { length: numberOfFieldsDynamic },
       () => Math.floor(Math.random() * 100)
@@ -129,20 +131,26 @@ function FirstLevel() {
   // Function to handle clicking the "Check" button
   const handleCheck = () => {
     // Convert the user's answer to a number
+    
     const userAnswerNum = parseInt(userAnswer);
 
     // Get the last popped value from the poppedValues array
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
+    
 
     // Check if the user's answer matches the last popped value
     if (userAnswerNum === lastPoppedValue) {
       // If correct, set check result to "Great!"
       setCheckResult("Great!");
+      setFirstLevelCompleted(true);
+
     } else {
       // If incorrect, set check result to "Failed"
       setCheckResult("Failed");
     }
+  
   };
+  
 
   return (
     <div className="all-div">
@@ -156,6 +164,7 @@ function FirstLevel() {
           popClicked={true} // Assuming the second button is always unlocked in the first level
           peekClicked={true} // Assuming the third button is always unlocked in the first level
           isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
+          checkResult={firstLevelCompleted ? "Great!" : ""}
         />
         <br></br>
         <div className="second-level-container">

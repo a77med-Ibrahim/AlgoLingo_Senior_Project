@@ -9,6 +9,7 @@ function LevelsBar({
   peekClicked,
   isEmptyClicked,
   checkResult,
+  firstLevelCompleted,
 }) {
   const navigate = useNavigate();
 
@@ -21,7 +22,7 @@ function LevelsBar({
       return pushClicked && popClicked && peekClicked && isEmptyClicked;
     }
     else if (index === 2) {
-      return pushClicked && popClicked && peekClicked && isEmptyClicked;
+      return checkResult === "Great!";
 
     } 
     else {
