@@ -1,72 +1,72 @@
-import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import "./LevelBar.css";
 
 function LevelsBar({
   activeButtonIndex,
-  pushClicked,
-  popClicked,
-  peekClicked,
-  isEmptyClicked,
+  taskCompleted,
+  pushToHeadClicked,
+  deleteHeadClicked,
+  pushAfterValueClicked,
+  deleteValueClicked,
   deleteTailClicked,
-  pushTailClicked,
+  pushToTailClicked,
 }) {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const levels = ["prep", 1, 2];
 
-  useEffect(() => {
-    // Check if all preparation steps are completed
-    const allPrepCompleted =
-      pushClicked &&
-      popClicked &&
-      peekClicked &&
-      isEmptyClicked &&
-      deleteTailClicked &&
-      pushTailClicked;
+  const [isFirstLevelUnlocked, setIsFirstLevelUnlocked] = useState(
+    JSON.parse(localStorage.getItem("isFirstLevelUnlocked")) || false
+  );
 
-    // If all preparation steps are completed, unlock level 1
-    if (allPrepCompleted) {
-      localStorage.setItem("level1Unlocked", true);
+  useEffect(() => {
+    if (
+      pushToHeadClicked &&
+      deleteHeadClicked &&
+      pushAfterValueClicked &&
+      deleteValueClicked &&
+      deleteTailClicked &&
+      pushToTailClicked
+    ) {
+      setIsFirstLevelUnlocked(true);
+      localStorage.setItem("isFirstLevelUnlocked", true);
     }
   }, [
-    pushClicked,
-    popClicked,
-    peekClicked,
-    isEmptyClicked,
+    pushToHeadClicked,
+    deleteHeadClicked,
+    pushAfterValueClicked,
+    deleteValueClicked,
     deleteTailClicked,
-    pushTailClicked,
+    pushToTailClicked,
   ]);
 
-  const isUnlocked = (index) => {
-    if (index === 0) {
-      // "prep" level is always unlocked
-      return true;
-    } else if (index === 1) {
-      // Level 1 is unlocked only if all prep level buttons are clicked
-      return localStorage.getItem("level1Unlocked") === "true";
-    } else {
-      // Level 2 is always locked
-      return false;
+  useEffect(() => {
+    if (location.pathname === "/LinkedListPrepLevel") {
+      setIsFirstLevelUnlocked(false);
+      localStorage.setItem("isFirstLevelUnlocked", false);
     }
-  };
+  }, [location.pathname]);
 
-  const getButtonColor = (index) => {
-    return isUnlocked(index) ? "#3498db" : "grey";
+  const isUnlocked = (index) => {
+    if (index === 1) {
+      return isFirstLevelUnlocked;
+    } else if (index === 2) {
+      return taskCompleted;
+    } else {
+      return true;
+    }
   };
 
   const handleButtonClick = (index) => {
-    if (levels[index] === "prep") {
-      navigate("/LinkedListPrepLevel");
-    } else if (index === 1) {
-      if (isUnlocked(index)) {
+    if (isUnlocked(index)) {
+      if (levels[index] === "prep") {
+        navigate("/LinkedListPrepLevel");
+      } else if (index === 1) {
         navigate("/LinkedListFirstLevel");
       } else {
-        alert("Complete all preparation steps to unlock this level");
+        navigate("/LinkedListSecondLevel");
       }
-    } else {
-      // For level 2 and others, currently do nothing or handle accordingly
-      alert("This level is locked.");
     }
   };
 
@@ -74,8 +74,9 @@ function LevelsBar({
     return levels.map((number, index) => (
       <button
         key={index}
-        className={`buttonsss ${index === activeButtonIndex ? "active" : ""}`}
-        style={{ backgroundColor: getButtonColor(index) }}
+        className={`linkedlist-level-bar-buttons ${
+          index === activeButtonIndex ? "active" : ""
+        } ${isUnlocked(index) ? "" : "locked"}`}
         onClick={() => handleButtonClick(index)}
         disabled={!isUnlocked(index)}
       >
@@ -87,7 +88,7 @@ function LevelsBar({
   return (
     <div>
       <h2>Levels</h2>
-      <div className="button-bar">{renderButtons()}</div>
+      <div className="button-bar-linkedlist-level">{renderButtons()}</div>
     </div>
   );
 }

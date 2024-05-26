@@ -1,4 +1,4 @@
-.first-heap-level-buttons {
+.second-heap-level-buttons {
   appearance: button;
   background-color: #294050;
   border: solid transparent;
@@ -31,7 +31,7 @@
   position: relative; /* Add this to position the :after pseudo-element correctly */
 }
 
-.first-heap-level-buttons:after {
+.second-heap-level-buttons:after {
   background-clip: padding-box;
   background-color: #3498db;
   border: solid transparent;
@@ -46,31 +46,31 @@
   z-index: -1;
 }
 
-.first-heap-level-buttons:main,
-.first-heap-level-buttons:focus {
+.second-heap-level-buttons:main,
+.second-heap-level-buttons:focus {
   user-select: auto;
 }
 
-.first-heap-level-buttons:hover:not(:disabled) {
+.second-heap-level-buttons:hover:not(:disabled) {
   filter: brightness(1.1);
   -webkit-filter: brightness(1.1);
 }
 
-.first-heap-level-buttons:disabled {
+.second-heap-level-buttons:disabled {
   cursor: auto;
 }
 
-.first-heap-level-buttons:active {
+.second-heap-level-buttons:active {
   border-width: 4px 0 0;
   background: none;
 }
 
-.first-heap-level-buttons.locked {
+.second-heap-level-buttons.locked {
   background-color: grey;
   color: #a9a9a9; /* Optional: Adjust text color for better contrast */
   cursor: not-allowed;
 }
 
-.first-heap-level-buttons.locked:after {
+.second-heap-level-buttons.locked:after {
   background-color: grey;
 }
