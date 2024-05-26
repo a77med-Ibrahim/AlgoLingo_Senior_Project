@@ -1,10 +1,10 @@
 import "./AlgoLingoBar.css";
-import React from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
 
 function AlgoLingoBar() {
   const navigate = useNavigate();
-
   const goToMainPage = () => {
     navigate("/menu");
   };
@@ -12,7 +12,7 @@ function AlgoLingoBar() {
   return (
     <div className="menu-bar">
       <button className="algolingo-button" onClick={goToMainPage}>
-        AlgoLingo
+        Algolingo
       </button>
     </div>
   );

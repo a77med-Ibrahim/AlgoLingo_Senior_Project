@@ -16,6 +16,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import "./App.css";
 import LinkedListFirstLevel from "./Pages/LinkedList/FirstLevel/LinkedListFirstLevel";
+import LinkedListSecondLevel from "./Pages/LinkedList/SecondLevel/LinkedListSecondLevel";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
@@ -49,10 +50,15 @@ function App() {
               path="/preperation-level/third-level"
               element={<ThirdLevel />}
             />
+            
             <Route path="/preperation-level/" element={<PreperationLevel />} />
             <Route
               path="/LinkedListFirstLevel"
               element={<LinkedListFirstLevel />}
+            />
+            <Route 
+            path="/LinkedListSecondLevel"
+            element = {<LinkedListSecondLevel />}
             />
             <Route
               path="/preperation-level/second-level"

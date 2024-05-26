@@ -9,7 +9,7 @@ let boxCount = 0;
 function PreperationLevel() {
   const navigate = useNavigate();
 
-  const [isEmpty, setIsEmpty] = useState(null); // State to track whether the stack is empty
+  const [isEmpty, setIsEmpty] = useState(null);
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
   const [pushClicked, setPushClicked] = useState(false);
   const [popClicked, setPopClicked] = useState(false);
@@ -44,7 +44,7 @@ function PreperationLevel() {
 
   // let boxCount = 0;
   let showNumbers = false;
-  let popInProgress = false; // Flag to track if a pop operation is in progress
+  let popInProgress = false;
 
   //Hover Handling for Push
   function pushHandleHover() {
@@ -56,17 +56,15 @@ function PreperationLevel() {
   }
 
   function pushOnClick() {
-   
-    // Check if the maximum number of boxes has been reached
     if (boxCount >= 6) {
-      return; // Exit the function if the limit is reached
+      return;
     }
 
-    // Create a new box element
+   
     const box = document.createElement("div");
     box.className = "box";
 
-    // Create and append a span element for the box number
+   
     const boxNumber = document.createElement("span");
     boxNumber.className = "box-number";
     boxNumber.textContent = boxCount + 1;
@@ -86,11 +84,10 @@ function PreperationLevel() {
     const boxHeight = 70; // Assuming the height of each box is 70px
     const margin = 3; // Assuming the margin between boxes is 3px
     const availableHeight = rectangle.clientHeight; // Get the height of the rectangle
-  
+
     // Calculate the translateY value
-    const translateYValue = -1 + availableHeight - (boxHeight + margin) * (boxCount + 1);
-    
-  
+    const translateYValue =
+      -1 + availableHeight - (boxHeight + margin) * (boxCount + 1);
 
     // Animate the box dropping
     setTimeout(() => {
@@ -100,7 +97,6 @@ function PreperationLevel() {
     // Increment boxCount for the next box
     boxCount++;
   }
- 
 
   //Hover Handling for Pop
   function popHandleHover() {
@@ -237,7 +233,7 @@ function PreperationLevel() {
               }}
             >
               isEmpty
-            </button>         
+            </button>
             {isEmpty !== null && <p className="is-empty-result"> {isEmpty}</p>}
           </div>
           <div className="rectangle"></div>
