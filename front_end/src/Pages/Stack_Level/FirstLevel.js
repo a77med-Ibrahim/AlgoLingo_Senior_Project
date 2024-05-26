@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./FirstLevel.css";
+import "./SecondLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
@@ -11,42 +11,53 @@ function FirstLevel() {
   const [questionText, setQuestionText] = useState(""); // State to hold question text
   const [operations, setOperations] = useState([]); // State to hold the generated operations
   const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
-  const [checkResult, setCheckResult] = useState(""); // State to hold check result
+  const [checkResult, setCheckResult] = useState("");
+  const [firstLevelCompleted, setFirstLevelCompleted] = useState(false); // State to track first level completion
+  
 
   // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
-    const numberOfFieldsDynamic = Math.floor(Math.random() * 9) + 1; // Random number between 1 and 9
+    const newStack = new StackImplementation(); // Create a new stack instance
+    const initialStackValues = Array.from(
+      { length: 2 }, // Initial values length
+      () => Math.floor(Math.random() * 100)
+    ); // Generate random initial values
+
+    // Push initial random values onto the stack
+    initialStackValues.forEach((value) => newStack.push(value));
+
+    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
     const newStackValues = Array.from(
       { length: numberOfFieldsDynamic },
-      (_, i) => Math.floor(Math.random() * 100)
+      () => Math.floor(Math.random() * 100)
     ); // Generate random values
 
     const newOperations = [];
 
-    // Push up to four random values onto the stack
+    // Push up to three random values onto the stack
     const numberOfValuesToPush = Math.min(
-      Math.floor(Math.random() * 4) + 1,
+      Math.floor(Math.random() * 7) + 4,
       newStackValues.length
     );
     const valuesToPush = newStackValues.slice(0, numberOfValuesToPush);
 
     // Push each value onto the stack
     valuesToPush.forEach((value) => {
-      stack.push(value);
+      newStack.push(value);
       newOperations.push({ type: "push", values: [value] });
     });
 
     // Calculate the remaining capacity of the stack after push operations
-    const remainingCapacity = stack.stack.length - valuesToPush.length;
+    const remainingCapacity = newStack.stack.length;
 
     // Generate a random pop operation with a count greater than or equal to 1 and less than or equal to the remaining capacity,
-
     const popCount = Math.min(
-      Math.floor(Math.random() * Math.min(remainingCapacity, 5)) + 1,
+      Math.floor(Math.random() * Math.min(remainingCapacity, 3)) + 1,
       remainingCapacity
     );
     newOperations.push({ type: "pop", count: popCount });
 
+    setStack(newStack); // Update the stack state with the new stack instance
     setQuestionText(generateQuestion(valuesToPush, popCount));
     setOperations(newOperations);
   };
@@ -74,25 +85,6 @@ function FirstLevel() {
   // Function to handle clicking on a button
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
-  };
-
-  // Function to render buttons
-  const renderButtons = () => {
-    return [1, 2, 3, 4, 5].map((number, index) => (
-      <button
-        key={index}
-        className="button"
-        style={{ backgroundColor: getButtonColor(index) }}
-        onClick={() => handleButtonClick(index)}
-      >
-        {number}
-      </button>
-    ));
-  };
-
-  // Function to determine button color based on active state
-  const getButtonColor = (index) => {
-    return index === activeButtonIndex ? "#e74c3c" : "#3498db";
   };
 
   // Log the generated stack and the stack after the operation is applied to the console
@@ -137,63 +129,76 @@ function FirstLevel() {
   };
 
   // Function to handle clicking the "Check" button
-
   const handleCheck = () => {
     // Convert the user's answer to a number
+    
     const userAnswerNum = parseInt(userAnswer);
 
     // Get the last popped value from the poppedValues array
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
+    
 
     // Check if the user's answer matches the last popped value
     if (userAnswerNum === lastPoppedValue) {
       // If correct, set check result to "Great!"
       setCheckResult("Great!");
+      setFirstLevelCompleted(true);
+
     } else {
       // If incorrect, set check result to "Failed"
       setCheckResult("Failed");
     }
+  
   };
+  
 
   return (
-    <div>
-      <div className="all-div">
-        <AlgoLingoBar />
-        <div className="other">
-          <h1 className="title-styling">Stack</h1>
-          <h2 className="title-styling">First Level</h2>
-          <LevelsBar
-            activeButtonIndex={activeButtonIndex}
-            handleButtonClick={handleButtonClick}
-            pushClicked={true} // Assuming the first button is always unlocked in the first level
-            popClicked={true} // Assuming the second button is always unlocked in the first level
-            peekClicked={true} // Assuming the third button is always unlocked in the first level
-            isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
-          />
-
-          {/* Existing stack bar */}
-
-          <h2>Stack Bar:</h2>
-          <div className="stack-bar">
-            {/* Render popped values first */}
-            {poppedValues.map((value, index) => (
-              <div key={`popped-${index}`} className="pushed-stack-field ">
-                {value}
+    <div className="all-div">
+      <AlgoLingoBar />
+      <div className="other">
+        <h1 className="title-styling">Stack</h1>
+        <h2 className="title-styling">First Level</h2>
+        {/* Render LevelsBar component */}
+        <LevelsBar
+          pushClicked={true} // Assuming the first button is always unlocked in the first level
+          popClicked={true} // Assuming the second button is always unlocked in the first level
+          peekClicked={true} // Assuming the third button is always unlocked in the first level
+          isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
+          checkResult={firstLevelCompleted ? "Great!" : ""}
+        />
+        <br></br>
+        <div className="second-level-container">
+          <div className="bucket-container">
+            {/* Left arrow pointing up for push */}
+            <div className="arrow push-arrow">
+              <div className="arrow-up"></div>
+              <div>Push</div>
+            </div>
+            <div className="bucket" align="center">
+              {/* Render popped values */}
+              <div className="popped-values">
+                {[...poppedValues].reverse().map((value, index) => (
+                  <div key={`popped-${index}`} className="popped-value">
+                    {value}
+                  </div>
+                ))}
               </div>
-            ))}
-            {/* Render stack values */}
-            {[...stack.stack].reverse().map((value, index) => (
-              <div key={index} className="stack-field">
-                {value}
-              </div>
-            ))}
+              {/* Render stack values */}
+              {[...stack.stack].reverse().map((value, index) => (
+                <div key={index} className="stack-value">
+                  {value}
+                </div>
+              ))}
+            </div>
+            {/* Right arrow pointing down for pop */}
+            <div className="arrow pop-arrow">
+              <div>Pop</div>
+              <div className="arrow-down"></div>
+            </div>
           </div>
-
-          {/* The Question */}
-          <h2>What will be the last popped value after</h2>
-          <div>
+          <div className="question">
+            <h3>What will be the last popped value after</h3>
             <p>{questionText}</p>
-            <h3>What will be the last popped value?</h3>
             <input
               type="number"
               placeholder="Enter your answer"
@@ -203,7 +208,6 @@ function FirstLevel() {
               onChange={(e) => setUserAnswer(e.target.value)}
               className="input-class"
             />
-
             {/* Display check result */}
             {checkResult && <p>{checkResult}</p>}
           </div>

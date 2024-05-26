@@ -60,3 +60,55 @@
   height: 100%;
   background-color: red;
 }
+.bucket-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: flex;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.push-arrow {
+  left: -50px; /* Adjust the positioning as needed */
+  margin-right: 10px;
+}
+
+.pop-arrow {
+  right: -50px; /* Adjust the positioning as needed */
+  margin-left: 10px;
+}
+
+.popped-values.fade-out {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+  
+}
+
+.arrow-up::before,
+.arrow-down::before {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  border-style: solid;
+}
+
+.arrow-up::before {
+  border-width: 0 10px 15px 10px;
+  border-color: transparent transparent #333 transparent;
+  margin-bottom: 5px;
+}
+
+.arrow-down::before {
+  border-width: 15px 10px 0 10px;
+  border-color: #333 transparent transparent transparent;
+  margin-top: 5px;
+}
