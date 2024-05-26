@@ -12,7 +12,7 @@ function AlgoLingoBar() {
   return (
     <div className="menu-bar">
       <button className="algolingo-button" onClick={goToMainPage}>
-        AlgoLingo
+        Algolingo
       </button>
     </div>
   );
