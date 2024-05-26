@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./SecondLevel.css"; // Use the same CSS as SecondLevel
+import "./SecondLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
@@ -15,29 +15,38 @@ function FirstLevel() {
 
   // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
-    const numberOfFieldsDynamic = Math.floor(Math.random() * 9) + 1; // Random number between 1 and 9
+    const newStack = new StackImplementation(); // Create a new stack instance
+    const initialStackValues = Array.from(
+      { length: 2 }, // Initial values length
+      () => Math.floor(Math.random() * 100)
+    ); // Generate random initial values
+
+    // Push initial random values onto the stack
+    initialStackValues.forEach((value) => newStack.push(value));
+
+    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 1; // Random number between 1 and 5 for additional push values
     const newStackValues = Array.from(
       { length: numberOfFieldsDynamic },
-      (_, i) => Math.floor(Math.random() * 100)
+      () => Math.floor(Math.random() * 100)
     ); // Generate random values
 
     const newOperations = [];
 
-    // Push up to four random values onto the stack
+    // Push up to three random values onto the stack
     const numberOfValuesToPush = Math.min(
-      Math.floor(Math.random() * 4) + 1,
+      Math.floor(Math.random() * 7) + 4,
       newStackValues.length
     );
     const valuesToPush = newStackValues.slice(0, numberOfValuesToPush);
 
     // Push each value onto the stack
     valuesToPush.forEach((value) => {
-      stack.push(value);
+      newStack.push(value);
       newOperations.push({ type: "push", values: [value] });
     });
 
     // Calculate the remaining capacity of the stack after push operations
-    const remainingCapacity = stack.stack.length - valuesToPush.length;
+    const remainingCapacity = newStack.stack.length;
 
     // Generate a random pop operation with a count greater than or equal to 1 and less than or equal to the remaining capacity,
     const popCount = Math.min(
@@ -46,6 +55,7 @@ function FirstLevel() {
     );
     newOperations.push({ type: "pop", count: popCount });
 
+    setStack(newStack); // Update the stack state with the new stack instance
     setQuestionText(generateQuestion(valuesToPush, popCount));
     setOperations(newOperations);
   };
@@ -149,21 +159,33 @@ function FirstLevel() {
         />
         <br></br>
         <div className="second-level-container">
-          <div className="bucket" align="center">
-            {/* Render popped values */}
-            <div className="popped-values">
-              {poppedValues.map((value, index) => (
-                <div key={`popped-${index}`} className="popped-value">
+          <div className="bucket-container">
+            {/* Left arrow pointing up for push */}
+            <div className="arrow push-arrow">
+              <div className="arrow-up"></div>
+              <div>Push</div>
+            </div>
+            <div className="bucket" align="center">
+              {/* Render popped values */}
+              <div className="popped-values">
+                {poppedValues.map((value, index) => (
+                  <div key={`popped-${index}`} className="popped-value">
+                    {value}
+                  </div>
+                ))}
+              </div>
+              {/* Render stack values */}
+              {[...stack.stack].reverse().map((value, index) => (
+                <div key={index} className="stack-value">
                   {value}
                 </div>
               ))}
             </div>
-            {/* Render stack values */}
-            {[...stack.stack].reverse().map((value, index) => (
-              <div key={index} className="stack-value">
-                {value}
-              </div>
-            ))}
+            {/* Right arrow pointing down for pop */}
+            <div className="arrow pop-arrow">
+              <div>Pop</div>
+              <div className="arrow-down"></div>
+            </div>
           </div>
           <div className="question">
             <h3>What will be the last popped value after</h3>

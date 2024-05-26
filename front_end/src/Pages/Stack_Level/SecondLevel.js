@@ -49,37 +49,47 @@ function SecondLevel() {
 
   return (
     <div className="all-div">
-        <AlgoLingoBar />
-        <div className="other">
-          <h1 className="title-styling">Stack</h1>
-          <h2 className="title-styling">Second Level</h2>
- {/* Render LevelsBar component */}
- <LevelsBar
-        pushClicked={false}
-        popClicked={false}
-        peekClicked={false}
-        isEmptyClicked={false}
-      />
-      <br></br>
-        <div className="second-level-container" >
-          <div className="bucket" align="center">
-            {/* Render popped values */}
-            <div className="popped-values">
-              {poppedValues.map((value, index) => (
-                <div key={`popped-${index}`} className="popped-value">
+      <AlgoLingoBar />
+      <div className="other">
+        <h1 className="title-styling">Stack</h1>
+        <h2 className="title-styling">Second Level</h2>
+        {/* Render LevelsBar component */}
+        <LevelsBar
+          pushClicked={false}
+          popClicked={false}
+          peekClicked={false}
+          isEmptyClicked={false}
+        />
+        <br />
+        <div className="second-level-container">
+          <div className="bucket-container">
+            <div className="arrow push-arrow">
+              <div className="arrow-up"></div>
+              <div>Push</div>
+            </div>
+            <div className="bucket" align="center">
+              {/* Render popped values */}
+              <div className="popped-values">
+                {poppedValues.map((value, index) => (
+                  <div key={`popped-${index}`} className="popped-value">
+                    {value}
+                  </div>
+                ))}
+              </div>
+              {/* Render stack values */}
+              {[...stack.stack].reverse().map((value, index) => (
+                <div key={index} className="stack-value">
                   {value}
                 </div>
               ))}
             </div>
-            {/* Render stack values */}
-            {[...stack.stack].reverse().map((value, index) => (
-              <div key={index} className="stack-value">
-                {value}
-              </div>
-            ))}
+            <div className="arrow pop-arrow">
+              <div className="arrow-down"></div>
+              <div>Pop</div>
+            </div>
           </div>
           <div className="question">
-            <h3>Which number will be popped first?</h3> {/* Change here */}
+            <h3>Which number will be popped first?</h3>
             <input
               type="number"
               placeholder="Enter your answer"
@@ -97,7 +107,6 @@ function SecondLevel() {
           </button>
         </div>
       </div>
-     
     </div>
   );
 }
