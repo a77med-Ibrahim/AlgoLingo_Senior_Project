@@ -5,6 +5,7 @@ import { useDrag, useDrop } from "react-dnd";
 import Xarrow from "react-xarrows";
 import Celebration from "../Celebration/Celebration";
 import "./BSLevel2.css";
+import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 
 function DraggableNode({ id, number, onMoveNode, style }) {
   const [{ isDragging }, drag] = useDrag(
@@ -95,6 +96,7 @@ function BSLevel2() {
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
 
   useEffect(() => {
     if (taskCompleted) {
@@ -112,10 +114,15 @@ function BSLevel2() {
       } else {
         setTaskCompleted(true); // Mark the min heap task as completed
       }
+      setTryAgain(false); // Reset try again animation
     } else {
       setMessage(
         `Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`
       );
+      setTryAgain(true);
+      setTimeout(() => {
+        setTryAgain(false);
+      }, 500);
     }
   }
 
@@ -209,6 +216,7 @@ function BSLevel2() {
           <p>Well done! You've completed both tasks!</p>
         )}
         <Celebration active={celebrate} />
+        <TryAgainAnimation active={tryAgain} />
       </div>
     </div>
   );

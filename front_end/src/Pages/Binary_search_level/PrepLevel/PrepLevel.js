@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import LevelsBar from "../LevelBar";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 import Celebration from "../../Celebration/Celebration";
+import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
 import "./PrepLevel.css";
 
 function heapify(heap, n, i, comparator) {

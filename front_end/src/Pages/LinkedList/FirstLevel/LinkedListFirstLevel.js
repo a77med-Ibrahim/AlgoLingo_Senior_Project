@@ -1,8 +1,9 @@
+import React, { useState, useEffect } from "react";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 import LevelsBar from "../LevelBar";
-import React, { useState, useEffect } from "react";
 import Xarrow from "react-xarrows";
 import "./LinkedListFirstLevel.css";
+import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
 import Celebration from "../../Celebration/Celebration";
 
 function LinkedListFirstLevel() {
@@ -12,6 +13,7 @@ function LinkedListFirstLevel() {
   const [resultMessage, setResultMessage] = useState("");
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
 
   useEffect(() => {
     const nodeCount = Math.floor(Math.random() * 3) + 3; // 3-5 nodes
@@ -37,8 +39,16 @@ function LinkedListFirstLevel() {
     if (userGuess === remainingValues) {
       setResultMessage("Correct!");
       setTaskCompleted(true);
+      setTryAgain(false); // Reset try again animation
     } else {
-      setResultMessage(`Incorrect, try again.`);
+      setResultMessage("Incorrect, try again.");
+      setTaskCompleted(false);
+      setCelebrate(false);
+      setTryAgain(true); 
+      // Cooldown to allow re-triggering the animation
+      setTimeout(() => {
+        setTryAgain(false);
+      }, 500);
     }
   }
 
@@ -90,10 +100,14 @@ function LinkedListFirstLevel() {
           <button onClick={handleGuessSubmit} className="push-buttons-styling">
             Submit Guess
           </button>
-          {taskCompleted && (
+          {resultMessage && (
             <div className="result-message">
               {resultMessage}
-              <Celebration active={celebrate} />
+              {taskCompleted ? (
+                <Celebration active={celebrate} />
+              ) : (
+                <TryAgainAnimation active={tryAgain} />
+              )}
             </div>
           )}
         </div>

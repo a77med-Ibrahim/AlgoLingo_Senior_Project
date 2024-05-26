@@ -6,6 +6,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import "./LinkedListSecondLevel.css";
 import Celebration from "../../Celebration/Celebration";
+import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
 
 const NodeType = "node";
 
@@ -92,6 +93,7 @@ const LinkedListSecondLevel = () => {
   const [nodes, setNodes] = useState(() => shuffle([...correctOrder]));
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
 
   const moveNode = useCallback((dragIndex, hoverIndex) => {
     setNodes((prevNodes) =>
@@ -111,8 +113,13 @@ const LinkedListSecondLevel = () => {
     setMessage(isCorrect ? "Correct order!" : "Incorrect order, try again!");
     if (isCorrect) {
       setCelebrate(true);
+      setTryAgain(false);
     } else {
       setCelebrate(false);
+      setTryAgain(true);
+      setTimeout(() => {
+        setTryAgain(false);
+      }, 500);
     }
   };
 
@@ -158,6 +165,7 @@ const LinkedListSecondLevel = () => {
           </button>
           <div className="result-message">{message}</div>
           <Celebration active={celebrate} />
+          <TryAgainAnimation active={tryAgain} />
         </div>
       </div>
     </DndProvider>
