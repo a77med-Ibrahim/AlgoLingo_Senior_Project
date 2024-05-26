@@ -13,7 +13,7 @@ function LevelsBar({
 }) {
   const navigate = useNavigate();
 
-  const levels = ["prep", 1, 2];
+  const levels = ["prep", 1, 2,3];
 
   const isUnlocked = (index) => {
     // Check if all required buttons are clicked
@@ -23,6 +23,10 @@ function LevelsBar({
     }
     else if (index === 2) {
       return checkResult === "Great!";
+
+    } 
+    else if (index === 3) {
+      return true;
 
     } 
     else {
@@ -42,6 +46,9 @@ function LevelsBar({
       navigate("/preperation-level/first-level");
     } else if (index === 2) {
       navigate("/preperation-level/second-level");
+    }
+    else if (index === 3) {
+      navigate("/preperation-level/third-level");
     }
     else {
       // Handle navigation for other levels
