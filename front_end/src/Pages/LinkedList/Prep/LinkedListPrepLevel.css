@@ -21,10 +21,39 @@
 }
 
 .game-container {
-  padding-top: 10%;
+  padding-top: 2%;
   display: flex;
   justify-content: center;
   position: relative;
+}
+.code-container {
+  text-align: center;
+  background-color: #d2d2d2;
+  width: 90%; /* Full width on small screens */
+  height: 25%;
+  border: 2px solid grey;
+  border-radius: 20px;
+  padding: 20px;
+  margin: 1em 0; /* Add margin for spacing */
+}
+
+.title-code-style {
+  background-color: inherit;
+  color: red;
+  margin: 0;
+}
+
+.code-style {
+  background-color: inherit;
+  color: blue;
+  margin-top: 10px;
+}
+
+.code_description {
+  background-color: inherit;
+  color: purple;
+  margin-top: 10px;
+  font-size: large;
 }
 
 .box-style {
@@ -93,7 +122,7 @@
   font-weight: 700;
   letter-spacing: 0.8px;
   line-height: 20px;
-  margin: 0 5px; /* Add margin here to create space between buttons */
+  margin: 0 5px;
   outline: none;
   overflow: visible;
   padding: 13px 16px;

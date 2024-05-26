@@ -31,6 +31,9 @@ function LinkedListPrepLevel() {
   const [deleteValueClicked, setDeleteValueClicked] = useState(false);
   const [deleteTailClicked, setDeleteTailClicked] = useState(false);
 
+  const [hoveredButton, setHoveredButton] = useState(null); // State to track hovered button
+  const [lastHoveredButton, setLastHoveredButton] = useState(null); // State to track last hovered button
+
   useEffect(() => {
     setBoxReferences(
       Array.from({ length: numberOfBoxes }, (_, index) => ({
@@ -39,6 +42,7 @@ function LinkedListPrepLevel() {
       }))
     );
   }, [numberOfBoxes]);
+
   useEffect(() => {
     if (
       pushToHeadClicked &&
@@ -258,30 +262,72 @@ function LinkedListPrepLevel() {
             pushToTailClicked={pushToTailClicked}
           />
           <div>
-            <button onClick={handlePushToHead} className="push-buttons-styling">
+            <button
+              onClick={handlePushToHead}
+              className="push-buttons-styling"
+              onMouseEnter={() => {
+                setHoveredButton("pushToHead");
+                setLastHoveredButton("pushToHead");
+              }}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
               Push to Head
             </button>
             <button
               className="push-buttons-styling"
               onClick={handlePushAfterAValue}
+              onMouseEnter={() => {
+                setHoveredButton("pushAfterValue");
+                setLastHoveredButton("pushAfterValue");
+              }}
+              onMouseLeave={() => setHoveredButton(null)}
             >
               Push after a value
             </button>
-            <button onClick={handlePushToTail} className="push-buttons-styling">
+            <button
+              onClick={handlePushToTail}
+              className="push-buttons-styling"
+              onMouseEnter={() => {
+                setHoveredButton("pushToTail");
+                setLastHoveredButton("pushToTail");
+              }}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
               Push to Tail
             </button>
           </div>
           <div>
-            <button className="push-buttons-styling" onClick={handleDeleteHead}>
+            <button
+              className="push-buttons-styling"
+              onClick={handleDeleteHead}
+              onMouseEnter={() => {
+                setHoveredButton("deleteHead");
+                setLastHoveredButton("deleteHead");
+              }}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
               Delete Head
             </button>
             <button
               className="push-buttons-styling"
               onClick={handleDeleteValue}
+              onMouseEnter={() => {
+                setHoveredButton("deleteValue");
+                setLastHoveredButton("deleteValue");
+              }}
+              onMouseLeave={() => setHoveredButton(null)}
             >
               Delete value
             </button>
-            <button className="push-buttons-styling" onClick={handleDeleteTail}>
+            <button
+              className="push-buttons-styling"
+              onClick={handleDeleteTail}
+              onMouseEnter={() => {
+                setHoveredButton("deleteTail");
+                setLastHoveredButton("deleteTail");
+              }}
+              onMouseLeave={() => setHoveredButton(null)}
+            >
               Delete Tail
             </button>
           </div>
@@ -321,10 +367,54 @@ function LinkedListPrepLevel() {
             {renderBoxesAndArrows()}
             <Celebration active={celebrate} />
           </div>
+          <div className="code-container">
+            <h1 className="title-code-style">
+              {getButtonName(lastHoveredButton)}
+            </h1>
+            <p className="code-style">{getAlgorithmName(lastHoveredButton)}</p>
+          </div>
         </div>
       </div>
     </div>
   );
+}
+
+function getButtonName(button) {
+  switch (button) {
+    case "pushToHead":
+      return "Push to Head";
+    case "pushAfterValue":
+      return "Push after a value";
+    case "pushToTail":
+      return "Push to Tail";
+    case "deleteHead":
+      return "Delete Head";
+    case "deleteValue":
+      return "Delete value";
+    case "deleteTail":
+      return "Delete Tail";
+    default:
+      return "Code";
+  }
+}
+
+function getAlgorithmName(button) {
+  switch (button) {
+    case "pushToHead":
+      return "This code pushes a node to the head of the linked list.";
+    case "pushAfterValue":
+      return "This code inserts a new node after a specific value in the linked list.";
+    case "pushToTail":
+      return "This code pushes a node to the tail of the linked list.";
+    case "deleteHead":
+      return "This code deletes the head node of the linked list.";
+    case "deleteValue":
+      return "This code deletes a node with a specific value from the linked list.";
+    case "deleteTail":
+      return "This code deletes the tail node of the linked list.";
+    default:
+      return "";
+  }
 }
 
 export default LinkedListPrepLevel;

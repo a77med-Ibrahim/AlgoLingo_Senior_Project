@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import LevelsBar from "../LevelBar";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 import Celebration from "../../Celebration/Celebration";
-import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
 import "./PrepLevel.css";
 
 function heapify(heap, n, i, comparator) {
@@ -57,6 +56,8 @@ function PrepLevel() {
   const [minHeapClicked, setMinHeapClicked] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null);
+  const [lastHoveredButton, setLastHoveredButton] = useState(null);
 
   useEffect(() => {
     if (maxHeapClicked && minHeapClicked) {
@@ -113,62 +114,100 @@ function PrepLevel() {
           maxHeapClicked={maxHeapClicked}
           minHeapClicked={minHeapClicked}
         />
-        <div
-          className="heap-container"
-          style={{ position: "relative", width: "100%", height: "100%" }}
-        >
-          {heap.map((node) => {
-            const nodeStyle = {
-              position: "absolute",
-              left: `${node.position.x}%`,
-              top: `${node.position.y}%`,
-              transition: "left 0.5s ease, top 0.5s ease",
-            };
-            return (
-              <div key={node.id} style={nodeStyle}>
-                <div
-                  style={{
-                    opacity: 1,
-                    fontWeight: "bold",
-                    cursor: "default",
-                    width: "5vw",
-                    height: "5vw",
-                    borderRadius: "50%",
-                    backgroundColor: "#f0f0f0",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "1vw",
-                  }}
-                >
-                  {node.number}
+        <div className="main-container">
+          <div className="heap-container-prep-level">
+            {heap.map((node) => {
+              const nodeStyle = {
+                position: "absolute",
+                left: `${node.position.x}%`,
+                top: `${node.position.y}%`,
+                transition: "left 0.5s ease, top 0.5s ease",
+              };
+              return (
+                <div key={node.id} style={nodeStyle}>
+                  <div
+                    style={{
+                      opacity: 1,
+                      fontWeight: "bold",
+                      cursor: "default",
+                      width: "5vw",
+                      height: "5vw",
+                      borderRadius: "50%",
+                      backgroundColor: "#f0f0f0",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      margin: "1vw",
+                    }}
+                  >
+                    {node.number}
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-          <div className="buttons-placement">
-            <button
-              onClick={handleMaxHeap}
-              disabled={isAnimating}
-              className="prep-heap-level-buttons"
-            >
-              Create Max Heap
-            </button>
-            <button
-              onClick={handleMinHeap}
-              disabled={isAnimating}
-              className="prep-heap-level-buttons"
-            >
-              Create Min Heap
-            </button>
+              );
+            })}
+            <div className="buttons-placement">
+              <button
+                onClick={handleMaxHeap}
+                disabled={isAnimating}
+                className="prep-heap-level-buttons"
+                onMouseEnter={() => {
+                  setHoveredButton("createMaxHeap");
+                  setLastHoveredButton("createMaxHeap");
+                }}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
+                Create Max Heap
+              </button>
+              <button
+                onClick={handleMinHeap}
+                disabled={isAnimating}
+                className="prep-heap-level-buttons"
+                onMouseEnter={() => {
+                  setHoveredButton("createMinHeap");
+                  setLastHoveredButton("createMinHeap");
+                }}
+                onMouseLeave={() => setHoveredButton(null)}
+              >
+                Create Min Heap
+              </button>
+            </div>
+
+            {maxHeapClicked && <p>Max heap created successfully!</p>}
+            {minHeapClicked && <p>Min heap created successfully!</p>}
           </div>
-          {maxHeapClicked && <p>Max heap created successfully!</p>}
-          {minHeapClicked && <p>Min heap created successfully!</p>}
+          <div className="heap-code-container">
+            <h1 className="title-code-style">
+              {getButtonName(lastHoveredButton)}
+            </h1>
+            <p>{getAlgorithmName(lastHoveredButton)}</p>
+          </div>
         </div>
+
         <Celebration active={celebrate} />
       </div>
     </div>
   );
+}
+function getButtonName(button) {
+  switch (button) {
+    case "createMaxHeap":
+      return "Create Max Heap";
+    case "createMinHeap":
+      return "Create Min Heap";
+    default:
+      return "Code";
+  }
+}
+
+function getAlgorithmName(button) {
+  switch (button) {
+    case "createMaxHeap":
+      return "This code builds a max heap from the given array.";
+    case "createMinHeap":
+      return "This code builds a min heap from the given array.";
+    default:
+      return "";
+  }
 }
 
 export default PrepLevel;
