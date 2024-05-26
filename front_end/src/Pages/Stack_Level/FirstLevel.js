@@ -50,7 +50,7 @@ function FirstLevel() {
 
     // Generate a random pop operation with a count greater than or equal to 1 and less than or equal to the remaining capacity,
     const popCount = Math.min(
-      Math.floor(Math.random() * Math.min(remainingCapacity, 5)) + 1,
+      Math.floor(Math.random() * Math.min(remainingCapacity, 3)) + 1,
       remainingCapacity
     );
     newOperations.push({ type: "pop", count: popCount });
@@ -168,7 +168,7 @@ function FirstLevel() {
             <div className="bucket" align="center">
               {/* Render popped values */}
               <div className="popped-values">
-                {poppedValues.map((value, index) => (
+                {[...poppedValues].reverse().map((value, index) => (
                   <div key={`popped-${index}`} className="popped-value">
                     {value}
                   </div>
