@@ -19,6 +19,9 @@ import LinkedListFirstLevel from "./Pages/LinkedList/FirstLevel/LinkedListFirstL
 import LinkedListSecondLevel from "./Pages/LinkedList/SecondLevel/LinkedListSecondLevel";
 import QueueFirstLevel from "./Pages/QueueLevel/queueFirstLevel";
 import QueueSecondLevel from "./Pages/QueueLevel/queueSecondLevel";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import "firebase/auth";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
