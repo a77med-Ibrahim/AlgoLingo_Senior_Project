@@ -8,6 +8,7 @@ function LevelsBar({
   popClicked,
   peekClicked,
   isEmptyClicked,
+  emptyqueue,
 }) {
   const navigate = useNavigate();
 
@@ -17,7 +18,7 @@ function LevelsBar({
     // Check if all required buttons are clicked
     if (index === 1) {
       // For the first button, check if all other required buttons are clicked
-      return pushClicked && popClicked && peekClicked && isEmptyClicked;
+      return emptyqueue
     } else {
       // For other buttons, check if all buttons before it are clicked
       return levels.slice(0, index).every((level) => level === "X");

@@ -34,52 +34,50 @@
   border-radius: 45%;
   border: none;
 }
-.queue-rectangle {
-  margin-left: 5%;
-  margin-top: 4%;
-  background-color: inherit;
-  width: 57vh;
-  height: 20vh;
-  border-top: 10px solid rgb(17, 0, 128);
-  border-right: solid inherit;
-  border-left: solid inherit;
-  border-bottom: 10px solid rgb(17, 0, 128);
+.queue-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
 }
-.circle {
-  width: 100px;
-  height: 100px;
-  background-color: red; /* Adjust color as needed */
-  border-radius: 50%;
-  position: absolute;
-  animation: moveCircle 3s linear forwards; /* Adjust animation duration as needed */
-  text-align: center;
+
+.queue-element {
+  width: 50px;
+  height: 50px;
+  background-color: #f0f0f0;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
+  transition: transform 0.5s, opacity 0.5s;
 }
-@keyframes moveCircle {
-  from {
-    left: 0;
-  }
-  to {
-    left: calc(
-      100% - 50px
-    ); /* Moves the circle to the right edge of the window */
-  }
+
+.queue-element.enqueue {
+  transform: translateX(100px); /* Adjust this value to match your needs */
 }
-.circle-names {
-  background-color: transparent;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+
+.queue-element.dequeue {
+  opacity: 0;
+  transform: translateX(100px); /* Adjust this value to match your needs */
+}
+
+.code-container {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #e0e0e0;
+  border: 1px solid #000;
+}
+
+.code-container pre {
   margin: 0;
 }
-.cashier-box {
-  width: 57vh;
-  height: 20vh;
-  border: 10px solid rgb(17, 0, 128);
-  display: flex;
-  justify-content: center; /* Horizontally center the content */
-  align-items: center; /* Vertically center the content */
-  position: absolute;
-  right: 5%; /* Adjust the distance from the right edge */
-  transform: translateY(50%);
+
+.code-container p {
+  color: red;
+  margin-top: 10px;
 }
+
+
+
+
