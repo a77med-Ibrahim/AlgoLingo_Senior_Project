@@ -77,12 +77,12 @@
 }
 
 .push-arrow {
-  left: -50px; /* Adjust the positioning as needed */
+  left: -50px; 
   margin-right: 10px;
 }
 
 .pop-arrow {
-  right: -50px; /* Adjust the positioning as needed */
+  right: -50px; 
   margin-left: 10px;
 }
 

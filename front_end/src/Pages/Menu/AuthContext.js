@@ -1,39 +1,36 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { firebaseApp } from './firebaseConfig';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { firebaseApp, db } from "./firebaseConfig";
 
 const AuthContext = createContext();
 
+export const useAuth = () => useContext(AuthContext);
+
 export const AuthProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
-  const auth = getAuth(firebaseApp);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
+    const auth = getAuth(firebaseApp);
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        localStorage.setItem('user', JSON.stringify(user));
+        const userDocRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (!userDoc.exists()) {
+          await setDoc(userDocRef, { completedLevels: [] });
+        }
+        setCurrentUser({ ...user, ...userDoc.data() });
       } else {
-        localStorage.removeItem('user');
+        setCurrentUser(null);
       }
     });
 
-    // Clean up subscription on unmount
     return () => unsubscribe();
-  }, [auth]);
-
-  const logout = () => {
-    signOut(auth);
-    setCurrentUser(null);
-  };
+  }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, logout }}>
+    <AuthContext.Provider value={{ currentUser }}>
       {children}
     </AuthContext.Provider>
   );
-};
-
-export const useAuth = () => {
-  return useContext(AuthContext);
 };

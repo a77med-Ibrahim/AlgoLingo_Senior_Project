@@ -1,24 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from './AuthContext'; // Ensure this path is correct
+import { useAuth } from './AuthContext'; 
 import { getAuth, signOut } from 'firebase/auth';
-import { firebaseApp } from "./firebaseConfig";
+import { firebaseApp } from "../Menu/firebaseConfig";
 import { useNavigate } from "react-router-dom";
-import './ProfilePage.css';
+import { doc, getDoc } from "firebase/firestore"; 
+import { db } from "../Menu/firebaseConfig";
 
 const auth = getAuth(firebaseApp);
 
 const ProfilePage = () => {
   const { currentUser } = useAuth();
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState({
+    name: "",
+    email: "",
+    completedLevels: []
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
     if (currentUser) {
-      setUserData({
-        name: currentUser.name,
-        email: currentUser.email,
-        // Add other user details you want to display
-      });
+      const fetchUserData = async () => {
+        try {
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          if (userDoc.exists()) {
+            setUserData({
+              name: currentUser.displayName,
+              email: currentUser.email,
+              completedLevels: userDoc.data().completedLevels || []
+            });
+          }
+        } catch (error) {
+          console.error("Error fetching user data: ", error);
+        }
+      };
+      fetchUserData();
     }
   }, [currentUser]);
 
@@ -30,17 +46,18 @@ const ProfilePage = () => {
     });
   };
 
-  if (!userData) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="profile-container">
       <h2>User Profile</h2>
       <div className="profile-details">
         <p><strong>Name:</strong> {userData.name}</p>
         <p><strong>Email:</strong> {userData.email}</p>
-        {/* Add other details here */}
+        <p><strong>Completed Levels:</strong></p>
+        <ul>
+          {userData.completedLevels.map((level, index) => (
+            <li key={index}>{level}</li>
+          ))}
+        </ul>
       </div>
       <div className="profile-actions">
         <button onClick={handleLogout}>Logout</button>
