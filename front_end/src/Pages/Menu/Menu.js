@@ -16,17 +16,23 @@ function Menu() {
   const [nameOfLevel, setNameOfLevel] = useState("");
 
   const [circleData, setCircleData] = useState([
-    { id: 1, top: "60px", left: "90px", isOpen: true, image: stackImage },
-    { id: 2, top: "150px", left: "-40px", isOpen: true, image: queueImage },
+    { id: 1, top: "40px", left: "210px", isOpen: true, image: stackImage },
+    { id: 2, top: "120px", left: "100px", isOpen: true, image: queueImage },
     {
       id: 3,
-      top: "220px",
-      left: "-20px",
+      top: "200px",
+      left: "-10px",
       isOpen: true,
       image: linkedList,
       size: "small",
     },
-    { id: 4, top: "300px", left: "-175px", isOpen: true, image: Heap },
+    // { id: 4, top: "350px", left: "0px", isOpen: true, image: Heap },
+    { id: 4, top: "340px", left: "-40px", isOpen: true, image: Heap },
+    // { id: 5, top: "420px", left: "-30px", isOpen: true },
+    { id: 5, top: "420px", left: "-60px", isOpen: false },
+    // { id: 6, top: "600px", left: "-7px", isOpen: true },
+    { id: 6, top: "500px", left: "-80px", isOpen: false },
+    { id: 7, top: "580px", left: "-200px", isOpen: false },
   ]);
   const navigate = useNavigate();
 
@@ -91,12 +97,12 @@ function Menu() {
         setDefinitionOfLevel(
           "Heap sort is a comparison-based sorting algorithm that uses a binary heap data structure to create a sorted array. It begins by building a max heap from the input data, where the largest element is at the root of the heap. The heap property ensures that each parent node is greater than or equal to its child nodes, and the reverse is true for a min heap, where the smallest element is at the root."
         );
-      } else {
+      } else if (circleId === 5 || 6 || 7) {
+        setNameOfLevel("");
         setDefinitionOfLevel("");
       }
     }
   };
-
   const handleStartButtonClick = () => {
     if (activeCircle && isLevelUnlocked(lastClickedCircle)) {
       if (lastClickedCircle === 1) {
@@ -128,6 +134,7 @@ function Menu() {
               {circle.isOpen ? circle.id : "X"}
             </button>
           ))}
+          <h2 className="sorting-line">---sorting---</h2>
         </div>
       </div>
       <div className="start-bar">
