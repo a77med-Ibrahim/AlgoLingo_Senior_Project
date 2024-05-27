@@ -17,7 +17,7 @@ function LandingPage() {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
-        // Signed in
+     
         navigate("/menu");
       })
       .catch((error) => {

@@ -39,11 +39,11 @@ const RegisterPage = () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      // Additional code to handle successful sign-in
+      
       navigate('/menu'); 
     } catch (error) {
       console.error("Error signing in with Google: ", error);
-      // Handle error appropriately
+      
     }
   };
 
