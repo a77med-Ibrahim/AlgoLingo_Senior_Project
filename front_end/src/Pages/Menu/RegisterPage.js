@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
-import { firebaseApp } from "./firebaseConfig"; // Assuming firebaseApp is correctly initialized
+import { firebaseApp } from "./firebaseConfig"; 
 import firebase from 'firebase/compat/app';
 import { firebaseConfig } from '../Menu/firebaseConfig';
 
-const auth = getAuth(firebaseApp); // Use the initialized auth instance
+const auth = getAuth(firebaseApp); 
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -16,6 +16,11 @@ const RegisterPage = () => {
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    if (!name || !email || !password || !rePassword) {
+      setError("All fields are required");
+      return;
+    }
+
     if (password !== rePassword) {
       setError("Passwords do not match");
       return;
@@ -23,7 +28,7 @@ const RegisterPage = () => {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/menu');
+      navigate('/LandingPage');
     } catch (error) {
       console.error("Registration failed:", error);
       setError("Registration failed: " + error.message);
@@ -34,11 +39,11 @@ const RegisterPage = () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      // Additional code to handle successful sign-in
-      navigate('/menu'); // Or wherever you want to navigate after sign-in
+      
+      navigate('/menu'); 
     } catch (error) {
       console.error("Error signing in with Google: ", error);
-      // Handle error appropriately
+      
     }
   };
 
@@ -55,7 +60,33 @@ const RegisterPage = () => {
           onChange={(e) => setName(e.target.value)}
         />
       </div>
-      {/* Other input fields for email, password, and re-enter password */}
+      <div className="input-group">
+        <label>Email</label>
+        <input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+      </div>
+      <div className="input-group">
+        <label>Password</label>
+        <input
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <div className="input-group">
+        <label>Re-enter Password</label>
+        <input
+          type="password"
+          placeholder="Re-enter your password"
+          value={rePassword}
+          onChange={(e) => setRePassword(e.target.value)}
+        />
+      </div>
       <div className="register-button">
         <button className="buttons-color" onClick={handleRegister}>
           Register
