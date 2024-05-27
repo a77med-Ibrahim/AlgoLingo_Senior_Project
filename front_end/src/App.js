@@ -4,6 +4,7 @@ import MenuPage from "./Pages/Menu/Menu";
 import PreperationLevel from "./Pages/Stack_Level/PreperationLevel/PreperationLevel";
 import React, { useState } from "react";
 import FirstLevel from "./Pages/Stack_Level/FirstLevel";
+import ThirdLevel from "./Pages/Stack_Level/ThirdLevel";
 import RegisterPage from "./Pages/Menu/RegisterPage";
 import SecondLevel from "./Pages/Stack_Level/SecondLevel";
 import QueuePreparationLevel from "./Pages/QueueLevel/PrepLevel/QueuePreparationLevel";
@@ -44,6 +45,10 @@ function App() {
             <Route
               path="/preperation-level/first-level"
               element={<FirstLevel />}
+            />
+            <Route
+              path="/preperation-level/third-level"
+              element={<ThirdLevel />}
             />
             
             <Route path="/preperation-level/" element={<PreperationLevel />} />
