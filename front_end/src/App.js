@@ -17,6 +17,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import "./App.css";
 import LinkedListFirstLevel from "./Pages/LinkedList/FirstLevel/LinkedListFirstLevel";
 import LinkedListSecondLevel from "./Pages/LinkedList/SecondLevel/LinkedListSecondLevel";
+import QueueFirstLevel from "./Pages/QueueLevel/queueFirstLevel";
+import QueueSecondLevel from "./Pages/QueueLevel/queueSecondLevel";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
@@ -49,6 +51,15 @@ function App() {
             <Route
               path="/preperation-level/third-level"
               element={<ThirdLevel />}
+            />
+            <Route
+            path="/queuefirstlevel"
+            element={<QueueFirstLevel />}
+            />
+
+            <Route 
+            path="/queueSecondLevel"
+            element={<QueueSecondLevel />}
             />
             
             <Route path="/preperation-level/" element={<PreperationLevel />} />

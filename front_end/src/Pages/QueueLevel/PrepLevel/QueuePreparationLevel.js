@@ -1,33 +1,47 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./QueuePreparationLevel.css";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 import LevelsBar from "./Levels Bar/LevelsBar";
 
-const namesArray = [
-  "Mohammed",
-  "khaled",
-  "Hussein",
-  "Hamza",
-  "Emir",
-  "Murat",
-  "Hakan",
-];
-
-function getRandomName() {
-  const randomIndex = Math.floor(Math.random() * namesArray.length);
-  return namesArray[randomIndex];
-}
-
 function QueuePreparationLevel() {
-  const [showCircle, setShowCircle] = useState(false);
-  const [circleName, setCircleName] = useState("");
+  const [queue, setQueue] = useState([]);
+  const [dequeueing, setDequeueing] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState("");
+  const [emptyqueue, setemptyqueue] = useState(false);
 
-  const handleEnQueueClick = () => {
-    setShowCircle(true);
-    setCircleName(getRandomName());
-    setTimeout(() => {
-      setShowCircle(false);
-    }, 3000); // Hide the circle after 3 seconds (adjust as needed)
+  const handleEnQueue = () => {
+    const newValue = Math.floor(Math.random() * 100) + 1; // Generate random value
+    setQueue((prevQueue) => [newValue, ...prevQueue]);
+  };
+
+  const handleDeQueue = () => {
+    if (queue.length > 0 && !dequeueing) {
+      setDequeueing(true);
+      setTimeout(() => {
+        setQueue((prevQueue) => prevQueue.slice(0, -1));
+        setDequeueing(false);
+      }, 500); // Adjust this duration to match the CSS animation duration
+    }
+  };
+
+
+  useEffect(() => {
+    setemptyqueue(queue.length === 0);
+  }, [queue]);
+
+  const explanations = {
+    enqueue: {
+      explanation: "Enqueue adds a new element to the end of the queue.",
+      code: `enqueue(value) {
+  this.queue.push(value);
+}`,
+    },
+    dequeue: {
+      explanation: "Dequeue removes the element from the front of the queue.",
+      code: `dequeue() {
+  return this.queue.shift();
+}`,
+    },
   };
 
   return (
@@ -37,29 +51,51 @@ function QueuePreparationLevel() {
         <h1 className="title-styling">Queue</h1>
         <h2 className="title-styling">Preparation</h2>
         <div className="navbar-line" />
-        <LevelsBar />
-        <h3>
-          Imagine you are waiting in a line to reach the cashier. The first one
-          to come is the first one to pay and leave. That's how Queue works
-          (FIFO) First In First Out
-        </h3>
+        <LevelsBar 
+        emptyqueue = {emptyqueue}
+        />
         <div className="flexing">
           <div className="queue-button-group">
-            <button onClick={handleEnQueueClick}>EnQueue</button>
-            <button>DeQueue</button>
-            <button>Peek</button>
-            <button>isEmpty</button>
+            <button
+              onClick={handleEnQueue}
+              onMouseEnter={() => setHoveredButton("enqueue")}
+              onMouseLeave={() => setHoveredButton("")}
+            >
+              EnQueue
+            </button>
+            <button
+              onClick={handleDeQueue}
+              onMouseEnter={() => setHoveredButton("dequeue")}
+              onMouseLeave={() => setHoveredButton("")}
+            >
+              DeQueue
+            </button>
           </div>
-          {showCircle && (
-            <div className="circle">
-              <p className="circle-names">{circleName}</p>
+        </div>
+        <div className="queue-container">
+          {queue.map((value, index) => (
+            <div
+              key={index}
+              className={`queue-element ${dequeueing && index === queue.length - 1 ? 'dequeue' : ''}`}
+            >
+              {value}
             </div>
+          ))}
+        </div>
+        <div className="code-container">
+          {hoveredButton && (
+            <>
+              <pre>{explanations[hoveredButton].code}</pre>
+              <p style={{ color: "red" }}>{explanations[hoveredButton].explanation}</p>
+            </>
           )}
-
-          <div className="cashier-box"> Chashier </div>
+           {emptyqueue && (
+            <p style={{ color: "black" }}>The queue is empty. You can proceed.</p>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
 export default QueuePreparationLevel;
