@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import "./LandingPage.css";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { firebaseApp } from "./firebaseConfig"; 
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+
+const auth = getAuth(firebaseApp); 
 
 function LandingPage() {
   const [email, setEmail] = useState("");
@@ -26,6 +30,17 @@ function LandingPage() {
           setError(errorMessage); // Display the actual Firebase error message
         }
       });
+  };
+  const handleSignInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      // Additional code to handle successful sign-in
+      navigate('/menu'); // Or wherever you want to navigate after sign-in
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+      // Handle error appropriately
+    }
   };
 
   return (
@@ -61,6 +76,11 @@ function LandingPage() {
           onClick={() => navigate("/register")}
         >
           Sign up
+        </button>
+      </div>
+      <div className="register-button">
+        <button className="buttons-color" onClick={handleSignInWithGoogle}>
+          Sign in with Google
         </button>
       </div>
     </div>
