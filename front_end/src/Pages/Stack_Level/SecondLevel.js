@@ -12,7 +12,8 @@ function SecondLevel() {
   const [operations, setOperations] = useState([]); // State to hold the generated operations
   const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
   const [checkResult, setCheckResult] = useState("");
-  const [firstLevelCompleted, setfirstLevelCompleted] = useState(false); // State to track first level completion
+  const [checkResult2, setCheckResult2] = useState("");
+  const [SecondLevelCompleted, setSecondLevelCompleted] = useState(false); // State to track first level completion
 
   // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
@@ -138,11 +139,11 @@ function SecondLevel() {
     // Check if the user's answer matches the last popped value
     if (userAnswerNum === lastPoppedValue) {
       // If correct, set check result to "Great!"
-      setCheckResult("Great!");
-      setfirstLevelCompleted(true);
+      setCheckResult2("Great!");
+      setSecondLevelCompleted(true);
     } else {
       // If incorrect, set check result to "Failed"
-      setCheckResult("Failed");
+      setCheckResult2("Failed");
     }
   };
 
@@ -165,6 +166,8 @@ function SecondLevel() {
           peekClicked={true} // Assuming the third button is always unlocked in the first level
           isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
           checkResult={"Great!"}
+          checkResult2={SecondLevelCompleted ? "Great!" : ""}
+
         />
         <br />
         <div className="second-level-container">
@@ -208,7 +211,7 @@ function SecondLevel() {
               className="input-class"
             />
             {/* Display check result */}
-            {checkResult && <p>{checkResult}</p>}
+            {checkResult2 && <p>{checkResult2}</p>}
           </div>
           <button className="check-button" onClick={handleCheck}>
             Check

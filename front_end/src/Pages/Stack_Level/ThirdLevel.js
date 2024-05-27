@@ -10,58 +10,76 @@ function ThirdLevel() {
   const [questionText, setQuestionText] = useState(""); // State to hold question text
   const [operations, setOperations] = useState([]); // State to hold the generated operations
   const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
-  const [checkResult, setCheckResult] = useState("");
+  const [checkResult3, setcheckResult3] = useState("");
   const [thirdLevelCompleted, setThirdLevelCompleted] = useState(false); // State to track third level completion
+  const [fadeOut, setFadeOut] = useState(false); // State to control fade-out effect
 
   // Function to generate random shapes for the stack and set question text
   const generateRandomShapes = () => {
     const newStack = new StackImplementation(); // Create a new stack instance
 
-    const shapes = ["circle", "triangle", "square", "rectangle", "octagon"];
+    const shapes = ["triangle", "square", "rectangle", "octagon"];
 
-    const initialStackShapes = shapes.slice(0, 2); // Initial shapes
-    initialStackShapes.forEach((shape) => newStack.push(shape));
+    const newStackShapes = [];
+    const selectedShapes = new Set(); // Use a set to ensure uniqueness of shapes
 
-    const numberOfShapes = Math.floor(Math.random() * 5) + 3; // Random number between 3 and 7 for additional push shapes
-    const newStackShapes = shapes.slice(2, numberOfShapes + 2); // Generate random shapes
+    // Select one shape of each type randomly
+    while (selectedShapes.size < shapes.length) {
+      const randomIndex = Math.floor(Math.random() * shapes.length);
+      selectedShapes.add(shapes[randomIndex]);
+    }
 
-    const newOperations = [];
+    // Convert set to array
+    selectedShapes.forEach((shape) => newStackShapes.push(shape));
 
-    newStackShapes.forEach((shape) => {
-      newStack.push(shape);
-      newOperations.push({ type: "push", shape });
-    });
+    // Shuffle the selected shapes
+    for (let i = newStackShapes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [newStackShapes[i], newStackShapes[j]] = [newStackShapes[j], newStackShapes[i]];
+    }
 
-    const remainingCapacity = newStack.stack.length;
-    const popCount = Math.min(Math.floor(Math.random() * Math.min(remainingCapacity, 3)) + 1, remainingCapacity);
-    newOperations.push({ type: "pop", count: popCount });
+    const newOperations = newStackShapes.map((shape) => ({ type: "push", shape }));
 
-    setStack(newStack); // Update the stack state with the new stack instance
-    setQuestionText(generateQuestion(newStackShapes, popCount));
+    // Pop random number of shapes (between 1 to 3)
+    const numberOfShapesToPop = Math.floor(Math.random() * 3) + 1;
+    newOperations.push({ type: "pop", count: numberOfShapesToPop });
+
     setOperations(newOperations);
+    setStack(newStack); // Update the stack state with the new stack instance
+    setQuestionText(generateQuestion(newStackShapes, numberOfShapesToPop));
   };
 
   // Function to generate a random question
   const generateQuestion = (stackShapes, popCount) => {
-    return `Push ${stackShapes.join(", ")} AND Pop ${popCount} shapes`;
+    const questionArray = [];
+
+    // Push operation for the first sentence
+    if (stackShapes.length === 1) {
+      questionArray.push(`Push the shape ${stackShapes[0]}`);
+    } else {
+      questionArray.push(`Push the shapes ${stackShapes.slice(0, -1).join(", ")} and ${stackShapes.slice(-1)}`);
+    }
+
+    // Pop operation for the second sentence
+    if (popCount === 1) {
+      questionArray.push(`then pop ${popCount} shape`);
+    } else {
+      questionArray.push(`then pop ${popCount} shapes`);
+    }
+
+    // Combine the questions
+    const question = questionArray.join(", ");
+
+    return question;
   };
 
   useEffect(() => {
     generateRandomShapes();
   }, []);
 
-  // Log the generated stack and the stack after the operation is applied to the console
-  useEffect(() => {
-    console.log(applyOperationAndGetStack(stack.stack));
-  }, [operations]); // Only trigger the effect when the 'operations' state changes
-
-  const applyOperationAndGetStack = (currentStack) => {
+  // Apply operations to get the final state of the stack and popped shapes
+  const applyOperationAndGetStack = (operations) => {
     let newStack = new StackImplementation(); // Create a new stack instance
-
-    currentStack.forEach((shape) => {
-      newStack.push(shape);
-    });
-
     let newPoppedShapes = [];
 
     operations.forEach((operation) => {
@@ -76,20 +94,26 @@ function ThirdLevel() {
       }
     });
 
-    setStack(newStack);
     setPoppedShapes(newPoppedShapes);
-
+    setStack(newStack);
     return newStack.stack;
   };
+
+  useEffect(() => {
+    if (operations.length > 0) {
+      applyOperationAndGetStack(operations);
+    }
+  }, [operations]); // Only trigger the effect when the 'operations' state changes
 
   // Function to handle clicking the "Check" button
   const handleCheck = () => {
     const lastPoppedShape = poppedShapes[poppedShapes.length - 1];
     if (userAnswer === lastPoppedShape) {
-      setCheckResult("Great!");
+      setcheckResult3("Great!");
       setThirdLevelCompleted(true);
+      setFadeOut(true); // Trigger the fade-out effect
     } else {
-      setCheckResult("Failed");
+      setcheckResult3("Failed");
     }
   };
 
@@ -105,19 +129,23 @@ function ThirdLevel() {
           popClicked={true}
           peekClicked={true}
           isEmptyClicked={true}
-          checkResult={thirdLevelCompleted ? "Great!" : ""}
+          checkResult={"Great!"}
+          checkResult2={"Great!"}
         />
         <br></br>
         <div className="third-level-container">
           <div className="shapes-container">
-            <div className="shapes">
-              {[...poppedShapes].reverse().map((shape, index) => (
-                <div key={`popped-${index}`} className={`shape ${shape}`}></div>
+            <div className="stack">
+              {stack.stack.map((shape, index) => (
+                <div key={`stack-${index}`} className={`shape ${shape}`}></div>
               ))}
             </div>
-            <div className="stack">
-              {[...stack.stack].reverse().map((shape, index) => (
-                <div key={index} className={`shape ${shape}`}></div>
+            <div className="shapes">
+              {poppedShapes.slice().reverse().map((shape, index) => (
+                <div
+                  key={`popped-${index}`}
+                  className={`shape ${shape} ${fadeOut ? "fade-out" : ""}`}
+                ></div>
               ))}
             </div>
           </div>
@@ -131,7 +159,7 @@ function ThirdLevel() {
               onChange={(e) => setUserAnswer(e.target.value)}
               className="input-class"
             />
-            {checkResult && <p>{checkResult}</p>}
+            {checkResult3 && <p>{checkResult3}</p>}
           </div>
           <button className="check-button" onClick={handleCheck}>
             Check
