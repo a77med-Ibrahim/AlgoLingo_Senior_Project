@@ -56,6 +56,7 @@ function App() {
                 )
               }
             />
+            <Route path="/LandingPage" element={<LandingPage />} />
             <Route path="/preperation-level/first-level" element={<FirstLevel />} />
             <Route path="/preperation-level/third-level" element={<ThirdLevel />} />
             <Route path="/queuefirstlevel" element={<QueueFirstLevel />} />
