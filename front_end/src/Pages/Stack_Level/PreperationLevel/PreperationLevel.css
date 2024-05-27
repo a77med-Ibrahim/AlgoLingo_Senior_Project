@@ -130,7 +130,7 @@
   background: none;
 }
 
-.rectangle {
+.rectanglecontainer {
   background-color: inherit;
   width: 100%; /* Full width on small screens */
   height: auto; /* Remove fixed height for responsiveness */
@@ -143,7 +143,7 @@
 }
 
 @media screen and (min-width: 48rem) {
-  .rectangle {
+  .rectanglecontainer {
     width: 15%; /* Set width on medium and larger screens */
     height: 57vh; /* Set height on medium and larger screens */
   }

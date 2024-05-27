@@ -76,14 +76,14 @@ function PreperationLevel() {
     }
 
     // Append the box to the container
-    const rectangle = document.querySelector(".rectangle");
-    rectangle.appendChild(box);
-    document.querySelector(".rectangle").appendChild(box);
+    const rectanglecontainer = document.querySelector(".rectanglecontainer");
+    rectanglecontainer.appendChild(box);
+    document.querySelector(".rectanglecontainer").appendChild(box);
 
     // Calculate the translateY value based on boxCount
     const boxHeight = 70; // Assuming the height of each box is 70px
     const margin = 3; // Assuming the margin between boxes is 3px
-    const availableHeight = rectangle.clientHeight; // Get the height of the rectangle
+    const availableHeight = rectanglecontainer.clientHeight; // Get the height of the rectanglecontainer
 
     // Calculate the translateY value
     const translateYValue =
@@ -122,7 +122,7 @@ function PreperationLevel() {
     popInProgress = true;
 
     // Select the last box element
-    const lastBox = document.querySelector(".rectangle .box:last-child");
+    const lastBox = document.querySelector(".rectanglecontainer .box:last-child");
 
     // Calculate the translateY value to move the box out of the viewport
     const translateYValue = -70; // Move the box up by its height
@@ -236,7 +236,7 @@ function PreperationLevel() {
             </button>
             {isEmpty !== null && <p className="is-empty-result"> {isEmpty}</p>}
           </div>
-          <div className="rectangle"></div>
+          <div className="rectanglecontainer"></div>
           <div className="code-bar">
             <h1 className="title_code_style">Code</h1>
             <h2 className="code_style"></h2>
