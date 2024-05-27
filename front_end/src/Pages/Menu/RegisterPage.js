@@ -1,33 +1,46 @@
 import React, { useState } from "react";
-import "./Register.css";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { firebaseApp } from "./firebaseConfig"; // Assume you have this configuration file
+import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
+import { firebaseApp } from "./firebaseConfig"; // Assuming firebaseApp is correctly initialized
+import firebase from 'firebase/compat/app';
+import { firebaseConfig } from '../Menu/firebaseConfig';
 
-function RegisterPage() {
+const auth = getAuth(firebaseApp); // Use the initialized auth instance
+
+const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [re_password, setRe_Password] = useState("");
+  const [rePassword, setRePassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
-    if (password !== re_password) {
+    if (password !== rePassword) {
       setError("Passwords do not match");
       return;
     }
 
-    const auth = getAuth(firebaseApp);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       navigate('/menu');
-        } catch (error) {
-            console.error("Registration failed:", error);
-            // Handle error
-            setError("Registration failed: " + error.message);
-        }
-    };
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setError("Registration failed: " + error.message);
+    }
+  };
+
+  const handleSignInWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      // Additional code to handle successful sign-in
+      navigate('/menu'); // Or wherever you want to navigate after sign-in
+    } catch (error) {
+      console.error("Error signing in with Google: ", error);
+      // Handle error appropriately
+    }
+  };
 
   return (
     <div className="container">
@@ -42,36 +55,15 @@ function RegisterPage() {
           onChange={(e) => setName(e.target.value)}
         />
       </div>
-      <div className="input-group">
-        <label>Email</label>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
-        <label>Password</label>
-        <input
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
-        <label>Re-enter Password</label>
-        <input
-          type="password"
-          placeholder="Re-enter your password"
-          value={re_password}
-          onChange={(e) => setRe_Password(e.target.value)}
-        />
-      </div>
+      {/* Other input fields for email, password, and re-enter password */}
       <div className="register-button">
         <button className="buttons-color" onClick={handleRegister}>
           Register
+        </button>
+      </div>
+      <div className="register-button">
+        <button className="buttons-color" onClick={handleSignInWithGoogle}>
+          Sign in with Google
         </button>
       </div>
     </div>
