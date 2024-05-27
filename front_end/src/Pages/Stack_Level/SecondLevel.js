@@ -3,17 +3,20 @@ import "./SecondLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
+import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
+import Celebration from "../Celebration/Celebration";
 
 function SecondLevel() {
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
-  const [stack, setStack] = useState(new StackImplementation()); // Initialize stack using StackImplementation
+  const [stack, setStack] = useState(new StackImplementation());
   const [poppedValues, setPoppedValues] = useState([]);
-  const [questionText, setQuestionText] = useState(""); // State to hold question text
-  const [operations, setOperations] = useState([]); // State to hold the generated operations
-  const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
-  const [checkResult, setCheckResult] = useState("");
+  const [questionText, setQuestionText] = useState("");
+  const [operations, setOperations] = useState([]);
+  const [userAnswer, setUserAnswer] = useState("");
   const [checkResult2, setCheckResult2] = useState("");
-  const [SecondLevelCompleted, setSecondLevelCompleted] = useState(false); // State to track first level completion
+  const [secondLevelCompleted, setSecondLevelCompleted] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
 
   // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
@@ -27,9 +30,8 @@ function SecondLevel() {
     initialStackValues.forEach((value) => newStack.push(value));
 
     const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
-    const newStackValues = Array.from(
-      { length: numberOfFieldsDynamic },
-      () => Math.floor(Math.random() * 100)
+    const newStackValues = Array.from({ length: numberOfFieldsDynamic }, () =>
+      Math.floor(Math.random() * 100)
     ); // Generate random values
 
     const newOperations = [];
@@ -141,10 +143,18 @@ function SecondLevel() {
       // If correct, set check result to "Great!"
       setCheckResult2("Great!");
       setSecondLevelCompleted(true);
+      setCelebrate(true);
+      setTryAgain(false);
     } else {
       // If incorrect, set check result to "Failed"
       setCheckResult2("Failed");
+      setSecondLevelCompleted(false);
+      setCelebrate(false);
+      setTryAgain(true);
     }
+    setTimeout(() => {
+      setTryAgain(false);
+    }, 500);
   };
 
   // Function to handle clicking the pop arrow (button)
@@ -158,7 +168,7 @@ function SecondLevel() {
       <AlgoLingoBar />
       <div className="other">
         <h1 className="title-styling">Stack</h1>
-        <h2 className="title-styling">First Level</h2>
+        <h2 className="title-styling">Second Level</h2>
         {/* Render LevelsBar component */}
         <LevelsBar
           pushClicked={true} // Assuming the first button is always unlocked in the first level
@@ -166,13 +176,12 @@ function SecondLevel() {
           peekClicked={true} // Assuming the third button is always unlocked in the first level
           isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
           checkResult={"Great!"}
-          checkResult2={SecondLevelCompleted ? "Great!" : ""}
-
+          checkResult2={secondLevelCompleted ? "Great!" : ""}
         />
         <br />
         <div className="second-level-container">
           <div className="bucket-container">
-          <div className="arrow push-arrow">
+            <div className="arrow push-arrow">
               <div className="arrow-up"></div>
               <div>Push</div>
             </div>
@@ -213,9 +222,14 @@ function SecondLevel() {
             {/* Display check result */}
             {checkResult2 && <p>{checkResult2}</p>}
           </div>
-          <button className="check-button" onClick={handleCheck}>
+          <button
+            className="stack-level-first-game-buttons"
+            onClick={handleCheck}
+          >
             Check
           </button>
+          <Celebration active={celebrate} />
+          <TryAgainAnimation active={tryAgain} />
         </div>
       </div>
     </div>
@@ -223,4 +237,3 @@ function SecondLevel() {
 }
 
 export default SecondLevel;
-

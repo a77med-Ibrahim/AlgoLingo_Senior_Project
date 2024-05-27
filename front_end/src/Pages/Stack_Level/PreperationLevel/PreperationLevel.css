@@ -43,9 +43,9 @@
 
 .prep-level-container {
   display: flex;
-  flex-direction: column; /* Stack items vertically on small screens */
+  flex-direction: column;
   gap: 15%;
-  height: auto; /* Remove fixed height for responsiveness */
+  height: auto;
   padding-top: 4%;
 }
 
@@ -61,73 +61,6 @@
   flex-direction: column;
   gap: 10px;
   padding-top: 5%;
-}
-
-.prep-level-buttons {
-  appearance: button;
-  background-color: #294050;
-  border: solid transparent;
-  border-radius: 16px;
-  border-width: 0 0 4px;
-  box-sizing: border-box;
-  color: #f9f9f9;
-  cursor: pointer;
-  display: inline-block;
-  font-family: din-round, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  line-height: 20px;
-  margin: 0 5px;
-  outline: none;
-  overflow: visible;
-  padding: 13px 16px;
-  text-align: center;
-  text-transform: uppercase;
-  touch-action: manipulation;
-  transform: translateZ(0);
-  transition: filter 0.2s;
-  user-select: none;
-  -webkit-user-select: none;
-  vertical-align: middle;
-  white-space: nowrap;
-  width: 105%;
-  height: 52px;
-  position: relative; /* Add this to position the :after pseudo-element correctly */
-}
-
-.prep-level-buttons:after {
-  background-clip: padding-box;
-  background-color: #3498db;
-  border: solid transparent;
-  border-radius: 16px;
-  border-width: 0 0 4px;
-  bottom: -4px;
-  content: "";
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: -1;
-}
-
-.prep-level-buttons:main,
-.prep-level-buttons:focus {
-  user-select: auto;
-}
-
-.prep-level-buttons:hover:not(:disabled) {
-  filter: brightness(1.1);
-  -webkit-filter: brightness(1.1);
-}
-
-.prep-level-buttons:disabled {
-  cursor: auto;
-}
-
-.prep-level-buttons:active {
-  border-width: 4px 0 0;
-  background: none;
 }
 
 .rectanglecontainer {
@@ -176,6 +109,12 @@
   color: blue;
   margin-top: 10px;
 }
+.code-description-line {
+  height: 2px;
+  background-color: #000;
+  width: 100%;
+  margin: 10px 0;
+}
 
 .code_description {
   background-color: inherit;
@@ -208,4 +147,70 @@
   color: rgb(46, 37, 37);
   font-size: 30px;
   text-align: center;
+}
+.prep-level-buttons {
+  appearance: button;
+  background-color: #294050;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #f9f9f9;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  line-height: 20px;
+  margin: 0 5px;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 105%;
+  height: 52px;
+  position: relative;
+}
+
+.prep-level-buttons:after {
+  background-clip: padding-box;
+  background-color: #3498db;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.prep-level-buttons:main,
+.prep-level-buttons:focus {
+  user-select: auto;
+}
+
+.prep-level-buttons:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.prep-level-buttons:disabled {
+  cursor: auto;
+}
+
+.prep-level-buttons:active {
+  border-width: 4px 0 0;
+  background: none;
 }

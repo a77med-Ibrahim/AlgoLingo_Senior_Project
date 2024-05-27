@@ -134,7 +134,7 @@ function Menu() {
               {circle.isOpen ? circle.id : "X"}
             </button>
           ))}
-          <h2 className="sorting-line">---sorting---</h2>
+          <h2 className="sorting-line">--------sorting--------</h2>
         </div>
       </div>
       <div className="start-bar">

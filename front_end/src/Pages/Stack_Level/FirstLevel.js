@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import "./SecondLevel.css";
+import "./FirstLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
+import Celebration from "../Celebration/Celebration";
+import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 
 function FirstLevel() {
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
@@ -13,7 +15,14 @@ function FirstLevel() {
   const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
   const [checkResult, setCheckResult] = useState("");
   const [firstLevelCompleted, setFirstLevelCompleted] = useState(false); // State to track first level completion
-  
+  const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
+
+  useEffect(() => {
+    if (firstLevelCompleted) {
+      setCelebrate(true);
+    }
+  }, [firstLevelCompleted]);
 
   // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
@@ -27,9 +36,8 @@ function FirstLevel() {
     initialStackValues.forEach((value) => newStack.push(value));
 
     const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
-    const newStackValues = Array.from(
-      { length: numberOfFieldsDynamic },
-      () => Math.floor(Math.random() * 100)
+    const newStackValues = Array.from({ length: numberOfFieldsDynamic }, () =>
+      Math.floor(Math.random() * 100)
     ); // Generate random values
 
     const newOperations = [];
@@ -131,26 +139,25 @@ function FirstLevel() {
   // Function to handle clicking the "Check" button
   const handleCheck = () => {
     // Convert the user's answer to a number
-    
     const userAnswerNum = parseInt(userAnswer);
 
     // Get the last popped value from the poppedValues array
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
-    
 
     // Check if the user's answer matches the last popped value
     if (userAnswerNum === lastPoppedValue) {
       // If correct, set check result to "Great!"
       setCheckResult("Great!");
       setFirstLevelCompleted(true);
-
+      setTryAgain(false); // Reset tryAgain state
     } else {
-      // If incorrect, set check result to "Failed"
-      setCheckResult("Failed");
+      setCheckResult("Incorrect");
+      setTryAgain(true); // Trigger try again animation
+      setTimeout(() => {
+        setTryAgain(false);
+      }, 500);
     }
-  
   };
-  
 
   return (
     <div className="all-div">
@@ -208,12 +215,16 @@ function FirstLevel() {
               onChange={(e) => setUserAnswer(e.target.value)}
               className="input-class"
             />
-            {/* Display check result */}
             {checkResult && <p>{checkResult}</p>}
           </div>
-          <button className="check-button" onClick={handleCheck}>
+          <button
+            className="stack-level-first-game-buttons"
+            onClick={handleCheck}
+          >
             Check
           </button>
+          <Celebration active={celebrate} />
+          <TryAgainAnimation active={tryAgain} />
         </div>
       </div>
     </div>

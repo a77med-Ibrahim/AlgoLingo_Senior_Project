@@ -337,17 +337,22 @@ function LinkedListPrepLevel() {
                 type="number"
                 value={value1}
                 onChange={handleChange1}
-                className="input-field"
+                style={{ width: "200px" }}
+                className="linkedlist-first-level-input-field"
                 placeholder="Enter the value to insert after"
               />
               <input
                 type="number"
                 value={value2}
                 onChange={handleChange2}
-                className="input-field"
+                style={{ width: "200px" }}
+                className="linkedlist-first-level-input-field"
                 placeholder="Enter the new node value"
               />
-              <button type="submit">Submit</button>
+
+              <button type="submit" className="push-buttons-styling">
+                Submit
+              </button>
             </form>
           )}
           {isDeleteInputVisible && (
@@ -356,10 +361,13 @@ function LinkedListPrepLevel() {
                 type="number"
                 value={deleteValue}
                 onChange={handleDeleteChange}
-                className="input-field"
+                style={{ width: "200px" }}
+                className="linkedlist-first-level-input-field"
                 placeholder="Enter the value to delete"
               />
-              <button type="submit">Submit</button>
+              <button type="submit" className="push-buttons-styling">
+                Submit
+              </button>
             </form>
           )}
           <p>Number Of Nodes: {numberOfBoxes}</p>
@@ -367,11 +375,17 @@ function LinkedListPrepLevel() {
             {renderBoxesAndArrows()}
             <Celebration active={celebrate} />
           </div>
-          <div className="code-container">
-            <h1 className="title-code-style">
+          <div className="linked-list-code-container">
+            <h1 className="code-description-title-style">
               {getButtonName(lastHoveredButton)}
             </h1>
-            <p className="code-style">{getAlgorithmName(lastHoveredButton)}</p>
+            <h3 className="linked-list-prep-level-code-style">
+              {getAlgorithmCode(lastHoveredButton)}
+            </h3>
+            <div className="code-description-line"></div>
+            <h3 className="linked-list-code_description">
+              {getAlgorithmDescription(lastHoveredButton)}
+            </h3>
           </div>
         </div>
       </div>
@@ -398,20 +412,38 @@ function getButtonName(button) {
   }
 }
 
-function getAlgorithmName(button) {
+function getAlgorithmCode(button) {
   switch (button) {
     case "pushToHead":
-      return "This code pushes a node to the head of the linked list.";
+      return "public void pushToHead(int data) {\n    Node newNode = new Node(data);\n    newNode.next = head;\n    head = newNode;\n}";
     case "pushAfterValue":
-      return "This code inserts a new node after a specific value in the linked list.";
+      return "public void pushAfterValue(int valueToInsertAfter, int data) {Node newNode = new Node(data);Node current = head;while (current != null && current.data != valueToInsertAfter) {current = current.next;}if (current != null) {newNode.next = current.next;current.next = newNode;}}";
     case "pushToTail":
-      return "This code pushes a node to the tail of the linked list.";
+      return "public void pushToTail(int data) {Node newNode = new Node(data);if (head == null) {head = newNode;} else {Node current = head;while (current.next != null) {current = current.next;}current.next = newNode;}}";
     case "deleteHead":
-      return "This code deletes the head node of the linked list.";
+      return "public void deleteHead() {if (head != null) {head = head.next;}}";
     case "deleteValue":
-      return "This code deletes a node with a specific value from the linked list.";
+      return "public void deleteValue(int valueToDelete) {if (head == null) {return;}if (head.data == valueToDelete) {head = head.next; return;}Node current = head;while (current.next != null && current.next.data != valueToDelete) {current = current.next;}if (current.next != null) {current.next = current.next.next;}}";
     case "deleteTail":
-      return "This code deletes the tail node of the linked list.";
+      return "public void deleteTail() {if (head == null || head.next == null) {head = null; } else {Node current = head;while (current.next.next != null) {current = current.next;}current.next = null; }}";
+    default:
+      return "";
+  }
+}
+function getAlgorithmDescription(button) {
+  switch (button) {
+    case "pushToHead":
+      return "It begins by creating a new node object with the given data, setting its next reference to point to the current head of the list, effectively linking it as the new first element. Subsequently, the head pointer is updated to reference this new node, thereby making it the head of the list. This method executes in constant time complexity O(1), as it performs a fixed number of operations regardless of the size of the linked list, facilitating fast and efficient insertion of elements at the beginning of the list.";
+    case "pushAfterValue":
+      return "It starts by traversing the list until it finds the node containing the specified value, then it creates a new node with the given data. Once the node is found, the new node is inserted after it by adjusting the next references accordingly. If the specified value is not found, or if the list is empty, the insertion operation is not performed. This method enables efficient insertion after a specific value, preserving the integrity of the linked list structure. It operates in linear time complexity O(n) due to the traversal required to find the specified value.";
+    case "pushToTail":
+      return "Starting with the creation of a new node object with the given data, it then traverses the list until it reaches the last node. Upon reaching the tail, it sets the next reference of the current last node to point to the newly created node, effectively appending it to the end of the list. If the list is initially empty, the new node becomes the head of the list. This operation ensures efficient insertion of elements at the tail of the linked list, maintaining its integrity. It operates in linear time complexity O(n), where n is the number of nodes in the list.";
+    case "deleteHead":
+      return "It begins by checking if the list is not empty, ensuring there is at least one node to delete. If the list is not empty, it updates the head pointer to point to the next node in the list, effectively removing the current head. This operation executes in constant time complexity O(1), as it performs a fixed number of operations regardless of the size of the linked list. It provides a straightforward and efficient means of maintaining the integrity of the linked list structure while efficiently handling the deletion of the first node.";
+    case "deleteValue":
+      return "It first checks if the list is empty; if so, it returns immediately. If the value to delete is found at the head of the list, it moves the head to the next node. Otherwise, it traverses the list until it reaches the node before the one containing the value to delete. Once found, it skips the node containing the value to delete by adjusting the next reference of the preceding node. This method efficiently handles the deletion of a specific value while maintaining the integrity of the linked list structure. It operates in linear time complexity O(n) due to the traversal required to find the specified value.";
+    case "deleteTail":
+      return "If the list is either empty or contains only one node, it sets the head to null. Otherwise, it traverses the list until it reaches the second-to-last node. Upon reaching this node, it sets its next reference to null, effectively removing the last node from the list. This operation ensures the integrity of the linked list structure while efficiently handling the deletion of the tail node. It operates in linear time complexity O(n) due to the traversal required to reach the second-to-last node.";
     default:
       return "";
   }
