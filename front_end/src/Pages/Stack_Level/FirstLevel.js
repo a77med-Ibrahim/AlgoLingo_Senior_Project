@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
-import "./SecondLevel.css";
-import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
-import LevelsBar from "./LevelBar"; // Import the LevelsBar component
+import "./FirstLevel.css";
+import StackImplementation from "./StackImplementation";
+import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { db } from "../Menu/firebaseConfig";
+import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
+import Celebration from "../Celebration/Celebration";
 
 function FirstLevel() {
   const { currentUser } = useAuth();
@@ -13,23 +18,21 @@ function FirstLevel() {
   const [operations, setOperations] = useState([]);
   const [userAnswer, setUserAnswer] = useState("");
   const [checkResult, setCheckResult] = useState("");
-  const [firstLevelCompleted, setFirstLevelCompleted] = useState(false); // State to track first level completion
-  
+  const [firstLevelCompleted, setFirstLevelCompleted] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
 
-  // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
     const newStack = new StackImplementation();
-    const initialStackValues = Array.from(
-      { length: 2 },
-      () => Math.floor(Math.random() * 100)
+    const initialStackValues = Array.from({ length: 2 }, () =>
+      Math.floor(Math.random() * 100)
     );
 
     initialStackValues.forEach((value) => newStack.push(value));
 
     const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
-    const newStackValues = Array.from(
-      { length: numberOfFieldsDynamic },
-      () => Math.floor(Math.random() * 100)
+    const newStackValues = Array.from({ length: numberOfFieldsDynamic }, () =>
+      Math.floor(Math.random() * 100)
     ); // Generate random values
 
     const newOperations = [];
@@ -111,23 +114,31 @@ function FirstLevel() {
   };
 
   // Function to handle clicking the "Check" button
-  const handleCheck = () => {
+  const handleCheck = async () => {
     // Convert the user's answer to a number
-    
+
     const userAnswerNum = parseInt(userAnswer);
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
-    
 
-    // Check if the user's answer matches the last popped value
     if (userAnswerNum === lastPoppedValue) {
       setCheckResult("Great!");
       setFirstLevelCompleted(true);
-
+      setCelebrate(true);
+      setTryAgain(false);
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        await updateDoc(userDocRef, {
+          completedLevels: arrayUnion("firstLevel"),
+        });
+      }
     } else {
-      // If incorrect, set check result to "Failed"
-      setCheckResult("Failed");
+      setCheckResult("Incorrect");
+      setCelebrate(false);
+      setTryAgain(true);
     }
-  
+    setTimeout(() => {
+      setTryAgain(false);
+    }, 500);
   };
 
   return (
