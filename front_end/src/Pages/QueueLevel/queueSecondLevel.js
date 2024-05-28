@@ -57,6 +57,11 @@ function QueueSecondLevel() {
           levelUnlocked={true}
           level2Unlocked={true}
           />
+          <div className="q">
+            <p>
+                After the following operations, calculate the sum of all the values inside the queue.
+            </p>
+          </div>
           <div className="operations-container">
             {operations.map((op, index) => (
               <React.Fragment key={index}>
