@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
-import LevelsBar from "../LinkedList/LevelBar";
+import LevelsBar from "./Levels Bar/LevelsBar";
+
 
 function QueueSecondLevel() {
     const [operations, setOperations] = useState([]);
@@ -41,7 +42,7 @@ function QueueSecondLevel() {
       if (parseInt(userGuess) === sum) {
         setResultMessage('Correct!');
       } else {
-        setResultMessage(`Incorrect, the sum of the queue is: ${sum}`);
+        setResultMessage(`Incorrect, try again.`);
       }
     };
 
@@ -52,7 +53,10 @@ function QueueSecondLevel() {
           <h1 className="title-styling">Queue</h1>
           <h2 className="title-styling">Second Level</h2>
           <div className="navbar-line" />
-          <LevelsBar />
+          <LevelsBar 
+          levelUnlocked={true}
+          level2Unlocked={true}
+          />
           <div className="operations-container">
             {operations.map((op, index) => (
               <React.Fragment key={index}>

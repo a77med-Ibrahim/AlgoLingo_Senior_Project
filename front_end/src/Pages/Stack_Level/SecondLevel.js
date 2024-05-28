@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import "./SecondLevel.css";
-import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
-import LevelsBar from "./LevelBar"; // Import the LevelsBar component
+import StackImplementation from "./StackImplementation";
+import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 import Celebration from "../Celebration/Celebration";
 
 function SecondLevel() {
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
+
   const [stack, setStack] = useState(new StackImplementation());
   const [poppedValues, setPoppedValues] = useState([]);
   const [questionText, setQuestionText] = useState("");
@@ -18,15 +19,12 @@ function SecondLevel() {
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
 
-  // Function to generate random values for the stack bar and set question text
   const generateRandomValues = () => {
-    const newStack = new StackImplementation(); // Create a new stack instance
-    const initialStackValues = Array.from(
-      { length: 2 }, // Initial values length
-      () => Math.floor(Math.random() * 100)
-    ); // Generate random initial values
+    const newStack = new StackImplementation();
+    const initialStackValues = Array.from({ length: 2 }, () =>
+      Math.floor(Math.random() * 100)
+    );
 
-    // Push initial random values onto the stack
     initialStackValues.forEach((value) => newStack.push(value));
 
     const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
@@ -36,45 +34,37 @@ function SecondLevel() {
 
     const newOperations = [];
 
-    // Push up to three random values onto the stack
     const numberOfValuesToPush = Math.min(
       Math.floor(Math.random() * 7) + 4,
       newStackValues.length
     );
     const valuesToPush = newStackValues.slice(0, numberOfValuesToPush);
 
-    // Push each value onto the stack
     valuesToPush.forEach((value) => {
       newStack.push(value);
       newOperations.push({ type: "push", values: [value] });
     });
 
-    // Calculate the remaining capacity of the stack after push operations
     const remainingCapacity = newStack.stack.length;
 
-    // Generate a random pop operation with a count greater than or equal to 1 and less than or equal to the remaining capacity,
     const popCount = Math.min(
       Math.floor(Math.random() * Math.min(remainingCapacity, 3)) + 1,
       remainingCapacity
     );
     newOperations.push({ type: "pop", count: popCount });
 
-    setStack(newStack); // Update the stack state with the new stack instance
+    setStack(newStack);
     setQuestionText(generateQuestion(valuesToPush, popCount));
     setOperations(newOperations);
   };
 
-  // Function to generate a random question
   const generateQuestion = (stackValues, popCount) => {
     const questionArray = [];
 
-    // Push operation for the first sentence
     questionArray.push(`Push ${stackValues.join(", ")}`);
 
-    // Pop operation for the second sentence
     questionArray.push(`Pop ${popCount} values`);
 
-    // Combine the questions
     const question = questionArray.join(" AND ");
 
     return question;
@@ -84,32 +74,27 @@ function SecondLevel() {
     generateRandomValues();
   }, []);
 
-  // Function to handle clicking on a button
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
   };
 
-  // Log the generated stack and the stack after the operation is applied to the console
   useEffect(() => {
     console.log(applyOperationAndGetStack(stack.stack));
-  }, [operations]); // Only trigger the effect when the 'operations' state changes
+  }, [operations]);
 
   const applyOperationAndGetStack = (currentStack) => {
-    let newStack = new StackImplementation(); // Create a new stack instance
+    let newStack = new StackImplementation();
 
-    // Copy the current stack elements to the new stack
     currentStack.forEach((value) => {
       newStack.push(value);
     });
 
-    let newPoppedValues = []; // Initialize an empty array for new popped values
+    let newPoppedValues = [];
 
-    // Apply the operations
     operations.forEach((operation) => {
       if (operation.type === "pop") {
         for (let i = 0; i < operation.count; i++) {
           if (!newStack.isEmpty()) {
-            // Remove the last value from the stack and add it to the poppedValues array
             newPoppedValues.push(newStack.pop());
           }
         }
@@ -120,33 +105,23 @@ function SecondLevel() {
       }
     });
 
-    // Update the stack state with the new stack instance
     setStack(newStack);
 
-    // Update the poppedValues state with the newPoppedValues array
     setPoppedValues(newPoppedValues);
 
-    // Return the new stack after applying the operations
     return newStack.stack;
   };
 
-  // Function to handle clicking the "Check" button
   const handleCheck = () => {
-    // Convert the user's answer to a number
     const userAnswerNum = parseInt(userAnswer);
-
-    // Get the last popped value from the poppedValues array
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
 
-    // Check if the user's answer matches the last popped value
     if (userAnswerNum === lastPoppedValue) {
-      // If correct, set check result to "Great!"
       setCheckResult2("Great!");
       setSecondLevelCompleted(true);
       setCelebrate(true);
       setTryAgain(false);
     } else {
-      // If incorrect, set check result to "Failed"
       setCheckResult2("Failed");
       setSecondLevelCompleted(false);
       setCelebrate(false);
@@ -157,9 +132,7 @@ function SecondLevel() {
     }, 500);
   };
 
-  // Function to handle clicking the pop arrow (button)
   const handlePopArrowClick = () => {
-    // Trigger fade-out effect for popped values
     document.querySelector(".popped-values").classList.add("fade-out");
   };
 
@@ -168,13 +141,14 @@ function SecondLevel() {
       <AlgoLingoBar />
       <div className="other">
         <h1 className="title-styling">Stack</h1>
-        <h2 className="title-styling">Second Level</h2>
-        {/* Render LevelsBar component */}
+
+        <h2 className="title-styling">First Level</h2>
+
         <LevelsBar
-          pushClicked={true} // Assuming the first button is always unlocked in the first level
-          popClicked={true} // Assuming the second button is always unlocked in the first level
-          peekClicked={true} // Assuming the third button is always unlocked in the first level
-          isEmptyClicked={true} // Assuming the fourth button is always unlocked in the first level
+          pushClicked={true}
+          popClicked={true}
+          peekClicked={true}
+          isEmptyClicked={true}
           checkResult={"Great!"}
           checkResult2={secondLevelCompleted ? "Great!" : ""}
         />
@@ -186,7 +160,6 @@ function SecondLevel() {
               <div>Push</div>
             </div>
             <div className="bucket" align="center">
-              {/* Render popped values */}
               <div className="popped-values">
                 {[...poppedValues].reverse().map((value, index) => (
                   <div key={`popped-${index}`} className="popped-value">
@@ -194,14 +167,14 @@ function SecondLevel() {
                   </div>
                 ))}
               </div>
-              {/* Render stack values */}
+
               {[...stack.stack].reverse().map((value, index) => (
                 <div key={index} className="stack-value">
                   {value}
                 </div>
               ))}
             </div>
-            {/* Right arrow pointing down for pop */}
+
             <button className="arrow pop-arrow" onClick={handlePopArrowClick}>
               <div>Pop</div>
               <div className="arrow-down"></div>

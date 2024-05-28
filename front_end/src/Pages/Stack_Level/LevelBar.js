@@ -17,7 +17,7 @@ function LevelsBar({
   const levels = ["prep", 1, 2,3];
 
   const isUnlocked = (index) => {
-    // Check if all required buttons are clicked
+  
     if (index === 1) {
       return pushClicked && popClicked && peekClicked && isEmptyClicked;
 
@@ -32,7 +32,7 @@ function LevelsBar({
     } 
     else {
 
-      // For other buttons, check if all buttons before it are clicked
+      
       return levels.slice(0, index).every((level) => level === "X");
     }
   };

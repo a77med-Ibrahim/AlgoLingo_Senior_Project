@@ -7,11 +7,14 @@ function QueuePreparationLevel() {
   const [queue, setQueue] = useState([]);
   const [dequeueing, setDequeueing] = useState(false);
   const [hoveredButton, setHoveredButton] = useState("");
-  const [emptyqueue, setemptyqueue] = useState(false);
+  const [levelUnlocked, setLevelUnlocked] = useState(false);
+  const [ItemsAdded, setItemsAdded] = useState(false);
+  const [firstEmpty, setFirstEmpty] = useState(false);
 
   const handleEnQueue = () => {
     const newValue = Math.floor(Math.random() * 100) + 1; // Generate random value
     setQueue((prevQueue) => [newValue, ...prevQueue]);
+    setItemsAdded(true);
   };
 
   const handleDeQueue = () => {
@@ -20,14 +23,20 @@ function QueuePreparationLevel() {
       setTimeout(() => {
         setQueue((prevQueue) => prevQueue.slice(0, -1));
         setDequeueing(false);
+        if (queue.length === 1){
+          setFirstEmpty(true);
+        }
       }, 500); // Adjust this duration to match the CSS animation duration
     }
   };
 
 
   useEffect(() => {
-    setemptyqueue(queue.length === 0);
-  }, [queue]);
+    if (ItemsAdded && queue.length === 0 && !firstEmpty){
+      setFirstEmpty(true);
+    }
+    setLevelUnlocked(firstEmpty);
+  }, [queue, ItemsAdded,firstEmpty]);
 
   const explanations = {
     enqueue: {
@@ -52,7 +61,7 @@ function QueuePreparationLevel() {
         <h2 className="title-styling">Preparation</h2>
         <div className="navbar-line" />
         <LevelsBar 
-        emptyqueue = {emptyqueue}
+        levelUnlocked = {levelUnlocked}
         />
         <div className="flexing">
           <div className="queue-button-group">
@@ -60,6 +69,8 @@ function QueuePreparationLevel() {
               onClick={handleEnQueue}
               onMouseEnter={() => setHoveredButton("enqueue")}
               onMouseLeave={() => setHoveredButton("")}
+              disabled={queue.length >= 10} // Disable button if queue is full
+
             >
               EnQueue
             </button>
@@ -89,7 +100,7 @@ function QueuePreparationLevel() {
               <p style={{ color: "red" }}>{explanations[hoveredButton].explanation}</p>
             </>
           )}
-           {emptyqueue && (
+           {levelUnlocked && (
             <p style={{ color: "black" }}>The queue is empty. You can proceed.</p>
           )}
         </div>
