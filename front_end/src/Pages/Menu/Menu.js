@@ -102,8 +102,7 @@ function Menu() {
       if (lastClickedCircle === 1) {
         navigate("/preperation-level");
       } else if (lastClickedCircle === 2) {
-        alert("Second level is not complete yet");
-        // navigate("/queue-preparation");
+        navigate("/queue-preparation");
       } else if (lastClickedCircle === 3) {
         navigate("/LinkedListPrepLevel");
       } else if (lastClickedCircle === 4) {

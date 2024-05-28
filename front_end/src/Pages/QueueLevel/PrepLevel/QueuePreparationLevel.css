@@ -62,12 +62,7 @@
   transform: translateX(100px); /* Adjust this value to match your needs */
 }
 
-.code-container {
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #e0e0e0;
-  border: 1px solid #000;
-}
+
 
 .code-container pre {
   margin: 0;
@@ -76,6 +71,59 @@
 .code-container p {
   color: red;
   margin-top: 10px;
+}
+
+.bar {
+  width: 50%;
+  height: 5px;
+  background-color: #000;
+  position: absolute;
+}
+
+.bar.top {
+  top: 410px;
+  right: 220px;
+}
+
+.bar.bottom {
+  bottom: 240px;
+  right: 220px;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 30px;
+  color: black;
+}
+
+.arrow.left {
+  top: 390px;
+  right: 900px;
+}
+
+.arrow.right {
+  right: 200px;
+  top: 390px;
+}
+
+.arrow-label {
+  position: absolute;
+  font-size: 16px;
+  color: black;
+}
+
+.arrow-label.left {
+  left: -30px; /* Adjust to position the left arrow label correctly */
+  top: calc(50% - 20px); /* Adjust to position the label above the arrow */
+  transform: translateY(-50%);
+}
+
+.arrow-label.right {
+  right: 0px; /* Adjust to position the right arrow label correctly */
+  top: calc(50% - 20px); /* Adjust to position the label above the arrow */
+  transform: translateY(-50%);
 }
 
 

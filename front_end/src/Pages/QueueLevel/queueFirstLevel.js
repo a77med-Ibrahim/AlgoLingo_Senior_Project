@@ -52,6 +52,11 @@ function QueueFirstLevel() {
           levelUnlocked={true}
           level2Unlocked= {level2Unlocked}
           />
+          <div>
+            <p>
+                Apply the following changes to a queue, what will the final array contain?
+            </p>
+          </div>
           <div className="operations-container">
             {operations.map((op, index) => (
               <React.Fragment key={index}>
