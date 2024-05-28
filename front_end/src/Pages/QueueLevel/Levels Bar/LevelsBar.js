@@ -9,6 +9,7 @@ function LevelsBar({
   peekClicked,
   isEmptyClicked,
   levelUnlocked,
+  level2Unlocked,
 }) {
   const navigate = useNavigate();
 
@@ -18,8 +19,12 @@ function LevelsBar({
     // Check if all required buttons are clicked
     if (index === 1) {
       // For the first button, check if all other required buttons are clicked
-      return levelUnlocked
-    } else {
+      return levelUnlocked;
+    } 
+    else if(index === 2){
+      return level2Unlocked;
+    }
+    else {
       // For other buttons, check if all buttons before it are clicked
       return levels.slice(0, index).every((level) => level === "X");
     }
@@ -35,7 +40,7 @@ function LevelsBar({
     } else if (index === 1) {
       navigate("/queueFirstLevel");
     } else {
-      // Handle navigation for other levels
+      navigate("/queuesecondlevel");
     }
   };
 
