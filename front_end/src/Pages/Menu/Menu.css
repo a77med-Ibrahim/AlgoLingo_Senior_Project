@@ -222,3 +222,11 @@
   border-width: 4px 0 0;
   background: none;
 }
+.sorting-line {
+  padding-top: 26vh;
+  font-family: din-round, sans-serif;
+  /* color: #d2d2d2; */
+  color: rgb(90, 89, 89);
+
+  background-color: transparent;
+}

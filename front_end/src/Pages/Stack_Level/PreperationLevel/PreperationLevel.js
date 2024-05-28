@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./PreperationLevel.css";
 import { useNavigate } from "react-router-dom";
 import LevelsBar from "../LevelBar";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
-
+import Celebration from "../../Celebration/Celebration";
 let boxCount = 0;
 
 function PreperationLevel() {
@@ -15,6 +15,7 @@ function PreperationLevel() {
   const [popClicked, setPopClicked] = useState(false);
   const [peekClicked, setPeekClicked] = useState(false);
   const [isEmptyClicked, setIsEmptyClicked] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
 
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
@@ -22,6 +23,12 @@ function PreperationLevel() {
       navigate("/preperation-level");
     }
   };
+
+  useEffect(() => {
+    if (popClicked && pushClicked && isEmptyClicked && peekClicked) {
+      setCelebrate(true);
+    }
+  }, [popClicked, pushClicked, isEmptyClicked, peekClicked]);
 
   const handleButtonClickOnce = (type) => {
     switch (type) {
@@ -60,11 +67,9 @@ function PreperationLevel() {
       return;
     }
 
-   
     const box = document.createElement("div");
     box.className = "box";
 
-   
     const boxNumber = document.createElement("span");
     boxNumber.className = "box-number";
     boxNumber.textContent = boxCount + 1;
@@ -122,7 +127,9 @@ function PreperationLevel() {
     popInProgress = true;
 
     // Select the last box element
-    const lastBox = document.querySelector(".rectanglecontainer .box:last-child");
+    const lastBox = document.querySelector(
+      ".rectanglecontainer .box:last-child"
+    );
 
     // Calculate the translateY value to move the box out of the viewport
     const translateYValue = -70; // Move the box up by its height
@@ -239,8 +246,10 @@ function PreperationLevel() {
           <div className="rectanglecontainer"></div>
           <div className="code-bar">
             <h1 className="title_code_style">Code</h1>
-            <h2 className="code_style"></h2>
+            <h2 className="code_style" />
+            <div className="code-description-line"></div>
             <p className="code_description"></p>
+            <Celebration active={celebrate} />
           </div>
         </div>
       </div>

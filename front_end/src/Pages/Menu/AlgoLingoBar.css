@@ -14,8 +14,32 @@
   border: 2px solid gray;
   border-radius: 50px;
   font-size: 2vw;
-  /* font-size: 30px; */
   font-family: "Major Mono Display", monospace;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
   font-weight: bold;
 }
+/* .menu-bar {
+  position: fixed; 
+  top: 10;
+  left: 10px;
+  text-align: center;
+  background-color: #d2d2d2;
+  width: 17vw;
+  height: 100vh; 
+  border: 2px solid grey;
+  border-radius: 50px 50px 50px 50px; 
+  z-index: 1000; 
+}
+
+.algolingo-button {
+  height: 90px;
+  width: 100%; 
+  background-color: transparent;
+  text-align: center;
+  border: 2px solid gray;
+  border-radius: 50px;
+  font-size: 2vw;
+  font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+} */

@@ -3,6 +3,8 @@ import "./ThirdLevel.css";
 import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
 import LevelsBar from "./LevelBar"; // Import the LevelsBar component
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
+import Celebration from "../Celebration/Celebration";
+import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 
 function ThirdLevel() {
   const [stack, setStack] = useState(new StackImplementation()); // Initialize stack using StackImplementation
@@ -13,6 +15,8 @@ function ThirdLevel() {
   const [checkResult3, setcheckResult3] = useState("");
   const [thirdLevelCompleted, setThirdLevelCompleted] = useState(false); // State to track third level completion
   const [fadeOut, setFadeOut] = useState(false); // State to control fade-out effect
+  const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
 
   // Function to generate random shapes for the stack and set question text
   const generateRandomShapes = () => {
@@ -35,10 +39,16 @@ function ThirdLevel() {
     // Shuffle the selected shapes
     for (let i = newStackShapes.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
-      [newStackShapes[i], newStackShapes[j]] = [newStackShapes[j], newStackShapes[i]];
+      [newStackShapes[i], newStackShapes[j]] = [
+        newStackShapes[j],
+        newStackShapes[i],
+      ];
     }
 
-    const newOperations = newStackShapes.map((shape) => ({ type: "push", shape }));
+    const newOperations = newStackShapes.map((shape) => ({
+      type: "push",
+      shape,
+    }));
 
     // Pop random number of shapes (between 1 to 3)
     const numberOfShapesToPop = Math.floor(Math.random() * 3) + 1;
@@ -57,7 +67,11 @@ function ThirdLevel() {
     if (stackShapes.length === 1) {
       questionArray.push(`Push the shape ${stackShapes[0]}`);
     } else {
-      questionArray.push(`Push the shapes ${stackShapes.slice(0, -1).join(", ")} and ${stackShapes.slice(-1)}`);
+      questionArray.push(
+        `Push the shapes ${stackShapes
+          .slice(0, -1)
+          .join(", ")} and ${stackShapes.slice(-1)}`
+      );
     }
 
     // Pop operation for the second sentence
@@ -111,10 +125,17 @@ function ThirdLevel() {
     if (userAnswer === lastPoppedShape) {
       setcheckResult3("Great!");
       setThirdLevelCompleted(true);
-      setFadeOut(true); // Trigger the fade-out effect
+      setFadeOut(true);
+      setCelebrate(true);
+      setTryAgain(false);
     } else {
-      setcheckResult3("Failed");
+      setcheckResult3("Incorrect");
+      setCelebrate(false);
+      setTryAgain(true);
     }
+    setTimeout(() => {
+      setTryAgain(false);
+    }, 500);
   };
 
   return (
@@ -141,12 +162,15 @@ function ThirdLevel() {
               ))}
             </div>
             <div className="shapes">
-              {poppedShapes.slice().reverse().map((shape, index) => (
-                <div
-                  key={`popped-${index}`}
-                  className={`shape ${shape} ${fadeOut ? "fade-out" : ""}`}
-                ></div>
-              ))}
+              {poppedShapes
+                .slice()
+                .reverse()
+                .map((shape, index) => (
+                  <div
+                    key={`popped-${index}`}
+                    className={`shape ${shape} ${fadeOut ? "fade-out" : ""}`}
+                  ></div>
+                ))}
             </div>
           </div>
           <div className="question">
@@ -164,6 +188,8 @@ function ThirdLevel() {
           <button className="check-button" onClick={handleCheck}>
             Check
           </button>
+          <Celebration active={celebrate} />
+          <TryAgainAnimation active={tryAgain} />
         </div>
       </div>
     </div>

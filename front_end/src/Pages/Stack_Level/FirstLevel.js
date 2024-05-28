@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import "./SecondLevel.css";
+import "./FirstLevel.css";
 import StackImplementation from "./StackImplementation";
 import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import { useAuth } from "../Menu/AuthContext";
 import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
+import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
+import Celebration from "../Celebration/Celebration";
 
 function FirstLevel() {
   const { currentUser } = useAuth();
@@ -17,21 +19,21 @@ function FirstLevel() {
   const [userAnswer, setUserAnswer] = useState("");
   const [checkResult, setCheckResult] = useState("");
   const [firstLevelCompleted, setFirstLevelCompleted] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
+  const [tryAgain, setTryAgain] = useState(false);
 
   const generateRandomValues = () => {
     const newStack = new StackImplementation();
-    const initialStackValues = Array.from(
-      { length: 2 },
-      () => Math.floor(Math.random() * 100)
+    const initialStackValues = Array.from({ length: 2 }, () =>
+      Math.floor(Math.random() * 100)
     );
 
     initialStackValues.forEach((value) => newStack.push(value));
 
-    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3;
-    const newStackValues = Array.from(
-      { length: numberOfFieldsDynamic },
-      () => Math.floor(Math.random() * 100)
-    );
+    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
+    const newStackValues = Array.from({ length: numberOfFieldsDynamic }, () =>
+      Math.floor(Math.random() * 100)
+    ); // Generate random values
 
     const newOperations = [];
 
@@ -111,23 +113,32 @@ function FirstLevel() {
     return newStack.stack;
   };
 
+  // Function to handle clicking the "Check" button
   const handleCheck = async () => {
+    // Convert the user's answer to a number
+
     const userAnswerNum = parseInt(userAnswer);
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
 
     if (userAnswerNum === lastPoppedValue) {
       setCheckResult("Great!");
       setFirstLevelCompleted(true);
-
+      setCelebrate(true);
+      setTryAgain(false);
       if (currentUser) {
         const userDocRef = doc(db, "users", currentUser.uid);
         await updateDoc(userDocRef, {
-          completedLevels: arrayUnion("firstLevel")
+          completedLevels: arrayUnion("firstLevel"),
         });
       }
     } else {
-      setCheckResult("Failed");
+      setCheckResult("Incorrect");
+      setCelebrate(false);
+      setTryAgain(true);
     }
+    setTimeout(() => {
+      setTryAgain(false);
+    }, 500);
   };
 
   return (
@@ -183,9 +194,14 @@ function FirstLevel() {
             />
             {checkResult && <p>{checkResult}</p>}
           </div>
-          <button className="check-button" onClick={handleCheck}>
+          <button
+            className="stack-level-first-game-buttons"
+            onClick={handleCheck}
+          >
             Check
           </button>
+          <Celebration active={celebrate} />
+          <TryAgainAnimation active={tryAgain} />
         </div>
       </div>
     </div>
