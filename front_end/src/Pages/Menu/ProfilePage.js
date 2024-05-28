@@ -3,10 +3,16 @@ import "./ProfilePage.css";
 import { useAuth } from "../Menu/AuthContext";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
+import { useNavigate } from "react-router-dom";
+import { getAuth, signOut } from "firebase/auth";
+import { firebaseApp } from "../Menu/firebaseConfig";
+
+const auth = getAuth(firebaseApp);
 
 const ProfilePage = () => {
-  const { currentUser } = useAuth();
+  const { currentUser} = useAuth();
   const [userData, setUserData] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -23,15 +29,30 @@ const ProfilePage = () => {
     fetchUserData();
   }, [currentUser]);
 
+  const handleLogout = () => {
+    signOut(auth).then(() => {
+      navigate('/');
+    }).catch((error) => {
+      console.error("Error signing out: ", error);
+    });
+  };
+
+
+ 
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <div className="profile-container">
       <h1>Profile</h1>
-      {userData && (
-        <div className="profile-details">
-          <p>{currentUser.email}</p>
-          <p>{`First Level: ${userData.completedLevels && userData.completedLevels.FirstLevel ? "Completed with " + `${userData.points} Points` : "Not Completed"}`}</p>
-        </div>
-      )}
+      <div className="profile-details">
+        <p>{currentUser.email}</p>
+        <p>{`First Level: ${userData?.completedLevels?.FirstLevel ? `${userData.points} Points` : "Not Completed"}`}</p>
+        <p>{`Second Level: ${userData?.completedLevels?.SecondLevel ? `${userData.points2} Points` : "Not Completed"}`}</p>
+        <p>{`Third Level: ${userData?.completedLevels?.ThirdLevel ? `${userData.points3} Points` : "Not Completed"}`}</p>
+      </div>
+      <button onClick={handleLogout}>Sign Out</button>
     </div>
   );
 };

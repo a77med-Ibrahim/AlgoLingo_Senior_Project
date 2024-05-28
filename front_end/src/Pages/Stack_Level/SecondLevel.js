@@ -5,10 +5,15 @@ import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 import Celebration from "../Celebration/Celebration";
+import Timer from "../Menu/Timer";
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import { db } from "../Menu/firebaseConfig";
+
 
 function SecondLevel() {
+  const { currentUser } = useAuth();
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
-
   const [stack, setStack] = useState(new StackImplementation());
   const [poppedValues, setPoppedValues] = useState([]);
   const [questionText, setQuestionText] = useState("");
@@ -18,6 +23,9 @@ function SecondLevel() {
   const [secondLevelCompleted, setSecondLevelCompleted] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
+  const [timerActive, setTimerActive] = useState(true);
+  const [timeTaken, setTimeTaken] = useState(0);
+  const [points2, setPoints2] = useState(0);
 
   const generateRandomValues = () => {
     const newStack = new StackImplementation();
@@ -111,26 +119,62 @@ function SecondLevel() {
 
     return newStack.stack;
   };
-
-  const handleCheck = () => {
-    const userAnswerNum = parseInt(userAnswer);
-    const lastPoppedValue = poppedValues[poppedValues.length - 1];
-
-    if (userAnswerNum === lastPoppedValue) {
-      setCheckResult2("Great!");
-      setSecondLevelCompleted(true);
-      setCelebrate(true);
-      setTryAgain(false);
-    } else {
-      setCheckResult2("Failed");
-      setSecondLevelCompleted(false);
-      setCelebrate(false);
-      setTryAgain(true);
-    }
-    setTimeout(() => {
-      setTryAgain(false);
-    }, 500);
+  const TOTAL_TIME = 60;
+  const handleTimeUpdate = (timeLeft) => {
+    setTimeTaken(TOTAL_TIME - timeLeft);
   };
+  const calculatePoints = (timeTaken) => {
+    return TOTAL_TIME - timeTaken; 
+  };
+  
+  
+  
+
+  const handleCheck = async () => {
+  const userAnswerNum = parseInt(userAnswer);
+  const lastPoppedValue = poppedValues[poppedValues.length - 1];
+
+  if (userAnswerNum === lastPoppedValue) {
+    setCheckResult2("Great!");
+    setSecondLevelCompleted(true);
+    setCelebrate(true);
+    setTryAgain(false);
+    const earnedPoints = calculatePoints(timeTaken);
+    setPoints2(earnedPoints); 
+    
+    const handleLevelCompletion = async (earnedPoints) => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        if (typeof earnedPoints !== 'undefined') {
+          const userDocSnap = await getDoc(userDocRef);
+      const userData = userDocSnap.data();
+      const updatedCompletedLevels = {
+        ...userData.completedLevels,
+        SecondLevel: true, 
+      };
+
+
+      await updateDoc(userDocRef, {
+        completedLevels: updatedCompletedLevels,
+        points2: earnedPoints,
+      });
+        }
+      }
+    };
+     
+    handleLevelCompletion(earnedPoints);
+    
+  } else {
+    setCheckResult2("Failed");
+    setSecondLevelCompleted(false);
+    setCelebrate(false);
+    setTryAgain(true);
+  }
+  setTimeout(() => {
+    setTryAgain(false);
+  }, 500);
+};
+
 
   const handlePopArrowClick = () => {
     document.querySelector(".popped-values").classList.add("fade-out");
@@ -204,6 +248,10 @@ function SecondLevel() {
           <Celebration active={celebrate} />
           <TryAgainAnimation active={tryAgain} />
         </div>
+        <Timer isActive={timerActive} onTimeUpdate={handleTimeUpdate} totalTime={TOTAL_TIME} />
+<div>
+  <p>Points earned: {calculatePoints(timeTaken)}</p>
+</div>
       </div>
     </div>
   );
