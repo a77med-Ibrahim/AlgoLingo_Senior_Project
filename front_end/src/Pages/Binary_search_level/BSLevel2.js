@@ -124,11 +124,14 @@ function BSLevel2() {
         ...userData.completedLevels,
         BSLevel2: true,
       };
-      const updatedPoints = earnedPoints;
+      const updatedPoints = {
+        ...userData.Points,
+        pointsBSLevel2:earnedPoints,
+      }
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
-        pointsBSLevel2: updatedPoints,
+        Points: updatedPoints,
       });
     }
   };
