@@ -16,6 +16,7 @@ function PreperationLevel() {
   const [peekClicked, setPeekClicked] = useState(false);
   const [isEmptyClicked, setIsEmptyClicked] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
+  const [hoveredButton, setHoveredButton] = useState(null);
 
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
@@ -55,11 +56,7 @@ function PreperationLevel() {
 
   //Hover Handling for Push
   function pushHandleHover() {
-    document.querySelector(".code-bar h1").innerText = "Push";
-    document.querySelector(".code-bar h2").innerText =
-      "push(value) {this.stack.push(value);}";
-    document.querySelector(".code-bar p").innerText =
-      "Function takes (value) entered by user and uses (this.stack.push) to push value into the stack";
+    setHoveredButton("push");
   }
 
   function pushOnClick() {
@@ -105,11 +102,7 @@ function PreperationLevel() {
 
   //Hover Handling for Pop
   function popHandleHover() {
-    document.querySelector(".code-bar h1").innerText = "Pop";
-    document.querySelector(".code-bar h2").innerText =
-      "pop() {if (this.isEmpty()) {return null;}return this.stack.pop();}";
-    document.querySelector(".code-bar p").innerText =
-      "Fucntion firstly checks if the stack is empty or not using (isEmpty) function, if isEmpty=='true' don't do anything, else pops the last entered value ";
+    setHoveredButton("pop");
   }
 
   function popOnClick() {
@@ -152,11 +145,7 @@ function PreperationLevel() {
 
   //Hover Handling for Peek
   function peekHandleHover() {
-    document.querySelector(".code-bar h1").innerText = "Peek";
-    document.querySelector(".code-bar h2").innerText =
-      " peek() {return null;}return this.stack[this.stack.length - 1];}";
-    document.querySelector(".code-bar p").innerText =
-      "Returns the values inside of the stack starting from 0 - len-1";
+    setHoveredButton("peek");
   }
   function peekOnClick() {
     showNumbers = true; // Set the flag to show box numbers
@@ -170,17 +159,58 @@ function PreperationLevel() {
 
   //Hover Handling for isEmpty
   function isEmptyHandleHover() {
-    document.querySelector(".code-bar h1").innerText = "isEmpty";
-    document.querySelector(".code-bar h2").innerText =
-      "isEmpty() {return this.stack.length === 0;}";
-    document.querySelector(".code-bar p").innerText =
-      "Function checks if the stack is = to 0 it returns True, if stack.length>=1 return False ";
+    setHoveredButton("isEmpty");
   }
 
   function isEmptyOnClick() {
     const empty = boxCount === 0;
     const result = empty ? "True" : "False";
     setIsEmpty(result);
+  }
+
+  function getButtonName(button) {
+    switch (button) {
+      case "push":
+        return "Push";
+      case "pop":
+        return "Pop";
+      case "peek":
+        return "Peek";
+      case "isEmpty":
+        return "isEmpty";
+      default:
+        return "Code";
+    }
+  }
+
+  function getAlgorithmName(button) {
+    switch (button) {
+      case "push":
+        return "Function takes (value) entered by user and uses (this.stack.push) to push value into the stack";
+      case "pop":
+        return "Function firstly checks if the stack is empty or not using (isEmpty) function, if isEmpty=='true' don't do anything, else pops the last entered value";
+      case "peek":
+        return "Returns the values inside of the stack starting from 0 - len-1";
+      case "isEmpty":
+        return "Function checks if the stack is = to 0 it returns True, if stack.length>=1 return False";
+      default:
+        return "";
+    }
+  }
+
+  function getCode(button) {
+    switch (button) {
+      case "push":
+        return "push(value) {this.stack.push(value);}";
+      case "pop":
+        return "pop() {if (this.isEmpty()) {return null;}return this.stack.pop();}";
+      case "peek":
+        return "peek() {return this.stack[this.stack.length - 1];}";
+      case "isEmpty":
+        return "isEmpty() {return this.stack.length === 0;}";
+      default:
+        return "";
+    }
   }
 
   return (
@@ -244,14 +274,20 @@ function PreperationLevel() {
             {isEmpty !== null && <p className="is-empty-result"> {isEmpty}</p>}
           </div>
           <div className="rectanglecontainer"></div>
-          <div className="code-bar">
-            <h1 className="title_code_style">Code</h1>
-            <h2 className="code_style" />
-            <div className="code-description-line"></div>
-            <p className="code_description"></p>
-            <Celebration active={celebrate} />
+          <div className="stack-code-container">
+            <h1 className="stack-code-description-title-style">
+              {getButtonName(hoveredButton)}
+            </h1>
+            <h2 className="stack-prep-level-code-style">
+              {getCode(hoveredButton)}
+            </h2>
+            <div className="stack-code-description-line"></div>
+            <p className="stack-code-description">
+              {getAlgorithmName(hoveredButton)}
+            </p>
           </div>
         </div>
+        {celebrate && <Celebration />}
       </div>
     </div>
   );

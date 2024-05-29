@@ -1,4 +1,4 @@
-.button-bar {
+.button-bar-queue-level {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -9,11 +9,79 @@
   padding: 5px;
 }
 
-.buttonsss {
-  width: 60px;
-  height: 100%;
+.queue-level-bar-buttons {
+  appearance: button;
   background-color: #3498db;
-  border: none;
-  border-radius: 5px;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #f9f9f9;
   cursor: pointer;
+  display: inline-block;
+  font-family: din-round, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  line-height: 20px;
+  margin: 0 5px;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 15%;
+  height: 52px;
+  position: relative;
+}
+
+.queue-level-bar-buttons:after {
+  background-clip: padding-box;
+  background-color: #3498db;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.queue-level-bar-buttons:main,
+.queue-level-bar-buttons:focus {
+  user-select: auto;
+}
+
+.queue-level-bar-buttons:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.queue-level-bar-buttons:disabled {
+  cursor: auto;
+}
+
+.queue-level-bar-buttons:active {
+  border-width: 4px 0 0;
+  background: none;
+}
+
+.queue-level-bar-buttons.locked {
+  background-color: grey;
+  color: #a9a9a9; /* Adjust text color for better contrast */
+  cursor: not-allowed;
+}
+
+.queue-level-bar-buttons.locked:after {
+  background-color: grey;
 }

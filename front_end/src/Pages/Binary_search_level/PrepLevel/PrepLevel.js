@@ -176,10 +176,16 @@ function PrepLevel() {
             {minHeapClicked && <p>Min heap created successfully!</p>}
           </div>
           <div className="heap-code-container">
-            <h1 className="title-code-style">
+            <h1 className="heap-code-description-title-style ">
               {getButtonName(lastHoveredButton)}
             </h1>
-            <p>{getAlgorithmName(lastHoveredButton)}</p>
+            <h3 className="heap-prep-level-code-style">
+              {/* {getCode(lastHoveredButton)} */}
+            </h3>
+            <div className="heap-code-description-line "></div>
+            <h3 className="heap-code-description ">
+              {getAlgorithmName(lastHoveredButton)}
+            </h3>
           </div>
         </div>
 
@@ -198,13 +204,23 @@ function getButtonName(button) {
       return "Code";
   }
 }
+function getCode(button) {
+  switch (button) {
+    case "createMaxHeap":
+      return "public int extractMax() {if (isEmpty())throw new IllegalStateException('Heap is empty');int max = heap.get(0);int lastElement = heap.remove(heap.size() - 1);if (!isEmpty()) {heap.set(0, lastElement);heapifyDown(0);}return max;}private void heapifyUp(int index) {int parentIndex = (index - 1) / 2;while (index > 0 && heap.get(parentIndex) < heap.get(index)) {swap(parentIndex, index);index = parentIndex;parentIndex = (index - 1) / 2;}}private void swap(int i, int j) {int temp = heap.get(i);heap.set(i, heap.get(j));heap.set(j, temp);}";
+    case "createMinHeap":
+      return "Create Min Heap";
+    default:
+      return "Code";
+  }
+}
 
 function getAlgorithmName(button) {
   switch (button) {
     case "createMaxHeap":
-      return "This code builds a max heap from the given array.";
+      return " It begins by checking if the heap is empty; if so, it returns. If not empty, it retrieves the maximum element from the root of the heap and replaces it with the last element. Then, it calls a heapifyDown operation to maintain the max heap property by recursively swapping the element with its largest child until the heap is properly ordered. Additionally, the code includes private helper methods, heapifyUp and swap, for maintaining the max heap property during insertion and swapping elements, respectively. Overall, this code provides an efficient means to extract the maximum element from a max heap while ensuring the integrity of the heap structure.";
     case "createMinHeap":
-      return "This code builds a min heap from the given array.";
+      return " It starts by verifying if the heap is empty; if so, it returns. If the heap is not empty, it retrieves the minimum element from the root of the heap and replaces it with the last element. Subsequently, it executes a heapifyDown operation to maintain the min heap property by iteratively swapping the element with its smallest child until the heap is appropriately ordered. Additionally, the code includes private helper methods `heapifyUp` and `swap` to maintain the min heap property during insertion and element swapping, respectively. Overall, this code facilitates efficient extraction of the minimum element from a min heap while ensuring the integrity of the heap structure.";
     default:
       return "";
   }
