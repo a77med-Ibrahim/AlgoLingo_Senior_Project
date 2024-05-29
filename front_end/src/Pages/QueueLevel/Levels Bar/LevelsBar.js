@@ -2,20 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LevelsBar.css";
 import { useAuth } from "../../Menu/AuthContext";
-import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../Menu/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "../../Menu/firebaseConfig";
 
-function LevelsBar({
-  activeButtonIndex,
-  pushClicked,
-  popClicked,
-  peekClicked,
-  isEmptyClicked,
-  levelUnlocked,
-  level2Unlocked,
-}) {
+function LevelsBar({ activeButtonIndex, levelUnlocked, level2Unlocked }) {
   const navigate = useNavigate();
 
   const levels = ["prep", 1, 2];
@@ -36,23 +28,20 @@ function LevelsBar({
       }
     };
     fetchUserData();
-  }, [currentUser])
-
+  }, [currentUser]);
 
   const isUnlocked = (index) => {
     if (index === 1) {
       return levelUnlocked || userData?.completedLevels?.QueueFirstLevel;
-    } 
-    else if(index === 2){
+    } else if (index === 2) {
       return level2Unlocked || userData?.completedLevels?.QueueFirstLevel;
-    }
-    else {  
+    } else {
       return levels.slice(0, index).every((level) => level === "X");
     }
   };
 
-  const getButtonColor = (index) => {
-    return isUnlocked(index) ? "#3498db" : "grey";
+  const getButtonClass = (index) => {
+    return isUnlocked(index) ? "" : "locked";
   };
 
   const handleButtonClick = (index) => {
@@ -69,8 +58,9 @@ function LevelsBar({
     return levels.map((number, index) => (
       <button
         key={index}
-        className={`buttonsss ${index === activeButtonIndex ? "active" : ""}`}
-        style={{ backgroundColor: getButtonColor(index) }}
+        className={`queue-level-bar-buttons ${getButtonClass(index)} ${
+          index === activeButtonIndex ? "active" : ""
+        }`}
         onClick={() => handleButtonClick(index)}
         disabled={!isUnlocked(index)}
       >
@@ -82,7 +72,7 @@ function LevelsBar({
   return (
     <div>
       <h2>Levels</h2>
-      <div className="button-bar">{renderButtons()}</div>
+      <div className="button-bar-queue-level">{renderButtons()}</div>
     </div>
   );
 }

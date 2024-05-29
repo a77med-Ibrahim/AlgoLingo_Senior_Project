@@ -1,118 +1,124 @@
 import React, { useState, useEffect } from "react";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
-import LevelsBar from "./Levels Bar/LevelsBar";
+import LevelsBar from "../Levels Bar/LevelsBar";
 import "./QueuePreparationLevel.css";
+import Celebration from "../../Celebration/Celebration";
 
 function QueuePreparationLevel() {
-  const [queue, setQueue] = useState([]);
-  const [dequeueing, setDequeueing] = useState(false);
-  const [hoveredButton, setHoveredButton] = useState("");
   const [levelUnlocked, setLevelUnlocked] = useState(false);
-  const [itemsAdded, setItemsAdded] = useState(false);
-  const [firstEmpty, setFirstEmpty] = useState(false);
-
-  const handleEnQueue = () => {
-    const newValue = Math.floor(Math.random() * 100) + 1; // Generate random value
-    setQueue((prevQueue) => [newValue, ...prevQueue]);
-    setItemsAdded(true);
-  };
-
-  const handleDeQueue = () => {
-    if (queue.length > 0 && !dequeueing) {
-      setDequeueing(true);
-      setTimeout(() => {
-        setQueue((prevQueue) => prevQueue.slice(0, -1));
-        setDequeueing(false);
-        if (queue.length === 1) {
-          setFirstEmpty(true);
-        }
-      }, 500); // Adjust this duration to match the CSS animation duration
-    }
-  };
+  const [queue, setQueue] = useState([]);
+  const [newIndex, setNewIndex] = useState(null);
+  const [dequeueIndex, setDequeueIndex] = useState(null);
+  const [celebrate, setCelebrate] = useState(false);
+  const [enqueueClicked, setEnqueueClicked] = useState(false);
+  const [dequeueClicked, setDequeueClicked] = useState(false);
+  const [containerTitle, setContainerTitle] = useState("Code");
+  const [code, setCode] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
-    if (itemsAdded && queue.length === 0 && !firstEmpty) {
-      setFirstEmpty(true);
+    if (enqueueClicked && dequeueClicked) {
+      setLevelUnlocked(true);
+      setCelebrate(true);
     }
-    setLevelUnlocked(firstEmpty);
-  }, [queue, itemsAdded, firstEmpty]);
+  }, [enqueueClicked, dequeueClicked]);
 
-  const explanations = {
-    enqueue: {
-      explanation: "Enqueue adds a new element to the end of the queue.",
-      code: `enqueue(value) {
-  this.queue.push(value);
-}`,
-    },
-    dequeue: {
-      explanation: "Dequeue removes the element from the front of the queue.",
-      code: `dequeue() {
-  return this.queue.shift();
-}`,
-    },
+  const enqueue = () => {
+    if (queue.length < 4) {
+      const newValue = Math.floor(Math.random() * 100);
+      setQueue([newValue, ...queue]);
+      setNewIndex(0);
+      setEnqueueClicked(true);
+    }
+  };
+
+  const dequeue = () => {
+    if (queue.length > 0) {
+      setDequeueIndex(queue.length - 1);
+      setDequeueClicked(true);
+    }
+  };
+
+  const handleAnimationEnd = () => {
+    if (dequeueIndex !== null) {
+      setQueue(queue.slice(0, dequeueIndex));
+      setDequeueIndex(null);
+    }
+    setNewIndex(null);
   };
 
   return (
-    <div className="flexing">
-      <AlgoLingoBar />
-      <div className="width-of-objects">
-        <h1 className="title-styling">Queue</h1>
-        <h2 className="title-styling">Preparation</h2>
-        <div className="navbar-line" />
-        <LevelsBar levelUnlocked={levelUnlocked} />
-        <div className="flexing">
-          <div className="queue-button-group">
+    <div>
+      <div className="all-div">
+        <AlgoLingoBar />
+        <div className="other">
+          <h1 className="title-styling">Queue</h1>
+          <h2 className="title-styling">Preparation</h2>
+          <div className="navbar-line" />
+          <LevelsBar levelUnlocked={levelUnlocked} />
+          <div className="queue-controls">
             <button
-              onClick={handleEnQueue}
-              onMouseEnter={() => setHoveredButton("enqueue")}
-              onMouseLeave={() => setHoveredButton("")}
-              disabled={queue.length >= 10} // Disable button if queue is full
+              className="queue-buttons-styling"
+              onClick={enqueue}
+              onMouseEnter={() => {
+                setContainerTitle("EnQueue");
+                setCode(
+                  `public void enqueue(T item) {items.add(item);}
+                `
+                );
+                setDescription(
+                  "The enqueue method in the Java code initiates by creating a new node object with the provided data. It then appends this node to the end of the queue represented by the Queue class, effectively adding it as the last element. This operation executes in constant time complexity O(1), as it involves a fixed number of operations irrespective of the queue's size, facilitating rapid and efficient insertion of elements at the rear of the queue."
+                );
+              }}
             >
               EnQueue
             </button>
             <button
-              onClick={handleDeQueue}
-              onMouseEnter={() => setHoveredButton("dequeue")}
-              onMouseLeave={() => setHoveredButton("")}
+              className="queue-buttons-styling"
+              onClick={dequeue}
+              onMouseEnter={() => {
+                setContainerTitle("DeQueue");
+                setCode(
+                  "public T dequeue() {if (!isEmpty()) {return items.remove(0);} else {return null;}} "
+                );
+                setDescription(
+                  "It begins by checking if the queue is not empty using the `isEmpty` method. If the queue is not empty, it removes and returns the first item using the `remove(0)` method of the `items` list, effectively dequeuing the element. If the queue is empty, indicating there are no elements to dequeue, the method returns `null`. This operation executes in constant time complexity O(1), meaning it performs a fixed number of operations regardless of the queue's size, enabling swift and efficient removal of elements from the front of the queue."
+                );
+              }}
             >
               DeQueue
             </button>
           </div>
-        </div>
-        <div className="queue-container">
-          <div className="bar top" />
-          {queue.map((value, index) => (
-            <div
-              key={index}
-              className={`queue-element ${
-                dequeueing && index === queue.length - 1 ? "dequeue" : ""
-              }`}
-            >
-              {value}
+          <div className="queue-visual">
+            <div className="label-enqueue">EnQueue</div>
+            <div className="arrow enqueue-arrow">➜</div>
+            <div className="queue">
+              {queue.map((item, index) => (
+                <div
+                  key={index}
+                  className={`queue-item ${
+                    index === dequeueIndex ? "dequeue" : ""
+                  } ${index === newIndex ? "enqueue" : ""}`}
+                  onAnimationEnd={handleAnimationEnd}
+                >
+                  {item}
+                </div>
+              ))}
             </div>
-          ))}
-          <div className="bar bottom" />
-          <div className="arrow left">
-            &rarr;
-            <div className="arrow-label left">Enqueue</div>
+            <div className="arrow dequeue-arrow">➜</div>
+            <div className="label-dequeue">DeQueue</div>
           </div>
-          <div className="arrow right">
-            &rarr;
-            <div className="arrow-label right">Dequeue</div>
+          <div className="queue-code-container">
+            <h1 className="queue-code-description-title-style">
+              {containerTitle}
+            </h1>
+            <h3 className="queue-prep-level-code-style">{code}</h3>
+            <div className="queue-code-description-line"></div>
+            <h3 className="queue-code-description">{description}</h3>
           </div>
-        </div>
-        <div className="code-container" style={{position: 'absolute',width: '70%',top: '470px'}}>
-          {hoveredButton && (
-            <>
-              <pre>{explanations[hoveredButton].code}</pre>
-              <p style={{ color: "red" }}>{explanations[hoveredButton].explanation}</p>
-            </>
-          )}
-          {levelUnlocked && (
-            <p style={{ color: "black" }}>The queue is empty. You can proceed.</p>
-          )}
         </div>
       </div>
+      <Celebration active={celebrate} />
     </div>
   );
 }

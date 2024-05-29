@@ -1,29 +1,22 @@
-/* General Styles */
 .title {
   text-align: center;
 }
 
-.container {
-  margin: 1em;
-}
-
-/* Media Queries */
 @media screen and (min-width: 80rem) {
   .container {
     margin: 1em 2em;
   }
 }
 
-/* Flexbox Layouts */
 .all-div {
   display: flex;
   flex: 1;
-  flex-direction: column; /* Stack items vertically on small screens */
+  flex-direction: column;
 }
 
 @media screen and (min-width: 48rem) {
   .all-div {
-    flex-direction: row; /* Row layout on medium and larger screens */
+    flex-direction: row;
   }
 }
 
@@ -65,68 +58,66 @@
 
 .rectanglecontainer {
   background-color: inherit;
-  width: 100%; /* Full width on small screens */
-  height: auto; /* Remove fixed height for responsiveness */
+  width: 100%;
+  height: auto;
   border-top: 5px solid inherit;
-  border-right: 10px solid rgb(17, 0, 128);
-  border-left: 10px solid rgb(17, 0, 128);
-  border-bottom: 10px solid rgb(17, 0, 128);
-  margin: 1em 0; /* Add margin for spacing */
-  position: relative; /* Make this the positioning context for .box */
+  border-right: 10px solid black;
+  border-left: 10px solid black;
+  border-bottom: 10px solid black;
+  margin: 1em 0;
+  position: relative;
 }
 
 @media screen and (min-width: 48rem) {
   .rectanglecontainer {
-    width: 15%; /* Set width on medium and larger screens */
-    height: 57vh; /* Set height on medium and larger screens */
+    width: 15%;
+    height: 57vh;
   }
 }
 
-.code-bar {
+.stack-code-container {
   text-align: center;
   background-color: #d2d2d2;
-  width: 100%; /* Full width on small screens */
+  width: 35%;
+  height: 100%;
   border: 2px solid grey;
   border-radius: 20px;
   padding: 20px;
-  margin: 1em 0; /* Add margin for spacing */
+  margin: 1em 0;
 }
 
-@media screen and (min-width: 48rem) {
-  .code-bar {
-    width: 30%; /* Set width on medium and larger screens */
-  }
-}
-
-.title_code_style {
+.stack-code-description-title-style {
   background-color: inherit;
-  color: red;
+  color: rgb(69, 23, 23);
   margin: 0;
+  font-family: din-round, sans-serif;
+}
+.stack-prep-level-code-style {
+  background-color: inherit;
+  color: rgb(65, 65, 173);
+  margin-top: 10px;
+  font-size: 20px;
+  font-family: din-round, sans-serif;
 }
 
-.code_style {
-  background-color: inherit;
-  color: blue;
-  margin-top: 10px;
-}
-.code-description-line {
+.stack-code-description-line {
   height: 2px;
   background-color: #000;
   width: 100%;
   margin: 10px 0;
 }
-
-.code_description {
+.stack-code-description {
   background-color: inherit;
   color: purple;
   margin-top: 10px;
-  font-size: large;
+  font-family: din-round, sans-serif;
+  font-size: 20px;
 }
 
 .box {
   width: 100%;
   height: 70px;
-  background-color: red;
+  background-color: #d9d9d9;
   position: absolute;
   top: 0;
   left: 0;
@@ -138,7 +129,7 @@
 
 .box-number {
   font-size: 20px;
-  color: white;
+  color: rgb(0, 0, 0);
   font-weight: bold;
   background-color: inherit;
 }

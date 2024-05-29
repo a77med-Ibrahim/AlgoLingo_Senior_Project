@@ -1,0 +1,292 @@
+import React, { useState, useEffect } from "react";
+import AlgoLingoBar from "../../Menu/AlgoLingoBar";
+import LevelsBar from "../Levels Bar/LevelsBar";
+import "./QueuePreparationLevel.css";
+
+function QueuePreparationLevel() {
+  //   const [queue, setQueue] = useState([]);
+  //   const [dequeueing, setDequeueing] = useState(false);
+  //   const [hoveredButton, setHoveredButton] = useState("");
+  //   const [levelUnlocked, setLevelUnlocked] = useState(false);
+  //   const [itemsAdded, setItemsAdded] = useState(false);
+  //   const [firstEmpty, setFirstEmpty] = useState(false);
+  //   const handleEnQueue = () => {
+  //     const newValue = Math.floor(Math.random() * 100) + 1; // Generate random value
+  //     setQueue((prevQueue) => [newValue, ...prevQueue]);
+  //     setItemsAdded(true);
+  //   };
+  //   const handleDeQueue = () => {
+  //     if (queue.length > 0 && !dequeueing) {
+  //       setDequeueing(true);
+  //       setTimeout(() => {
+  //         setQueue((prevQueue) => prevQueue.slice(0, -1));
+  //         setDequeueing(false);
+  //         if (queue.length === 1) {
+  //           setFirstEmpty(true);
+  //         }
+  //       }, 500); // Adjust this duration to match the CSS animation duration
+  //     }
+  //   };
+  //   useEffect(() => {
+  //     if (itemsAdded && queue.length === 0 && !firstEmpty) {
+  //       setFirstEmpty(true);
+  //     }
+  //     setLevelUnlocked(firstEmpty);
+  //   }, [queue, itemsAdded, firstEmpty]);
+  //   const explanations = {
+  //     enqueue: {
+  //       explanation: "Enqueue adds a new element to the end of the queue.",
+  //       code: `enqueue(value) {
+  //   this.queue.push(value);
+  // }`,
+  //     },
+  //     dequeue: {
+  //       explanation: "Dequeue removes the element from the front of the queue.",
+  //       code: `dequeue() {
+  //   return this.queue.shift();
+  // }`,
+  //     },
+  //   };
+  //   return (
+  //     <div className="flexing">
+  //       <AlgoLingoBar />
+  //       <div className="width-of-objects">
+  //         <h1 className="title-styling">Queue</h1>
+  //         <h2 className="title-styling">Preparation</h2>
+  //         <div className="navbar-line" />
+  //         <LevelsBar levelUnlocked={levelUnlocked} />
+  //         <div className="flexing">
+  //           <div className="queue-button-group">
+  //             <button
+  //               onClick={handleEnQueue}
+  //               onMouseEnter={() => setHoveredButton("enqueue")}
+  //               onMouseLeave={() => setHoveredButton("")}
+  //               disabled={queue.length >= 10}
+  //               className="queue-buttons-styling"
+  //             >
+  //               EnQueue
+  //             </button>
+  //             <button
+  //               onClick={handleDeQueue}
+  //               onMouseEnter={() => setHoveredButton("dequeue")}
+  //               onMouseLeave={() => setHoveredButton("")}
+  //               className="push-buttons-styling"
+  //             >
+  //               DeQueue
+  //             </button>
+  //           </div>
+  //         </div>
+  //         <div className="queue-container">
+  //           <div className="bar top" />
+  //           {queue.map((value, index) => (
+  //             <div
+  //               key={index}
+  //               className={`queue-element ${
+  //                 dequeueing && index === queue.length - 1 ? "dequeue" : ""
+  //               }`}
+  //             >
+  //               {value}
+  //             </div>
+  //           ))}
+  //           <div className="bar bottom" />
+  //           <div className="arrow left">
+  //             &rarr;
+  //             <div className="arrow-label left">Enqueue</div>
+  //           </div>
+  //           <div className="arrow right">
+  //             &rarr;
+  //             <div className="arrow-label right">Dequeue</div>
+  //           </div>
+  //         </div>
+  //         <div
+  //           className="code-container"
+  //           style={{ position: "absolute", width: "70%", top: "470px" }}
+  //         >
+  //           {hoveredButton && (
+  //             <>
+  //               <pre>{explanations[hoveredButton].code}</pre>
+  //               <p style={{ color: "red" }}>
+  //                 {explanations[hoveredButton].explanation}
+  //               </p>
+  //             </>
+  //           )}
+  //           {levelUnlocked && (
+  //             <p style={{ color: "black" }}>
+  //               The queue is empty. You can proceed.
+  //             </p>
+  //           )}
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+
+  .title-styling {
+  text-align: center;
+}
+.flexing {
+  flex: 1;
+  display: flex;
+}
+.width-of-objects {
+  padding-left: 3%;
+  width: 100%;
+}
+.navbar-line {
+  width: 100%;
+  background-color: black;
+  height: 5px;
+}
+/* .queue-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.queue-element {
+  width: 50px;
+  height: 50px;
+  background-color: #f0f0f0;
+  border: 1px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 5px;
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.queue-element.enqueue {
+  transform: translateX(100px); 
+}
+
+.queue-element.dequeue {
+  opacity: 0;
+  transform: translateX(100px); 
+}
+
+.code-container pre {
+  margin: 0;
+}
+
+.code-container p {
+  color: red;
+  margin-top: 10px;
+}
+
+.bar {
+  width: 50%;
+  height: 5px;
+  background-color: #000;
+  position: absolute;
+}
+
+.bar.top {
+  top: 410px;
+  right: 220px;
+}
+
+.bar.bottom {
+  bottom: 240px;
+  right: 220px;
+}
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 30px;
+  color: black;
+}
+
+.arrow.left {
+  top: 390px;
+  right: 900px;
+}
+
+.arrow.right {
+  right: 200px;
+  top: 390px;
+}
+
+.arrow-label {
+  position: absolute;
+  font-size: 16px;
+  color: black;
+}
+
+.arrow-label.left {
+  left: -30px;
+  top: calc(50% - 20px);
+  transform: translateY(-50%);
+}
+
+.arrow-label.right {
+  right: 0px;
+  top: calc(50% - 20px);
+  transform: translateY(-50%);
+} */
+
+.queue-buttons-styling {
+  appearance: button;
+  background-color: #294050;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  box-sizing: border-box;
+  color: #f9f9f9;
+  cursor: pointer;
+  display: inline-block;
+  font-family: din-round, sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  line-height: 20px;
+  margin: 0 5px;
+  outline: none;
+  overflow: visible;
+  padding: 13px 16px;
+  text-align: center;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: filter 0.2s;
+  user-select: none;
+  -webkit-user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  width: 10%;
+}
+
+.queue-buttons-styling:after {
+  background-clip: padding-box;
+  background-color: #3498db;
+  border: solid transparent;
+  border-radius: 16px;
+  border-width: 0 0 4px;
+  bottom: -4px;
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.queue-buttons-styling:main,
+.queue-buttons-styling:focus {
+  user-select: auto;
+}
+
+.queue-buttons-styling:hover:not(:disabled) {
+  filter: brightness(1.1);
+  -webkit-filter: brightness(1.1);
+}
+
+.queue-buttons-styling:disabled {
+  cursor: auto;
+}
+
+.queue-buttons-styling:active {
+  border-width: 4px 0 0;
+  background: none;
+}
