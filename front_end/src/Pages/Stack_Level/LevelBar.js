@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LevelBar.css";
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { db } from "../Menu/firebaseConfig";
+import { getAuth } from "firebase/auth";
+import { firebaseApp } from "../Menu/firebaseConfig";
 
 function LevelsBar({
   activeButtonIndex,
@@ -15,19 +20,39 @@ function LevelsBar({
   const navigate = useNavigate();
 
   const levels = ["prep", 1, 2,3];
+  const { currentUser } = useAuth();
+  const [userData, setUserData] = useState(null);
+  const auth = getAuth(firebaseApp);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          setUserData(userDocSnap.data());
+        } else {
+          console.log("User document does not exist");
+        }
+      }
+    };
+    fetchUserData();
+  }, [currentUser])
+
 
   const isUnlocked = (index) => {
   
     if (index === 1) {
-      return pushClicked && popClicked && peekClicked && isEmptyClicked;
+      return pushClicked && popClicked && peekClicked && isEmptyClicked || userData?.completedLevels?.FirstLevel;
 
     }
     else if (index === 2) {
-      return checkResult === "Great!";
+      return checkResult === "Great!" || userData?.completedLevels?.FirstLevel;
 
     } 
+    
     else if (index === 3) {
-      return checkResult2 === "Great!";
+      return checkResult2 === "Great!" || userData?.completedLevels?.SecondLevel;
 
     } 
     else {

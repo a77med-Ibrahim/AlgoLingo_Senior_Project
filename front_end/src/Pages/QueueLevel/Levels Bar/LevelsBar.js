@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LevelsBar.css";
+import { useAuth } from "../../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { db } from "../../Menu/firebaseConfig";
+import { getAuth } from "firebase/auth";
+import { firebaseApp } from "../../Menu/firebaseConfig";
 
 function LevelsBar({
   activeButtonIndex,
@@ -14,18 +19,34 @@ function LevelsBar({
   const navigate = useNavigate();
 
   const levels = ["prep", 1, 2];
+  const { currentUser } = useAuth();
+  const [userData, setUserData] = useState(null);
+  const auth = getAuth(firebaseApp);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          setUserData(userDocSnap.data());
+        } else {
+          console.log("User document does not exist");
+        }
+      }
+    };
+    fetchUserData();
+  }, [currentUser])
+
 
   const isUnlocked = (index) => {
-    // Check if all required buttons are clicked
     if (index === 1) {
-      // For the first button, check if all other required buttons are clicked
-      return levelUnlocked;
+      return levelUnlocked || userData?.completedLevels?.QueueFirstLevel;
     } 
     else if(index === 2){
-      return level2Unlocked;
+      return level2Unlocked || userData?.completedLevels?.QueueFirstLevel;
     }
-    else {
-      // For other buttons, check if all buttons before it are clicked
+    else {  
       return levels.slice(0, index).every((level) => level === "X");
     }
   };

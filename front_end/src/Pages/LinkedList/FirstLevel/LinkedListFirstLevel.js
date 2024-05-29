@@ -5,8 +5,13 @@ import Xarrow from "react-xarrows";
 import "./LinkedListFirstLevel.css";
 import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
 import Celebration from "../../Celebration/Celebration";
+import Timer from "../../Menu/Timer"; // Import the Timer component
+import { useAuth } from "../../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../../Menu/firebaseConfig";
 
 function LinkedListFirstLevel() {
+  const { currentUser } = useAuth();
   const [nodes, setNodes] = useState([]);
   const [deleteStep, setDeleteStep] = useState(0);
   const [userGuess, setUserGuess] = useState("");
@@ -14,6 +19,9 @@ function LinkedListFirstLevel() {
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
+  const [timerActive, setTimerActive] = useState(true); 
+  const [timeTaken, setTimeTaken] = useState(0); 
+  const [points, setPoints] = useState(0); 
 
   useEffect(() => {
     const nodeCount = Math.floor(Math.random() * 3) + 3; // 3-5 nodes
@@ -32,14 +40,44 @@ function LinkedListFirstLevel() {
     }
   }, [taskCompleted]);
 
+  const TOTAL_TIME = 60;
+  const handleTimeUpdate = (timeLeft) => {
+    setTimeTaken(TOTAL_TIME - timeLeft);
+  };
+
+  const calculatePoints = (timeTaken) => {
+    return TOTAL_TIME - timeTaken;
+  };
+
+  const handleLevelCompletion = async (earnedPoints) => {
+    if (currentUser) {
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      const userData = userDocSnap.data();
+      const updatedCompletedLevels = {
+        ...userData.completedLevels,
+        LinkedListFirstLevel: true,
+      };
+      const updatedPoints = earnedPoints;
+
+      await updateDoc(userDocRef, {
+        completedLevels: updatedCompletedLevels,
+        pointsLinkedListFirstLevel: updatedPoints,
+      });
+    }
+  };
+
   function handleGuessSubmit() {
-    // Exclude the deleted node based on deleteStep
     const remainingNodes = nodes.filter((_, index) => index !== deleteStep);
     const remainingValues = remainingNodes.map((node) => node.value).join(",");
     if (userGuess === remainingValues) {
+      const earnedPoints = calculatePoints(timeTaken);
+      setPoints(earnedPoints);
       setResultMessage("Correct!");
       setTaskCompleted(true);
-      setTryAgain(false); // Reset try again animation
+      setTryAgain(false); 
+      setTimerActive(false);
+      handleLevelCompletion(earnedPoints); 
     } else {
       setResultMessage("Incorrect, try again.");
       setTaskCompleted(false);
@@ -110,6 +148,14 @@ function LinkedListFirstLevel() {
               )}
             </div>
           )}
+          <Timer
+            isActive={timerActive}
+            onTimeUpdate={handleTimeUpdate}
+            totalTime={TOTAL_TIME}
+          />
+          <div>
+            <p>Points: {points}</p>
+          </div>
         </div>
       </div>
     </div>

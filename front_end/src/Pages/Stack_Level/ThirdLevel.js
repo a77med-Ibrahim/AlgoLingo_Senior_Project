@@ -1,42 +1,46 @@
 import React, { useState, useEffect } from "react";
 import "./ThirdLevel.css";
-import StackImplementation from "./StackImplementation"; // Import the StackImplementation class
-import LevelsBar from "./LevelBar"; // Import the LevelsBar component
+import StackImplementation from "./StackImplementation"; 
+import LevelsBar from "./LevelBar"; 
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import Celebration from "../Celebration/Celebration";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
+import Timer from "../Menu/Timer"; 
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { db } from "../Menu/firebaseConfig";
 
 function ThirdLevel() {
-  const [stack, setStack] = useState(new StackImplementation()); // Initialize stack using StackImplementation
+  const { currentUser } = useAuth();
+  const [stack, setStack] = useState(new StackImplementation());
   const [poppedShapes, setPoppedShapes] = useState([]);
-  const [questionText, setQuestionText] = useState(""); // State to hold question text
-  const [operations, setOperations] = useState([]); // State to hold the generated operations
-  const [userAnswer, setUserAnswer] = useState(""); // State to hold user's answer
-  const [checkResult3, setcheckResult3] = useState("");
-  const [thirdLevelCompleted, setThirdLevelCompleted] = useState(false); // State to track third level completion
-  const [fadeOut, setFadeOut] = useState(false); // State to control fade-out effect
+  const [questionText, setQuestionText] = useState(""); 
+  const [operations, setOperations] = useState([]); 
+  const [userAnswer, setUserAnswer] = useState(""); 
+  const [checkResult3, setCheckResult3] = useState("");
+  const [thirdLevelCompleted, setThirdLevelCompleted] = useState(false); 
+  const [fadeOut, setFadeOut] = useState(false); 
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
+  const [timerActive, setTimerActive] = useState(true); 
+  const [timeTaken, setTimeTaken] = useState(0); 
+  const [points3, setPoints3] = useState(0); 
 
-  // Function to generate random shapes for the stack and set question text
   const generateRandomShapes = () => {
-    const newStack = new StackImplementation(); // Create a new stack instance
+    const newStack = new StackImplementation(); 
 
     const shapes = ["triangle", "square", "rectangle", "octagon"];
 
     const newStackShapes = [];
-    const selectedShapes = new Set(); // Use a set to ensure uniqueness of shapes
+    const selectedShapes = new Set(); 
 
-    // Select one shape of each type randomly
     while (selectedShapes.size < shapes.length) {
       const randomIndex = Math.floor(Math.random() * shapes.length);
       selectedShapes.add(shapes[randomIndex]);
     }
 
-    // Convert set to array
     selectedShapes.forEach((shape) => newStackShapes.push(shape));
 
-    // Shuffle the selected shapes
     for (let i = newStackShapes.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [newStackShapes[i], newStackShapes[j]] = [
@@ -50,20 +54,17 @@ function ThirdLevel() {
       shape,
     }));
 
-    // Pop random number of shapes (between 1 to 3)
     const numberOfShapesToPop = Math.floor(Math.random() * 3) + 1;
     newOperations.push({ type: "pop", count: numberOfShapesToPop });
 
     setOperations(newOperations);
-    setStack(newStack); // Update the stack state with the new stack instance
+    setStack(newStack); 
     setQuestionText(generateQuestion(newStackShapes, numberOfShapesToPop));
   };
 
-  // Function to generate a random question
   const generateQuestion = (stackShapes, popCount) => {
     const questionArray = [];
 
-    // Push operation for the first sentence
     if (stackShapes.length === 1) {
       questionArray.push(`Push the shape ${stackShapes[0]}`);
     } else {
@@ -74,14 +75,12 @@ function ThirdLevel() {
       );
     }
 
-    // Pop operation for the second sentence
     if (popCount === 1) {
       questionArray.push(`then pop ${popCount} shape`);
     } else {
       questionArray.push(`then pop ${popCount} shapes`);
     }
 
-    // Combine the questions
     const question = questionArray.join(", ");
 
     return question;
@@ -91,9 +90,9 @@ function ThirdLevel() {
     generateRandomShapes();
   }, []);
 
-  // Apply operations to get the final state of the stack and popped shapes
+  
   const applyOperationAndGetStack = (operations) => {
-    let newStack = new StackImplementation(); // Create a new stack instance
+    let newStack = new StackImplementation(); 
     let newPoppedShapes = [];
 
     operations.forEach((operation) => {
@@ -117,19 +116,49 @@ function ThirdLevel() {
     if (operations.length > 0) {
       applyOperationAndGetStack(operations);
     }
-  }, [operations]); // Only trigger the effect when the 'operations' state changes
+  }, [operations]); 
 
-  // Function to handle clicking the "Check" button
-  const handleCheck = () => {
+  const TOTAL_TIME = 60;
+  const handleTimeUpdate = (timeLeft) => {
+    setTimeTaken(TOTAL_TIME - timeLeft);
+  };
+
+  const calculatePoints = (timeTaken) => {
+    return TOTAL_TIME - timeTaken;
+  };
+
+  const handleLevelCompletion = async (earnedPoints) => {
+    if (currentUser) {
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      const userData = userDocSnap.data();
+      const updatedCompletedLevels = {
+        ...userData.completedLevels,
+        ThirdLevel: true,
+      };
+      const updatedPoints3 = (userData.points3 || 0) + earnedPoints;
+
+      await updateDoc(userDocRef, {
+        completedLevels: updatedCompletedLevels,
+        points3: updatedPoints3,
+      });
+    }
+  };
+
+  const handleCheck = async () => {
     const lastPoppedShape = poppedShapes[poppedShapes.length - 1];
     if (userAnswer === lastPoppedShape) {
-      setcheckResult3("Great!");
+      setCheckResult3("Great!");
       setThirdLevelCompleted(true);
       setFadeOut(true);
       setCelebrate(true);
       setTryAgain(false);
+      const earnedPoints = calculatePoints(timeTaken);
+      setPoints3(earnedPoints);
+
+      await handleLevelCompletion(earnedPoints);
     } else {
-      setcheckResult3("Incorrect");
+      setCheckResult3("Incorrect");
       setCelebrate(false);
       setTryAgain(true);
     }
@@ -144,7 +173,7 @@ function ThirdLevel() {
       <div className="other">
         <h1 className="title-styling">Stack</h1>
         <h2 className="title-styling">Third Level</h2>
-        {/* Render LevelsBar component */}
+        
         <LevelsBar
           pushClicked={true}
           popClicked={true}
@@ -190,6 +219,14 @@ function ThirdLevel() {
           </button>
           <Celebration active={celebrate} />
           <TryAgainAnimation active={tryAgain} />
+        </div>
+        <Timer
+          isActive={timerActive}
+          onTimeUpdate={handleTimeUpdate}
+          totalTime={TOTAL_TIME}
+        />
+        <div>
+          <p>Points: {points3}</p>
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 import Celebration from "../Celebration/Celebration";
+import Timer from "../Menu/Timer";
 
 function FirstLevel() {
   const { currentUser } = useAuth();
@@ -21,6 +22,9 @@ function FirstLevel() {
   const [firstLevelCompleted, setFirstLevelCompleted] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
+  const [timerActive, setTimerActive] = useState(true);
+  const [timeTaken, setTimeTaken] = useState(0);
+  const [points, setPoints] = useState(0);
 
   const generateRandomValues = () => {
     const newStack = new StackImplementation();
@@ -112,10 +116,17 @@ function FirstLevel() {
 
     return newStack.stack;
   };
+  const TOTAL_TIME = 60;
+  const handleTimeUpdate = (timeLeft) => {
+    setTimeTaken(TOTAL_TIME - timeLeft);
+  };
+  const calculatePoints = (timeTaken) => {
+    return TOTAL_TIME - timeTaken; 
+  };
 
-  // Function to handle clicking the "Check" button
+
   const handleCheck = async () => {
-    // Convert the user's answer to a number
+    
 
     const userAnswerNum = parseInt(userAnswer);
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
@@ -125,10 +136,15 @@ function FirstLevel() {
       setFirstLevelCompleted(true);
       setCelebrate(true);
       setTryAgain(false);
+      setTimerActive(false); 
+      const earnedPoints = calculatePoints(timeTaken);
+      setPoints(earnedPoints); 
+      
       if (currentUser) {
         const userDocRef = doc(db, "users", currentUser.uid);
         await updateDoc(userDocRef, {
-          completedLevels: arrayUnion("firstLevel"),
+          completedLevels:{FirstLevel:true},
+          points:earnedPoints,
         });
       }
     } else {
@@ -203,6 +219,10 @@ function FirstLevel() {
           <Celebration active={celebrate} />
           <TryAgainAnimation active={tryAgain} />
         </div>
+        <Timer isActive={timerActive} onTimeUpdate={handleTimeUpdate} totalTime={TOTAL_TIME} />
+<div>
+  <p>Points earned: {calculatePoints(timeTaken)}</p>
+</div>
       </div>
     </div>
   );

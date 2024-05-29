@@ -1,41 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { useAuth } from './AuthContext'; 
-import { getAuth, signOut } from 'firebase/auth';
-import { firebaseApp } from "../Menu/firebaseConfig";
-import { useNavigate } from "react-router-dom";
-import { doc, getDoc } from "firebase/firestore"; 
+import React, { useState, useEffect } from "react";
+import "./ProfilePage.css";
+import { useAuth } from "../Menu/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
+import { useNavigate } from "react-router-dom";
+import { getAuth, signOut } from "firebase/auth";
+import { firebaseApp } from "../Menu/firebaseConfig";
 
 const auth = getAuth(firebaseApp);
 
 const ProfilePage = () => {
-  const { currentUser } = useAuth();
-  const [userData, setUserData] = useState({
-    name: "",
-    email: "",
-    completedLevels: []
-  });
+  const { currentUser} = useAuth();
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (currentUser) {
-      const fetchUserData = async () => {
-        try {
-          const userDocRef = doc(db, "users", currentUser.uid);
-          const userDoc = await getDoc(userDocRef);
-          if (userDoc.exists()) {
-            setUserData({
-              name: currentUser.displayName,
-              email: currentUser.email,
-              completedLevels: userDoc.data().completedLevels || []
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching user data: ", error);
+    const fetchUserData = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          setUserData(userDocSnap.data());
+        } else {
+          console.log("User document does not exist");
         }
-      };
-      fetchUserData();
-    }
+      }
+    };
+    fetchUserData();
   }, [currentUser]);
 
   const handleLogout = () => {
@@ -46,22 +37,29 @@ const ProfilePage = () => {
     });
   };
 
+
+ 
+  if (!currentUser) {
+    return null;
+  }
+
   return (
     <div className="profile-container">
-      <h2>User Profile</h2>
+      <h1>Profile</h1>
       <div className="profile-details">
-        <p><strong>Name:</strong> {userData.name}</p>
-        <p><strong>Email:</strong> {userData.email}</p>
-        <p><strong>Completed Levels:</strong></p>
-        <ul>
-          {userData.completedLevels.map((level, index) => (
-            <li key={index}>{level}</li>
-          ))}
-        </ul>
+        <p>{currentUser.email}</p>
+        <p>{`Stack First Level: ${userData?.completedLevels?.FirstLevel ? `${userData.points} Points` : "Not Completed"}`}</p>
+        <p>{`Stack Second Level: ${userData?.completedLevels?.SecondLevel ? `${userData.points2} Points` : "Not Completed"}`}</p>
+        <p>{`Stack Third Level: ${userData?.completedLevels?.ThirdLevel ? `${userData.points3} Points` : "Not Completed"}`}</p>
+        <p>{`Linked List First Level: ${userData?.completedLevels?.LinkedListFirstLevel ? `${userData.pointsLinkedListFirstLevel} Points` : "Not Completed"}`}</p>
+        <p>{`Linked List Second Level: ${userData?.completedLevels?.LinkedListSecondLevel ? `${userData.pointsLinkedListSecondLevel} Points` : "Not Completed"}`}</p>
+        <p>{`Binary Search First Level: ${userData?.completedLevels?.BSLevel1 ? `${userData.pointsBSLevel1} Points` : "Not Completed"}`}</p>
+        <p>{`Binary Search Second Level: ${userData?.completedLevels?.BSLevel2 ? `${userData.pointsBSLevel2} Points` : "Not Completed"}`}</p>
+        <p>{`Queue First Level: ${userData?.completedLevels?.QueueFirstLevel ? `${userData.pointsQueueFirstLevel} Points` : "Not Completed"}`}</p>
+        <p>{`Queue Second Level: ${userData?.completedLevels?.QueueSecondLevel ? `${userData.pointsQueueSecondLevel} Points` : "Not Completed"}`}</p>
+     
       </div>
-      <div className="profile-actions">
-        <button onClick={handleLogout}>Logout</button>
-      </div>
+      <button onClick={handleLogout}>Sign Out</button>
     </div>
   );
 };

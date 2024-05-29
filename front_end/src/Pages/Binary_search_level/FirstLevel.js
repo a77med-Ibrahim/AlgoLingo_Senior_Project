@@ -1,11 +1,15 @@
+import React, { useState, useRef, useEffect } from "react";
 import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import { useDrag, useDrop } from "react-dnd";
-import React, { useState, useRef, useEffect } from "react";
-import Celebration from "../Celebration/Celebration";
 import Xarrow from "react-xarrows";
+import Celebration from "../Celebration/Celebration";
 import "./FirstLevel.css";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
+import Timer from "../Menu/Timer"; // Import the Timer component
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../Menu/firebaseConfig";
 
 function DraggableNode({ id, number, onMoveNode, style }) {
   const [{ isDragging }, drag] = useDrag(
@@ -105,21 +109,52 @@ function isMinHeap(heap) {
 }
 
 function FirstLevel() {
-  const [heap, setHeap] = useState(
-    Array.from({ length: 7 }, (_, index) => ({
-      id: index,
-      number: generateRandomNumber(),
-      position: nodePositions[index],
-    }))
-  );
+  const { currentUser } = useAuth();
+  const [heap, setHeap] = useState(initialHeap);
   const [isMaxHeap, setIsMaxHeap] = useState(true);
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
+  const [timerActive, setTimerActive] = useState(true); 
+  const [timeTaken, setTimeTaken] = useState(0); 
+  const [points, setPoints] = useState(0); 
+
+  const TOTAL_TIME = 120; 
+  const handleTimeUpdate = (timeLeft) => {
+    setTimeTaken(TOTAL_TIME - timeLeft);
+  };
+
+  const calculatePoints = (timeTaken) => {
+    return TOTAL_TIME - timeTaken;
+  };
+
+  const handleLevelCompletion = async (earnedPoints) => {
+    if (currentUser) {
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      const userData = userDocSnap.data();
+      const updatedCompletedLevels = {
+        ...userData.completedLevels,
+        BSLevel1: true,
+      };
+      const updatedPoints =  earnedPoints;
+
+      await updateDoc(userDocRef, {
+        completedLevels: updatedCompletedLevels,
+        pointsBSLevel1: updatedPoints,
+      });
+    }
+  };
+
   useEffect(() => {
     if (taskCompleted) {
       setCelebrate(true);
+      const earnedPoints = calculatePoints(timeTaken);
+      setPoints(earnedPoints);
+      handleLevelCompletion(earnedPoints); 
+      setTimerActive(false);
+      setPoints(earnedPoints);
     }
   }, [taskCompleted]);
 
@@ -132,8 +167,10 @@ function FirstLevel() {
         setTaskCompleted(false);
       } else {
         setTaskCompleted(true);
+        
+        
       }
-      setTryAgain(false); // Reset try again animation
+      setTryAgain(false); 
     } else {
       setMessage(
         `Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`
@@ -164,81 +201,92 @@ function FirstLevel() {
 
   return (
     <div className="flexing">
-      <AlgoLingoBar />
-      <div className="width-of-objects">
-        <h1 className="title-styling">Binary Search</h1>
-        <h2 className="title-styling">Level 1</h2>
-        <div className="navbar-line" />
-        <LevelsBar
-          maxHeapClicked={true}
-          minHeapClicked={true}
-          taskCompleted={taskCompleted}
-        />
-        <div className="heap-container">
-          {heap.map((node, index) => (
-            <DraggableNode
-              key={node.id}
-              id={node.id}
-              number={node.number}
-              onMoveNode={moveNode}
-              style={{
-                position: "absolute",
-                left: `${node.position.x}%`,
-                top: `${node.position.y}%`,
-                width: "5vw",
-                height: "5vw",
-                borderRadius: "50%",
-                backgroundColor: "#f0f0f0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                margin: "1vw",
-                zIndex: 1,
-              }}
-            />
-          ))}
-          {heap.map((node, idx) => {
-            let leftChildIdx = 2 * idx + 1;
-            let rightChildIdx = 2 * idx + 2;
-            return (
-              <>
-                {leftChildIdx < heap.length && (
-                  <Xarrow
-                    start={`node-${node.id}`}
-                    end={`node-${leftChildIdx}`}
-                    color="black"
-                    curveness={0}
-                    headSize={0}
-                  />
-                )}
-                {rightChildIdx < heap.length && (
-                  <Xarrow
-                    start={`node-${node.id}`}
-                    end={`node-${rightChildIdx}`}
-                    color="black"
-                    curveness={0}
-                    headSize={0}
-                  />
-                )}
-              </>
-            );
-          })}
-        </div>
-        <button onClick={checkHeap} className="first-heap-level-buttons">
-          Check Heap
-        </button>
-        <p>
-          Current task: {isMaxHeap ? "Create a Max Heap" : "Create a Min Heap"}
-        </p>
-        {message && <p>{message}</p>}
-        {taskCompleted && !isMaxHeap && (
-          <p>Well done! You've completed both tasks!</p>
-        )}
-        <Celebration active={celebrate} />
-        <TryAgainAnimation active={tryAgain} />
+    <AlgoLingoBar />
+    <div className="width-of-objects">
+      <h1 className="title-styling">Binary Search</h1>
+      <h2 className="title-styling">Level 1</h2>
+      <div className="navbar-line" />
+      <LevelsBar
+        maxHeapClicked={true}
+        minHeapClicked={true}
+        taskCompleted={taskCompleted}
+      />
+      <div className="heap-container">
+        {heap.map((node, index) => (
+          <DraggableNode
+            key={node.id}
+            id={node.id}
+            number={node.number}
+            onMoveNode={moveNode}
+            style={{
+              position: "absolute",
+              left: `${node.position.x}%`,
+              top: `${node.position.y}%`,
+              width: "5vw",
+              height: "5vw",
+              borderRadius: "50%",
+              backgroundColor: "#f0f0f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              margin: "1vw",
+              zIndex: 1,
+            }}
+          />
+        ))}
+        {heap.map((node, idx) => {
+          let leftChildIdx = 2 * idx + 1;
+          let rightChildIdx = 2 * idx + 2;
+          return (
+            <>
+              {leftChildIdx < heap.length && (
+                <Xarrow
+                  start={`node-${node.id}`}
+                  end={`node-${leftChildIdx}`}
+                  color="black"
+                  curveness={0}
+                  headSize={0}
+                />
+              )}
+              {rightChildIdx < heap.length && (
+                <Xarrow
+                  start={`node-${node.id}`}
+                  end={`node-${rightChildIdx}`}
+                  color="black"
+                  curveness={0}
+                  headSize={0}
+                />
+              )}
+            </>
+          );
+        })}
       </div>
+      <button onClick={checkHeap} className="first-heap-level-buttons">
+        Check Heap
+      </button>
+      <p>
+        Current task: {isMaxHeap ? "Create a Max Heap" : "Create a Min Heap"}
+      </p>
+      {message && <p>{message}</p>}
+      {taskCompleted && !isMaxHeap && (
+        <p>Well done! You've completed both tasks!</p>
+      )}
+      <Celebration active={celebrate} />
+      <TryAgainAnimation active={tryAgain} />
+      <div>
+      <Timer
+            isActive={timerActive}
+            onTimeUpdate={handleTimeUpdate}
+            totalTime={TOTAL_TIME}
+          />
+      </div>
+      <div>
+            <p>Points: {points}</p>
+          </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default FirstLevel;
+

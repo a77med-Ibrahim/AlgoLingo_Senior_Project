@@ -1,18 +1,56 @@
 import React, { useState, useEffect } from "react";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import LevelsBar from "./Levels Bar/LevelsBar";
-
+import Timer from "../Menu/Timer"; // Import the Timer component
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../Menu/firebaseConfig";
 
 function QueueSecondLevel() {
+    const { currentUser } = useAuth();
     const [operations, setOperations] = useState([]);
     const [queue, setQueue] = useState([]);
     const [userGuess, setUserGuess] = useState('');
     const [resultMessage, setResultMessage] = useState('');
     const [sum, setSum] = useState(0);
+    const [timerActive, setTimerActive] = useState(true); // Timer state
+    const [timeTaken, setTimeTaken] = useState(0); // State to track time taken
+    const [points, setPoints] = useState(0); // State to hold points for this level
 
     useEffect(() => {
       generateOperations();
     }, []);
+
+    useEffect(() => {
+      if (timerActive) {
+        const interval = setInterval(() => {
+          setTimeTaken((prevTimeTaken) => prevTimeTaken + 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+      }
+    }, [timerActive]);
+
+    const TOTAL_TIME = 60; // Total time for this level
+    const handleTimeUpdate = (timeLeft) => {
+      setTimeTaken(TOTAL_TIME - timeLeft);
+    };
+  
+    const calculatePoints = (timeTaken) => {
+      return TOTAL_TIME - timeTaken;
+    };
+
+    const handleGuessSubmit = () => {
+      if (parseInt(userGuess) === sum) {
+        setResultMessage('Correct!');
+        setTimerActive(false); // Stop the timer
+        const earnedPoints = calculatePoints(timeTaken);
+        setPoints(earnedPoints);
+        handleLevelCompletion(earnedPoints); // Update Firestore with the earned points
+      } else {
+        setResultMessage(`Incorrect, try again.`);
+      }
+    };
 
     const generateOperations = () => {
       let tempQueue = [];
@@ -38,11 +76,21 @@ function QueueSecondLevel() {
       setSum(totalSum);
     };
 
-    const handleGuessSubmit = () => {
-      if (parseInt(userGuess) === sum) {
-        setResultMessage('Correct!');
-      } else {
-        setResultMessage(`Incorrect, try again.`);
+    const handleLevelCompletion = async (earnedPoints) => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        const userData = userDocSnap.data();
+        const updatedCompletedLevels = {
+          ...userData.completedLevels,
+          QueueSecondLevel: true,
+        };
+        const updatedPoints =  earnedPoints;
+
+        await updateDoc(userDocRef, {
+          completedLevels: updatedCompletedLevels,
+          pointsQueueSecondLevel: updatedPoints,
+        });
       }
     };
 
@@ -53,13 +101,10 @@ function QueueSecondLevel() {
           <h1 className="title-styling">Queue</h1>
           <h2 className="title-styling">Second Level</h2>
           <div className="navbar-line" />
-          <LevelsBar 
-          levelUnlocked={true}
-          level2Unlocked={true}
-          />
+          <LevelsBar levelUnlocked={true} level2Unlocked={true} />
           <div className="q">
             <p>
-                After the following operations, calculate the sum of all the values inside the queue.
+              After the following operations, calculate the sum of all the values inside the queue.
             </p>
           </div>
           <div className="operations-container">
@@ -78,9 +123,17 @@ function QueueSecondLevel() {
           />
           <button onClick={handleGuessSubmit} className="submit-button">Submit Guess</button>
           {resultMessage && <div className="result-message">{resultMessage}</div>}
+          <Timer
+            isActive={timerActive}
+            onTimeUpdate={handleTimeUpdate}
+            totalTime={TOTAL_TIME}
+          />
+          <div>
+            <p>Points: {points}</p>
+          </div>
         </div>
       </div>
     );
-  }
+}
 
 export default QueueSecondLevel;

@@ -28,7 +28,7 @@ const RegisterPage = () => {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      navigate('/LandingPage');
+      navigate('/menu');
     } catch (error) {
       console.error("Registration failed:", error);
       setError("Registration failed: " + error.message);
