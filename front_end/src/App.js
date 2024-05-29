@@ -21,7 +21,7 @@ import QueueFirstLevel from "./Pages/QueueLevel/queueFirstLevel";
 import QueueSecondLevel from "./Pages/QueueLevel/queueSecondLevel";
 import ProfilePage from "./Pages/Menu/ProfilePage"; 
 import "./App.css";
-
+import Leaderboard from "./Pages/Menu/Leaderboard";
 const App = () => {
   return (
     <AuthProvider>
@@ -32,6 +32,7 @@ const App = () => {
               <Route path="/menu" element={<MenuPage />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/register" element={<RegisterPage />} />
               <Route path="/preperation-level/first-level" element={<FirstLevel />} />
               <Route path="/preperation-level/third-level" element={<ThirdLevel />} />

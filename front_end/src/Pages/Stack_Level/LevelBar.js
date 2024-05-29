@@ -47,12 +47,12 @@ function LevelsBar({
 
     }
     else if (index === 2) {
-      return checkResult === "Great!" || userData?.completedLevels?.FirstLevel;
+      return checkResult === "Great!" || userData?.completedLevels?.SecondLevel;
 
     } 
     
     else if (index === 3) {
-      return checkResult2 === "Great!" || userData?.completedLevels?.SecondLevel;
+      return checkResult2 === "Great!" || userData?.completedLevels?.ThirdLevel;
 
     } 
     else {

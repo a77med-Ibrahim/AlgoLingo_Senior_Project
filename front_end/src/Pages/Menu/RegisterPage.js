@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useNavigate } from "react-router-dom";
 import { firebaseApp } from "./firebaseConfig"; 
-import firebase from 'firebase/compat/app';
+import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'; // Import Firestore functions
 import { firebaseConfig } from '../Menu/firebaseConfig';
 
-const auth = getAuth(firebaseApp); 
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp); // Initialize Firestore
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -28,6 +29,16 @@ const RegisterPage = () => {
 
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      
+      // Store the user's name in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        name: name,
+        email: email,
+        completedLevels: {},
+        points: {}
+      });
+
       navigate('/menu');
     } catch (error) {
       console.error("Registration failed:", error);
@@ -40,10 +51,25 @@ const RegisterPage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       
-      navigate('/menu'); 
+      const user = result.user;
+      
+      // Check if the user exists in Firestore
+      const userDocRef = doc(db, "users", user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        // If the user does not exist, store the user's name in Firestore
+        await setDoc(userDocRef, {
+          name: user.displayName,
+          email: user.email,
+          completedLevels: {},
+          points: {}
+        });
+      }
+
+      navigate('/menu');
     } catch (error) {
       console.error("Error signing in with Google: ", error);
-      
+      setError("Error signing in with Google: " + error.message);
     }
   };
 
