@@ -6,11 +6,12 @@ import { db } from "../Menu/firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { firebaseApp } from "../Menu/firebaseConfig";
+import AlgoLingoBar from "./AlgoLingoBar";
 
 const auth = getAuth(firebaseApp);
 
 const ProfilePage = () => {
-  const { currentUser} = useAuth();
+  const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
 
@@ -30,36 +31,107 @@ const ProfilePage = () => {
   }, [currentUser]);
 
   const handleLogout = () => {
-    signOut(auth).then(() => {
-      navigate('/');
-    }).catch((error) => {
-      console.error("Error signing out: ", error);
-    });
+    signOut(auth)
+      .then(() => {
+        navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error signing out: ", error);
+      });
   };
 
-
- 
   if (!currentUser) {
     return null;
   }
 
-  return (
-    <div className="profile-container">
-      <h1>Profile</h1>
-      <div className="profile-details">
-        <p>{currentUser.email}</p>
-        <p>{`Stack First Level: ${userData?.completedLevels?.FirstLevel ? `${userData.Points.points} Points` : "Not Completed"}`}</p>
-        <p>{`Stack Second Level: ${userData?.completedLevels?.SecondLevel ? `${userData.Points.points2} Points` : "Not Completed"}`}</p>
-        <p>{`Stack Third Level: ${userData?.completedLevels?.ThirdLevel ? `${userData.Points.points3} Points` : "Not Completed"}`}</p>
-        <p>{`Linked List First Level: ${userData?.completedLevels?.LinkedListFirstLevel ? `${userData.Points.pointsLinkedListFirstLevel} Points` : "Not Completed"}`}</p>
-        <p>{`Linked List Second Level: ${userData?.completedLevels?.LinkedListSecondLevel ? `${userData.Points.pointsLinkedListSecondLevel} Points` : "Not Completed"}`}</p>
-        <p>{`Binary Search First Level: ${userData?.completedLevels?.BSLevel1 ? `${userData.Points.pointsBSLevel1} Points` : "Not Completed"}`}</p>
-        <p>{`Binary Search Second Level: ${userData?.completedLevels?.BSLevel2 ? `${userData.Points.pointsBSLevel2} Points` : "Not Completed"}`}</p>
-        <p>{`Queue First Level: ${userData?.completedLevels?.QueueFirstLevel ? `${userData.Points.pointsQueueFirstLevel} Points` : "Not Completed"}`}</p>
-        <p>{`Queue Second Level: ${userData?.completedLevels?.QueueSecondLevel ? `${userData.Points.pointsQueueSecondLevel} Points` : "Not Completed"}`}</p>
-     
+  const renderBar = (label, points, isCompleted) => {
+    const maxPoints = 300; // Set a max point value for scaling the bars
+    const barWidth = isCompleted ? Math.min((points / maxPoints) * 100, 60) : 60; // Ensure the bar width does not exceed 100%
+    const barColor = isCompleted ? "linear-gradient(to right, yellow, orange)" : "red";
+    const barText = isCompleted ? `${points} Points` : "Level not completed";
+
+    return (
+      <div className="profilebar-container">
+        <div
+          className="profilebar"
+          style={{ width: `${barWidth}%`, background: barColor }}
+        >
+          {label}
+        </div>
+        <div className="profilebar-label">{barText}</div>
       </div>
-      <button onClick={handleLogout}>Sign Out</button>
+    );
+  };
+
+  return (
+    <div className="main-div">
+      <AlgoLingoBar />
+      <div className="profile-container">
+        <h1>Profile</h1>
+        <div className="profile-details">
+          <div className="profilebar-container">
+            <div className="profilebar" style={{ width: "100%" }}>
+              {`Name: ${userData?.name || "N/A"}`}
+            </div>
+          </div>
+          <br />
+          <div className="profilebar-container">
+            <div className="profilebar" style={{ width: "100%" }}>
+              {`Email: ${currentUser.email}`}
+            </div>
+            <br />
+          </div>
+          {renderBar(
+            "Stack First Level",
+            userData?.Points?.points || 0,
+            userData?.completedLevels?.FirstLevel || false
+          )}
+          {renderBar(
+            "Stack Second Level",
+            userData?.Points?.points2 || 0,
+            userData?.completedLevels?.SecondLevel || false
+          )}
+          {renderBar(
+            "Stack Third Level",
+            userData?.Points?.points3 || 0,
+            userData?.completedLevels?.ThirdLevel || false
+          )}
+          {renderBar(
+            "Linked List First Level",
+            userData?.Points?.pointsLinkedListFirstLevel || 0,
+            userData?.completedLevels?.LinkedListFirstLevel || false
+          )}
+          {renderBar(
+            "Linked List Second Level",
+            userData?.Points?.pointsLinkedListSecondLevel || 0,
+            userData?.completedLevels?.LinkedListSecondLevel || false
+          )}
+          {renderBar(
+            "Binary Search First Level",
+            userData?.Points?.pointsBSLevel1 || 0,
+            userData?.completedLevels?.BSLevel1 || false
+          )}
+          {renderBar(
+            "Binary Search Second Level",
+            userData?.Points?.pointsBSLevel2 || 0,
+            userData?.completedLevels?.BSLevel2 || false
+          )}
+          {renderBar(
+            "Queue First Level",
+            userData?.Points?.pointsQueueFirstLevel || 0,
+            userData?.completedLevels?.QueueFirstLevel || false
+          )}
+          {renderBar(
+            "Queue Second Level",
+            userData?.Points?.pointsQueueSecondLevel || 0,
+            userData?.completedLevels?.QueueSecondLevel || false
+          )}
+        </div>
+        <br />
+        <button className="profilebutton-color" onClick={handleLogout}>
+          Sign Out
+        </button>
+      </div>
     </div>
   );
 };
