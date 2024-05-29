@@ -136,11 +136,15 @@ function ThirdLevel() {
         ...userData.completedLevels,
         ThirdLevel: true,
       };
-      const updatedPoints3 = (userData.points3 || 0) + earnedPoints;
+      const updatedPoints = {
+        ...userData.Points,
+        points3:earnedPoints,
+      }
+
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
-        points3: updatedPoints3,
+        Points: updatedPoints,
       });
     }
   };

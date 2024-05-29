@@ -48,15 +48,15 @@ const ProfilePage = () => {
       <h1>Profile</h1>
       <div className="profile-details">
         <p>{currentUser.email}</p>
-        <p>{`Stack First Level: ${userData?.completedLevels?.FirstLevel ? `${userData.points} Points` : "Not Completed"}`}</p>
-        <p>{`Stack Second Level: ${userData?.completedLevels?.SecondLevel ? `${userData.points2} Points` : "Not Completed"}`}</p>
-        <p>{`Stack Third Level: ${userData?.completedLevels?.ThirdLevel ? `${userData.points3} Points` : "Not Completed"}`}</p>
-        <p>{`Linked List First Level: ${userData?.completedLevels?.LinkedListFirstLevel ? `${userData.pointsLinkedListFirstLevel} Points` : "Not Completed"}`}</p>
-        <p>{`Linked List Second Level: ${userData?.completedLevels?.LinkedListSecondLevel ? `${userData.pointsLinkedListSecondLevel} Points` : "Not Completed"}`}</p>
-        <p>{`Binary Search First Level: ${userData?.completedLevels?.BSLevel1 ? `${userData.pointsBSLevel1} Points` : "Not Completed"}`}</p>
-        <p>{`Binary Search Second Level: ${userData?.completedLevels?.BSLevel2 ? `${userData.pointsBSLevel2} Points` : "Not Completed"}`}</p>
-        <p>{`Queue First Level: ${userData?.completedLevels?.QueueFirstLevel ? `${userData.pointsQueueFirstLevel} Points` : "Not Completed"}`}</p>
-        <p>{`Queue Second Level: ${userData?.completedLevels?.QueueSecondLevel ? `${userData.pointsQueueSecondLevel} Points` : "Not Completed"}`}</p>
+        <p>{`Stack First Level: ${userData?.completedLevels?.FirstLevel ? `${userData.Points.points} Points` : "Not Completed"}`}</p>
+        <p>{`Stack Second Level: ${userData?.completedLevels?.SecondLevel ? `${userData.Points.points2} Points` : "Not Completed"}`}</p>
+        <p>{`Stack Third Level: ${userData?.completedLevels?.ThirdLevel ? `${userData.Points.points3} Points` : "Not Completed"}`}</p>
+        <p>{`Linked List First Level: ${userData?.completedLevels?.LinkedListFirstLevel ? `${userData.Points.pointsLinkedListFirstLevel} Points` : "Not Completed"}`}</p>
+        <p>{`Linked List Second Level: ${userData?.completedLevels?.LinkedListSecondLevel ? `${userData.Points.pointsLinkedListSecondLevel} Points` : "Not Completed"}`}</p>
+        <p>{`Binary Search First Level: ${userData?.completedLevels?.BSLevel1 ? `${userData.Points.pointsBSLevel1} Points` : "Not Completed"}`}</p>
+        <p>{`Binary Search Second Level: ${userData?.completedLevels?.BSLevel2 ? `${userData.Points.pointsBSLevel2} Points` : "Not Completed"}`}</p>
+        <p>{`Queue First Level: ${userData?.completedLevels?.QueueFirstLevel ? `${userData.Points.pointsQueueFirstLevel} Points` : "Not Completed"}`}</p>
+        <p>{`Queue Second Level: ${userData?.completedLevels?.QueueSecondLevel ? `${userData.Points.pointsQueueSecondLevel} Points` : "Not Completed"}`}</p>
      
       </div>
       <button onClick={handleLogout}>Sign Out</button>

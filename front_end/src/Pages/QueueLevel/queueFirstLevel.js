@@ -82,11 +82,14 @@ function QueueFirstLevel() {
         ...userData.completedLevels,
         QueueFirstLevel: true,
       };
-      const updatedPoints = earnedPoints;
+      const updatedPoints = {
+        ...userData.Points,
+        pointsQueueFirstLevel:earnedPoints,
+      }
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
-        pointsQueueFirstLevel: updatedPoints,
+        Points: updatedPoints,
       });
     }
   };

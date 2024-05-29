@@ -152,11 +152,16 @@ function SecondLevel() {
         ...userData.completedLevels,
         SecondLevel: true, 
       };
+      const updatedPoints = {
+        ...userData.Points,
+        points2:earnedPoints,
+      }
 
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
-        points2: earnedPoints,
+        Points : updatedPoints,
+        
       });
         }
       }

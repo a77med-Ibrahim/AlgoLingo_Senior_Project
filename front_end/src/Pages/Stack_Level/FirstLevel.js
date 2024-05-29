@@ -144,7 +144,8 @@ function FirstLevel() {
         const userDocRef = doc(db, "users", currentUser.uid);
         await updateDoc(userDocRef, {
           completedLevels:{FirstLevel:true},
-          points:earnedPoints,
+          Points:{points:earnedPoints},
+          
         });
       }
     } else {

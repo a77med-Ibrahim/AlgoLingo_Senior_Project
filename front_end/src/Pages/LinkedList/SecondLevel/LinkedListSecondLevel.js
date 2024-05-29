@@ -7,9 +7,9 @@ import update from "immutability-helper";
 import "./LinkedListSecondLevel.css";
 import Celebration from "../../Celebration/Celebration";
 import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
-import Timer from "../../Menu/Timer"; // Import the Timer component
+import Timer from "../../Menu/Timer"; 
 import { useAuth } from "../../Menu/AuthContext";
-import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { doc, updateDoc, getDoc } from "firebase/firestore"; 
 import { db } from "../../Menu/firebaseConfig";
 
 const NodeType = "node";
@@ -121,11 +121,14 @@ const LinkedListSecondLevel = () => {
         ...userData.completedLevels,
         LinkedListSecondLevel: true,
       };
-      const updatedPoints = earnedPoints;
+      const updatedPoints = {
+        ...userData.Points,
+        pointsLinkedListSecondLevel:earnedPoints,
+      }
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
-        pointsLinkedListSecondLevel: updatedPoints,
+        Points: updatedPoints,
       });
     }
   };

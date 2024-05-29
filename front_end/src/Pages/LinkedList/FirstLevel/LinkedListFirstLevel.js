@@ -58,11 +58,14 @@ function LinkedListFirstLevel() {
         ...userData.completedLevels,
         LinkedListFirstLevel: true,
       };
-      const updatedPoints = earnedPoints;
+      const updatedPoints = {
+        ...userData.Points,
+        pointsLinkedListFirstLevel:earnedPoints,
+      }
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
-        pointsLinkedListFirstLevel: updatedPoints,
+        Points: updatedPoints,
       });
     }
   };
@@ -83,7 +86,7 @@ function LinkedListFirstLevel() {
       setTaskCompleted(false);
       setCelebrate(false);
       setTryAgain(true); 
-      // Cooldown to allow re-triggering the animation
+  
       setTimeout(() => {
         setTryAgain(false);
       }, 500);
