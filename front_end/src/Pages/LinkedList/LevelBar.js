@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./LevelBar.css";
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { db } from "../Menu/firebaseConfig";
+import { getAuth } from "firebase/auth";
+import { firebaseApp } from "../Menu/firebaseConfig";
 
 function LevelsBar({
   activeButtonIndex,
@@ -15,6 +20,24 @@ function LevelsBar({
   const navigate = useNavigate();
   const location = useLocation();
   const levels = ["prep", 1, 2];
+  const { currentUser } = useAuth();
+  const [userData, setUserData] = useState(null);
+  const auth = getAuth(firebaseApp);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          setUserData(userDocSnap.data());
+        } else {
+          console.log("User document does not exist");
+        }
+      }
+    };
+    fetchUserData();
+  }, [currentUser])
 
   const [isFirstLevelUnlocked, setIsFirstLevelUnlocked] = useState(
     JSON.parse(localStorage.getItem("isFirstLevelUnlocked")) || false
@@ -50,9 +73,9 @@ function LevelsBar({
 
   const isUnlocked = (index) => {
     if (index === 1) {
-      return isFirstLevelUnlocked;
+      return isFirstLevelUnlocked || userData?.completedLevels?.LinkedListFirstLevel;
     } else if (index === 2) {
-      return taskCompleted;
+      return taskCompleted || userData?.completedLevels?.LinkedListFirstLevel;
     } else {
       return true;
     }

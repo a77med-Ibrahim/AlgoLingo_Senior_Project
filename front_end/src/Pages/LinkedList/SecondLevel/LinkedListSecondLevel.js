@@ -1,12 +1,16 @@
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import AlgoLingoBar from "../../Menu/AlgoLingoBar";
 import LevelsBar from "../LevelBar";
-import React, { useState, useCallback, useRef } from "react";
 import { DndProvider, useDrag, useDrop } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import "./LinkedListSecondLevel.css";
 import Celebration from "../../Celebration/Celebration";
 import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
+import Timer from "../../Menu/Timer"; // Import the Timer component
+import { useAuth } from "../../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../../Menu/firebaseConfig";
 
 const NodeType = "node";
 
@@ -83,6 +87,7 @@ function shuffle(array) {
 }
 
 const LinkedListSecondLevel = () => {
+  const { currentUser } = useAuth();
   const correctOrder = [
     { id: "x", text: "Reach node 'X'", index: 0 },
     { id: "y", text: "Create node 'Y'", index: 1 },
@@ -94,6 +99,36 @@ const LinkedListSecondLevel = () => {
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
+  const [timerActive, setTimerActive] = useState(true); 
+  const [timeTaken, setTimeTaken] = useState(0); 
+  const [points, setPoints] = useState(0); 
+
+  const TOTAL_TIME = 100;
+  const handleTimeUpdate = (timeLeft) => {
+    setTimeTaken(TOTAL_TIME - timeLeft);
+  };
+
+  const calculatePoints = (timeTaken) => {
+    return TOTAL_TIME - timeTaken;
+  };
+
+  const handleLevelCompletion = async (earnedPoints) => {
+    if (currentUser) {
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      const userData = userDocSnap.data();
+      const updatedCompletedLevels = {
+        ...userData.completedLevels,
+        LinkedListSecondLevel: true,
+      };
+      const updatedPoints = earnedPoints;
+
+      await updateDoc(userDocRef, {
+        completedLevels: updatedCompletedLevels,
+        pointsLinkedListSecondLevel: updatedPoints,
+      });
+    }
+  };
 
   const moveNode = useCallback((dragIndex, hoverIndex) => {
     setNodes((prevNodes) =>
@@ -112,8 +147,13 @@ const LinkedListSecondLevel = () => {
     );
     setMessage(isCorrect ? "Correct order!" : "Incorrect order, try again!");
     if (isCorrect) {
+      const earnedPoints = calculatePoints(timeTaken);
+      setPoints(earnedPoints);
       setCelebrate(true);
       setTryAgain(false);
+      setTimerActive(false);
+      handleLevelCompletion(earnedPoints); 
+
     } else {
       setCelebrate(false);
       setTryAgain(true);
@@ -166,6 +206,14 @@ const LinkedListSecondLevel = () => {
           <div className="result-message">{message}</div>
           <Celebration active={celebrate} />
           <TryAgainAnimation active={tryAgain} />
+          <Timer
+            isActive={timerActive}
+            onTimeUpdate={handleTimeUpdate}
+            totalTime={TOTAL_TIME}
+          />
+          <div>
+            <p>Points: {points}</p>
+          </div>
         </div>
       </div>
     </DndProvider>

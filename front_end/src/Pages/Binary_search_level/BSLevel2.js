@@ -6,6 +6,10 @@ import Xarrow from "react-xarrows";
 import Celebration from "../Celebration/Celebration";
 import "./BSLevel2.css";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
+import Timer from "../Menu/Timer"; 
+import { useAuth } from "../Menu/AuthContext";
+import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { db } from "../Menu/firebaseConfig";
 
 function DraggableNode({ id, number, onMoveNode, style }) {
   const [{ isDragging }, drag] = useDrag(
@@ -85,6 +89,7 @@ function isMinHeap(heap) {
 }
 
 function BSLevel2() {
+  const { currentUser } = useAuth();
   const [heap, setHeap] = useState(
     Array.from({ length: 15 }, (_, index) => ({
       id: index,
@@ -92,39 +97,51 @@ function BSLevel2() {
       position: nodePositions[index],
     }))
   );
-  const [isMaxHeap, setIsMaxHeap] = useState(true); // Start with sorting a max heap
+  const [isMaxHeap, setIsMaxHeap] = useState(true); 
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
+  const [timerActive, setTimerActive] = useState(true); 
+  const [timeTaken, setTimeTaken] = useState(0); 
+  const [points, setPoints] = useState(0); 
+
+  const TOTAL_TIME = 300; 
+  const handleTimeUpdate = (timeLeft) => {
+    setTimeTaken(TOTAL_TIME - timeLeft);
+  };
+
+  const calculatePoints = (timeTaken) => {
+    return TOTAL_TIME - timeTaken;
+  };
+
+  const handleLevelCompletion = async (earnedPoints) => {
+    if (currentUser) {
+      const userDocRef = doc(db, "users", currentUser.uid);
+      const userDocSnap = await getDoc(userDocRef);
+      const userData = userDocSnap.data();
+      const updatedCompletedLevels = {
+        ...userData.completedLevels,
+        BSLevel2: true,
+      };
+      const updatedPoints = earnedPoints;
+
+      await updateDoc(userDocRef, {
+        completedLevels: updatedCompletedLevels,
+        pointsBSLevel2: updatedPoints,
+      });
+    }
+  };
 
   useEffect(() => {
     if (taskCompleted) {
       setCelebrate(true);
+      const earnedPoints = calculatePoints(timeTaken);
+      setPoints(earnedPoints);
+      handleLevelCompletion(earnedPoints); 
+      setTimerActive(false);
     }
   }, [taskCompleted]);
-
-  function checkHeap() {
-    const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
-    if (isValidHeap) {
-      setMessage(`Correct! This is a ${isMaxHeap ? "max" : "min"} heap.`);
-      if (isMaxHeap) {
-        setIsMaxHeap(false); // Switch to min heap
-        setTaskCompleted(false); // Reset for the next task
-      } else {
-        setTaskCompleted(true); // Mark the min heap task as completed
-      }
-      setTryAgain(false); // Reset try again animation
-    } else {
-      setMessage(
-        `Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`
-      );
-      setTryAgain(true);
-      setTimeout(() => {
-        setTryAgain(false);
-      }, 500);
-    }
-  }
 
   const moveNode = (fromId, toId) => {
     const newHeap = [...heap];
@@ -136,13 +153,34 @@ function BSLevel2() {
       return;
     }
 
-    // Swap the numbers of the two nodes
     [newHeap[fromIndex].number, newHeap[toIndex].number] = [
       newHeap[toIndex].number,
       newHeap[fromIndex].number,
     ];
     setHeap(newHeap);
   };
+
+  function checkHeap() {
+    const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
+    if (isValidHeap) {
+      setMessage(`Correct! This is a ${isMaxHeap ? "max" : "min"} heap.`);
+      if (isMaxHeap) {
+        setIsMaxHeap(false); 
+        setTaskCompleted(false); 
+      } else {
+        setTaskCompleted(true); 
+      }
+      setTryAgain(false); 
+    } else {
+      setMessage(
+        `Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`
+      );
+      setTryAgain(true);
+      setTimeout(() => {
+        setTryAgain(false);
+      }, 500);
+    }
+  }
 
   return (
     <div className="flexing">
@@ -182,7 +220,7 @@ function BSLevel2() {
             let leftChildIdx = 2 * idx + 1;
             let rightChildIdx = 2 * idx + 2;
             return (
-              <>
+              <React.Fragment key={idx}>
                 {leftChildIdx < heap.length && (
                   <Xarrow
                     start={`node-${node.id}`}
@@ -201,7 +239,7 @@ function BSLevel2() {
                     headSize={0}
                   />
                 )}
-              </>
+              </React.Fragment>
             );
           })}
         </div>
@@ -217,6 +255,16 @@ function BSLevel2() {
         )}
         <Celebration active={celebrate} />
         <TryAgainAnimation active={tryAgain} />
+        <div>
+      <Timer
+            isActive={timerActive}
+            onTimeUpdate={handleTimeUpdate}
+            totalTime={TOTAL_TIME}
+          />
+      </div>
+      <div>
+            <p>Points: {points}</p>
+          </div>
       </div>
     </div>
   );
