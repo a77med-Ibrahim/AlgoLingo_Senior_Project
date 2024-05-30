@@ -117,6 +117,11 @@ const LinkedListSecondLevel = () => {
       const userDocRef = doc(db, "users", currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
       const userData = userDocSnap.data();
+      const updateCompletedSection = {
+        ...userData.Sections,
+        Section3: true,
+      }
+      
       const updatedCompletedLevels = {
         ...userData.completedLevels,
         LinkedListSecondLevel: true,
@@ -129,6 +134,7 @@ const LinkedListSecondLevel = () => {
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
         Points: updatedPoints,
+        Sections: updateCompletedSection,
       });
     }
   };

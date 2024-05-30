@@ -31,7 +31,6 @@ const RegisterPage = () => {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       
-      // Store the user's name in Firestore
       await setDoc(doc(db, "users", user.uid), {
         name: name,
         email: email,
@@ -39,7 +38,7 @@ const RegisterPage = () => {
         points: {}
       });
 
-      navigate('/menu');
+      navigate('/');
     } catch (error) {
       console.error("Registration failed:", error);
       setError("Registration failed: " + error.message);
@@ -50,26 +49,22 @@ const RegisterPage = () => {
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      
       const user = result.user;
-      
-      // Check if the user exists in Firestore
+      const displayName = user.displayName;
+      const email = user.email;
+
       const userDocRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userDocRef);
-      if (!userDoc.exists()) {
-        // If the user does not exist, store the user's name in Firestore
-        await setDoc(userDocRef, {
-          name: user.displayName,
-          email: user.email,
-          completedLevels: {},
-          points: {}
-        });
-      }
+      await setDoc(userDocRef, {
+        name: displayName,
+        email: email,
+        completedLevels: {},
+        points: {}
+      });
 
       navigate('/menu');
     } catch (error) {
       console.error("Error signing in with Google: ", error);
-      setError("Error signing in with Google: " + error.message);
+      setError(error.message); 
     }
   };
 

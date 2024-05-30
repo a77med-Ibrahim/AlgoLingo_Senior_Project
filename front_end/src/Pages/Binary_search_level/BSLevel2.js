@@ -120,6 +120,10 @@ function BSLevel2() {
       const userDocRef = doc(db, "users", currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
       const userData = userDocSnap.data();
+      const updateCompletedSection = {
+        ...userData.Sections,
+        Section4: true,
+      }
       const updatedCompletedLevels = {
         ...userData.completedLevels,
         BSLevel2: true,
@@ -132,6 +136,7 @@ function BSLevel2() {
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
         Points: updatedPoints,
+        Sections:updateCompletedSection,
       });
     }
   };

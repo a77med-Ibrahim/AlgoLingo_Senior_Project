@@ -45,8 +45,8 @@ const ProfilePage = () => {
   }
 
   const renderBar = (label, points, isCompleted) => {
-    const maxPoints = 300; // Set a max point value for scaling the bars
-    const barWidth = isCompleted ? Math.min((points / maxPoints) * 100, 60) : 60; // Ensure the bar width does not exceed 100%
+    const maxPoints = 300; 
+    const barWidth = isCompleted ? Math.min((points / maxPoints) * 100, 60) : 30; 
     const barColor = isCompleted ? "linear-gradient(to right, yellow, orange)" : "red";
     const barText = isCompleted ? `${points} Points` : "Level not completed";
 
@@ -70,62 +70,63 @@ const ProfilePage = () => {
         <h1>Profile</h1>
         <div className="profile-details">
           <div className="profilebar-container">
-            <div className="profilebar" style={{ width: "100%" }}>
+            <div className="profilebar" style={{ width: 200 }}>
               {`Name: ${userData?.name || "N/A"}`}
             </div>
           </div>
           <br />
           <div className="profilebar-container">
-            <div className="profilebar" style={{ width: "100%" }}>
+            <div className="profilebar" style={{ width: 200 }}>
               {`Email: ${currentUser.email}`}
             </div>
             <br />
           </div>
           {renderBar(
-            "Stack First Level",
+            "Stack 1:",
             userData?.Points?.points || 0,
             userData?.completedLevels?.FirstLevel || false
           )}
           {renderBar(
-            "Stack Second Level",
+            "Stack 2:",
             userData?.Points?.points2 || 0,
             userData?.completedLevels?.SecondLevel || false
           )}
           {renderBar(
-            "Stack Third Level",
+            "Stack 3:",
             userData?.Points?.points3 || 0,
             userData?.completedLevels?.ThirdLevel || false
           )}
           {renderBar(
-            "Linked List First Level",
-            userData?.Points?.pointsLinkedListFirstLevel || 0,
-            userData?.completedLevels?.LinkedListFirstLevel || false
-          )}
-          {renderBar(
-            "Linked List Second Level",
-            userData?.Points?.pointsLinkedListSecondLevel || 0,
-            userData?.completedLevels?.LinkedListSecondLevel || false
-          )}
-          {renderBar(
-            "Binary Search First Level",
-            userData?.Points?.pointsBSLevel1 || 0,
-            userData?.completedLevels?.BSLevel1 || false
-          )}
-          {renderBar(
-            "Binary Search Second Level",
-            userData?.Points?.pointsBSLevel2 || 0,
-            userData?.completedLevels?.BSLevel2 || false
-          )}
-          {renderBar(
-            "Queue First Level",
+            "Queue 1:",
             userData?.Points?.pointsQueueFirstLevel || 0,
             userData?.completedLevels?.QueueFirstLevel || false
           )}
           {renderBar(
-            "Queue Second Level",
+            "Queue 2:",
             userData?.Points?.pointsQueueSecondLevel || 0,
             userData?.completedLevels?.QueueSecondLevel || false
           )}
+          {renderBar(
+            "Linked List 1:",
+            userData?.Points?.pointsLinkedListFirstLevel || 0,
+            userData?.completedLevels?.LinkedListFirstLevel || false
+          )}
+          {renderBar(
+            "Linked List 2:",
+            userData?.Points?.pointsLinkedListSecondLevel || 0,
+            userData?.completedLevels?.LinkedListSecondLevel || false
+          )}
+          {renderBar(
+            "Binary Search 1:",
+            userData?.Points?.pointsBSLevel1 || 0,
+            userData?.completedLevels?.BSLevel1 || false
+          )}
+          {renderBar(
+            "Binary Search 2:",
+            userData?.Points?.pointsBSLevel2 || 0,
+            userData?.completedLevels?.BSLevel2 || false
+          )}
+          
         </div>
         <br />
         <button className="profilebutton-color" onClick={handleLogout}>
