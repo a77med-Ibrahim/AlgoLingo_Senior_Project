@@ -8,14 +8,20 @@ import "./Menu.css";
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { firebaseAuth, db } from "./firebaseConfig";
+import { getAuth } from "firebase/auth";
+import { firebaseApp } from "./firebaseConfig";
+import { useAuth } from "./AuthContext";
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
   const [lastClickedCircle, setLastClickedCircle] = useState(null);
   const [definitionOfLevel, setDefinitionOfLevel] = useState("");
   const [nameOfLevel, setNameOfLevel] = useState("");
-
+  const [userData, setUserData] = useState(null);
+  const { currentUser } = useAuth();
+  const auth = getAuth(firebaseApp);
   const [circleData, setCircleData] = useState([
+    
     { id: 1, top: "40px", left: "210px", isOpen: true, image: stackImage },
     { id: 2, top: "120px", left: "100px", isOpen: true, image: queueImage },
     {
@@ -37,37 +43,63 @@ function Menu() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (firebaseAuth.currentUser) {
-      const userId = firebaseAuth.currentUser.uid;
-      const userDocRef = doc(db, "progress", userId);
-      getDoc(userDocRef)
-        .then((docSnap) => {
-          if (docSnap.exists()) {
-            const userProgress = docSnap.data();
-            updateLevels(userProgress);
-          } else {
-            // Handle the case where there is no data
-            console.log("No such document!");
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching user progress:", error);
-        });
-    }
-  }, [firebaseAuth, db]);
+    const fetchUserData = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+        if (userDocSnap.exists()) {
+          setUserData(userDocSnap.data());
+        } else {
+          console.log("User document does not exist");
+        }
+      }
+    };
+    fetchUserData();
+  }, [currentUser])
 
   const updateLevels = (userProgress) => {
-    const updatedCircles = circleData.map((circle) => ({
-      ...circle,
-      isOpen: userProgress[circle.id] ? userProgress[circle.id].isOpen : false,
-    }));
+    const { completedLevels } = userProgress;
+
+    const updatedCircles = circleData.map((circle, index) => {
+      if (index === 0) {
+        return { ...circle, isOpen: true }; 
+      }
+      
+      const prevLevel = circleData[index - 1];
+      const prevLevelKey = `Level${prevLevel.id}`; 
+      
+      return {
+        ...circle,
+        isOpen: completedLevels[prevLevelKey] || false,
+      };
+    });
+
     setCircleData(updatedCircles);
   };
+  
 
   const isLevelUnlocked = (circleId) => {
     const circle = circleData.find((circle) => circle.id === circleId);
-    return circle.isOpen;
-  };
+    
+    const sectionKey = `Section${circle.id}`; 
+    
+    if (circle.id === 1) {
+        return true;
+    }
+      else if (circle.id === 2) {
+        return userData?.Sections?.Section1;
+    }
+    else if (circle.id === 3) {
+      return userData?.Sections?.Section2;
+  }
+  else if (circle.id === 4) {
+    return userData?.Sections?.Section3;
+}
+    
+    return circle.isOpen && userData?.Sections?.[sectionKey];
+};
+
+  
 
   const handleCircleClick = (circleId) => {
     if (activeCircle === circleId) {
@@ -102,13 +134,16 @@ function Menu() {
         setDefinitionOfLevel("");
       }
     }
+
+    
   };
+  
   const handleStartButtonClick = () => {
     if (activeCircle && isLevelUnlocked(lastClickedCircle)) {
       if (lastClickedCircle === 1) {
         navigate("/preperation-level");
       } else if (lastClickedCircle === 2) {
-        // alert("Second level is not complete yet");
+       
         navigate("/queue-preparation");
       } else if (lastClickedCircle === 3) {
         navigate("/LinkedListPrepLevel");
@@ -117,7 +152,6 @@ function Menu() {
       }
     }
   };
-
   return (
     <div className="main-div">
       <AlgoLingoBar />

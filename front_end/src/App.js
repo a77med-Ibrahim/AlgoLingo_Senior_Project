@@ -22,6 +22,8 @@ import QueueSecondLevel from "./Pages/QueueLevel/queueSecondLevel";
 import ProfilePage from "./Pages/Menu/ProfilePage"; 
 import "./App.css";
 import Leaderboard from "./Pages/Menu/Leaderboard";
+import PrivateRoute from './PrivateRoute';
+
 const App = () => {
   return (
     <AuthProvider>

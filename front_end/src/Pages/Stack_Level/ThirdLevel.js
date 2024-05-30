@@ -7,7 +7,7 @@ import Celebration from "../Celebration/Celebration";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 import Timer from "../Menu/Timer"; 
 import { useAuth } from "../Menu/AuthContext";
-import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore"; 
 import { db } from "../Menu/firebaseConfig";
 
 function ThirdLevel() {
@@ -132,6 +132,11 @@ function ThirdLevel() {
       const userDocRef = doc(db, "users", currentUser.uid);
       const userDocSnap = await getDoc(userDocRef);
       const userData = userDocSnap.data();
+
+      const updateCompletedSection = {
+        ...userData.Sections,
+        Section1: true,
+      }
       const updatedCompletedLevels = {
         ...userData.completedLevels,
         ThirdLevel: true,
@@ -145,6 +150,7 @@ function ThirdLevel() {
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
         Points: updatedPoints,
+        Sections:updateCompletedSection,
       });
     }
   };

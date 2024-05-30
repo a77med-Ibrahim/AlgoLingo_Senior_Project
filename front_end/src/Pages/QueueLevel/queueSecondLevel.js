@@ -81,6 +81,10 @@ function QueueSecondLevel() {
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDocSnap = await getDoc(userDocRef);
         const userData = userDocSnap.data();
+        const updateCompletedSection = {
+          ...userData.Sections,
+          Section2: true,
+        }
         const updatedCompletedLevels = {
           ...userData.completedLevels,
           QueueSecondLevel: true,
@@ -93,6 +97,7 @@ function QueueSecondLevel() {
         await updateDoc(userDocRef, {
           completedLevels: updatedCompletedLevels,
           Points: updatedPoints,
+          Sections:updateCompletedSection,
         });
       }
     };
