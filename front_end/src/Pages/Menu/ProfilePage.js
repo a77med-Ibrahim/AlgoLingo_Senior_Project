@@ -46,7 +46,7 @@ const ProfilePage = () => {
 
   const renderBar = (label, points, isCompleted) => {
     const maxPoints = 300; 
-    const barWidth = isCompleted ? Math.min((points / maxPoints) * 100, 100) : 10; 
+    const barWidth = isCompleted ? Math.min((points / maxPoints) * 100, 100) : 20; 
     const barColor = isCompleted ? "linear-gradient(to right, yellow, orange)" : "red";
     const barText = isCompleted ? `${points} Points` : "Level not completed";
 
@@ -64,10 +64,10 @@ const ProfilePage = () => {
   };
 
   return (
-    <div className="main-div">
-      <AlgoLingoBar />
+    <div className="profmain-div">
+      <div className="almain-div"><AlgoLingoBar /></div>
       <div className="profile-container">
-        <h1>Profile</h1>
+        <h1 className="profilenamename" >Profile</h1>
         <div className="profile-details">
           <div className="profile-info">
             <div className="profile-info-item">{`Name: ${userData?.name || "N/A"}`}</div>
@@ -100,22 +100,22 @@ const ProfilePage = () => {
               userData?.completedLevels?.QueueSecondLevel || false
             )}
             {renderBar(
-              "Linked List 1:",
+              "Linked 1:",
               userData?.Points?.pointsLinkedListFirstLevel || 0,
               userData?.completedLevels?.LinkedListFirstLevel || false
             )}
             {renderBar(
-              "Linked List 2:",
+              "Linked 2:",
               userData?.Points?.pointsLinkedListSecondLevel || 0,
               userData?.completedLevels?.LinkedListSecondLevel || false
             )}
             {renderBar(
-              "Binary Search 1:",
+              "Binary 1:",
               userData?.Points?.pointsBSLevel1 || 0,
               userData?.completedLevels?.BSLevel1 || false
             )}
             {renderBar(
-              "Binary Search 2:",
+              "Binary 2:",
               userData?.Points?.pointsBSLevel2 || 0,
               userData?.completedLevels?.BSLevel2 || false
             )}
