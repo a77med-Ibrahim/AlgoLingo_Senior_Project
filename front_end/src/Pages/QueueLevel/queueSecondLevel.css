@@ -1,0 +1,68 @@
+/* queueSecondLevel.css */
+.operations-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.operation-item {
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.drop-area {
+  width: 100%;
+  padding: 20px;
+  border: 2px dashed #ccc;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.result-message {
+  margin-top: 20px;
+  font-size: 1.2em;
+}
+
+.timer {
+  margin-top: 20px;
+  font-size: 1.2em;
+}
+.operation-item {
+  padding: 10px;
+  margin: 5px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: white;
+  text-align: center;
+  user-select: none;
+}
+
+.operations-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.operation-item:hover {
+  background-color: #f0f0f0;
+}
+
+.operation-item:active {
+  background-color: #d3d3d3;
+}

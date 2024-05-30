@@ -121,13 +121,10 @@ function FirstLevel() {
     setTimeTaken(TOTAL_TIME - timeLeft);
   };
   const calculatePoints = (timeTaken) => {
-    return TOTAL_TIME - timeTaken; 
+    return TOTAL_TIME - timeTaken;
   };
 
-
   const handleCheck = async () => {
-    
-
     const userAnswerNum = parseInt(userAnswer);
     const lastPoppedValue = poppedValues[poppedValues.length - 1];
 
@@ -136,37 +133,34 @@ function FirstLevel() {
       setFirstLevelCompleted(true);
       setCelebrate(true);
       setTryAgain(false);
-      setTimerActive(false); 
+      setTimerActive(false);
       const earnedPoints = calculatePoints(timeTaken);
-      setPoints(earnedPoints); 
-      
+      setPoints(earnedPoints);
+
       const handleLevelCompletion = async (earnedPoints) => {
         if (currentUser) {
           const userDocRef = doc(db, "users", currentUser.uid);
-          if (typeof earnedPoints !== 'undefined') {
+          if (typeof earnedPoints !== "undefined") {
             const userDocSnap = await getDoc(userDocRef);
-        const userData = userDocSnap.data();
-        const updatedCompletedLevels = {
-          ...userData.completedLevels,
-          FirstLevel: true, 
-        };
-        const updatedPoints = {
-          ...userData.Points,
-          points:earnedPoints,
-        }
-  
-  
-        await updateDoc(userDocRef, {
-          completedLevels: updatedCompletedLevels,
-          Points : updatedPoints,
-          
-        });
+            const userData = userDocSnap.data();
+            const updatedCompletedLevels = {
+              ...userData.completedLevels,
+              FirstLevel: true,
+            };
+            const updatedPoints = {
+              ...userData.Points,
+              points: earnedPoints,
+            };
+
+            await updateDoc(userDocRef, {
+              completedLevels: updatedCompletedLevels,
+              Points: updatedPoints,
+            });
           }
         }
       };
-       
-      handleLevelCompletion(earnedPoints);
 
+      handleLevelCompletion(earnedPoints);
     } else {
       setCheckResult("Incorrect");
       setCelebrate(false);
@@ -239,10 +233,14 @@ function FirstLevel() {
           <Celebration active={celebrate} />
           <TryAgainAnimation active={tryAgain} />
         </div>
-        <Timer isActive={timerActive} onTimeUpdate={handleTimeUpdate} totalTime={TOTAL_TIME} />
-<div>
-  <p>Points earned: {calculatePoints(timeTaken)}</p>
-</div>
+        <Timer
+          isActive={timerActive}
+          onTimeUpdate={handleTimeUpdate}
+          totalTime={TOTAL_TIME}
+        />
+        <div>
+          <p>Points earned: {calculatePoints(timeTaken)}</p>
+        </div>
       </div>
     </div>
   );

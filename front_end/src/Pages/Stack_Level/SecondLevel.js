@@ -10,7 +10,6 @@ import { useAuth } from "../Menu/AuthContext";
 import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
 
-
 function SecondLevel() {
   const { currentUser } = useAuth();
   const [activeButtonIndex, setActiveButtonIndex] = useState(null);
@@ -124,62 +123,55 @@ function SecondLevel() {
     setTimeTaken(TOTAL_TIME - timeLeft);
   };
   const calculatePoints = (timeTaken) => {
-    return TOTAL_TIME - timeTaken; 
+    return TOTAL_TIME - timeTaken;
   };
-  
-  
-  
 
   const handleCheck = async () => {
-  const userAnswerNum = parseInt(userAnswer);
-  const lastPoppedValue = poppedValues[poppedValues.length - 1];
+    const userAnswerNum = parseInt(userAnswer);
+    const lastPoppedValue = poppedValues[poppedValues.length - 1];
 
-  if (userAnswerNum === lastPoppedValue) {
-    setCheckResult2("Great!");
-    setSecondLevelCompleted(true);
-    setCelebrate(true);
-    setTryAgain(false);
-    const earnedPoints = calculatePoints(timeTaken);
-    setPoints2(earnedPoints); 
-    
-    const handleLevelCompletion = async (earnedPoints) => {
-      if (currentUser) {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        if (typeof earnedPoints !== 'undefined') {
-          const userDocSnap = await getDoc(userDocRef);
-      const userData = userDocSnap.data();
-      const updatedCompletedLevels = {
-        ...userData.completedLevels,
-        SecondLevel: true, 
-      };
-      const updatedPoints = {
-        ...userData.Points,
-        points2:earnedPoints,
-      }
+    if (userAnswerNum === lastPoppedValue) {
+      setCheckResult2("Great!");
+      setSecondLevelCompleted(true);
+      setCelebrate(true);
+      setTryAgain(false);
+      const earnedPoints = calculatePoints(timeTaken);
+      setPoints2(earnedPoints);
 
+      const handleLevelCompletion = async (earnedPoints) => {
+        if (currentUser) {
+          const userDocRef = doc(db, "users", currentUser.uid);
+          if (typeof earnedPoints !== "undefined") {
+            const userDocSnap = await getDoc(userDocRef);
+            const userData = userDocSnap.data();
+            const updatedCompletedLevels = {
+              ...userData.completedLevels,
+              SecondLevel: true,
+            };
+            const updatedPoints = {
+              ...userData.Points,
+              points2: earnedPoints,
+            };
 
-      await updateDoc(userDocRef, {
-        completedLevels: updatedCompletedLevels,
-        Points : updatedPoints,
-        
-      });
+            await updateDoc(userDocRef, {
+              completedLevels: updatedCompletedLevels,
+              Points: updatedPoints,
+            });
+          }
         }
-      }
-    };
-     
-    handleLevelCompletion(earnedPoints);
-    
-  } else {
-    setCheckResult2("Failed");
-    setSecondLevelCompleted(false);
-    setCelebrate(false);
-    setTryAgain(true);
-  }
-  setTimeout(() => {
-    setTryAgain(false);
-  }, 500);
-};
+      };
 
+      handleLevelCompletion(earnedPoints);
+    } else {
+      setCheckResult2("Failed");
+      setSecondLevelCompleted(false);
+      setCelebrate(false);
+      setTryAgain(true);
+    }
+    setTimeout(() => {
+      setTryAgain(false);
+    }, 500);
+  };
 
   const handlePopArrowClick = () => {
     document.querySelector(".popped-values").classList.add("fade-out");
@@ -253,10 +245,14 @@ function SecondLevel() {
           <Celebration active={celebrate} />
           <TryAgainAnimation active={tryAgain} />
         </div>
-        <Timer isActive={timerActive} onTimeUpdate={handleTimeUpdate} totalTime={TOTAL_TIME} />
-<div>
-  <p>Points earned: {calculatePoints(timeTaken)}</p>
-</div>
+        <Timer
+          isActive={timerActive}
+          onTimeUpdate={handleTimeUpdate}
+          totalTime={TOTAL_TIME}
+        />
+        <div>
+          <p>Points earned: {calculatePoints(timeTaken)}</p>
+        </div>
       </div>
     </div>
   );

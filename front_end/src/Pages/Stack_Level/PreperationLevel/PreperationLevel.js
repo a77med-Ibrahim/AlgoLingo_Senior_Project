@@ -287,8 +287,8 @@ function PreperationLevel() {
             </p>
           </div>
         </div>
-        {celebrate && <Celebration />}
       </div>
+      <Celebration active={celebrate} />
     </div>
   );
 }

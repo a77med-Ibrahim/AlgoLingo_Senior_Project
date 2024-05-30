@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import { firebaseApp } from "./firebaseConfig"; 
-import { getFirestore, doc, setDoc, getDoc } from 'firebase/firestore'; // Import Firestore functions
-import { firebaseConfig } from '../Menu/firebaseConfig';
+import { firebaseApp } from "./firebaseConfig";
+import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { firebaseConfig } from "../Menu/firebaseConfig";
 
 const auth = getAuth(firebaseApp);
 const db = getFirestore(firebaseApp); // Initialize Firestore
@@ -28,17 +33,21 @@ const RegisterPage = () => {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
-      
+
       await setDoc(doc(db, "users", user.uid), {
         name: name,
         email: email,
         completedLevels: {},
-        points: {}
+        points: {},
       });
 
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.error("Registration failed:", error);
       setError("Registration failed: " + error.message);
@@ -58,68 +67,67 @@ const RegisterPage = () => {
         name: displayName,
         email: email,
         completedLevels: {},
-        points: {}
+        points: {},
       });
 
-      navigate('/menu');
+      navigate("/menu");
     } catch (error) {
       console.error("Error signing in with Google: ", error);
-      setError(error.message); 
+      setError(error.message);
     }
   };
 
   return (
     <div className="container">
-      <h2>Register</h2>
-      {error && <div className="error">{error}</div>}
-      <div className="input-group">
-        <label>Name</label>
-        <input
-          type="text"
-          placeholder="Enter your name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
-        <label>Email</label>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
-        <label>Password</label>
-        <input
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
-        <label>Re-enter Password</label>
-        <input
-          type="password"
-          placeholder="Re-enter your password"
-          value={rePassword}
-          onChange={(e) => setRePassword(e.target.value)}
-        />
-      </div>
-      <div className="register-button">
-        <button className="buttons-color" onClick={handleRegister}>
-          Register
-        </button>
-      </div>
-      <div className="register-button">
-        <button className="buttons-color" onClick={handleSignInWithGoogle}>
+      <h2>Sign up for AlgoLingo</h2>
+      <button className="google-signin" onClick={handleSignInWithGoogle}>
+        <img
+          src="https://img.icons8.com/color/16/000000/google-logo.png"
+          alt="Google icon"
+        />{" "}
+        Continue with Google
+      </button>
+      <p className="filling-text">or</p>
+
+      <input
+        type="text"
+        className="register-input"
+        placeholder="Enter your name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      />
+
+      <input
+        type="email"
+        placeholder="Enter your email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Enter your password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+      />
+
+      <input
+        type="password"
+        placeholder="Re-enter your password"
+        value={rePassword}
+        onChange={(e) => setRePassword(e.target.value)}
+      />
+
+      <button className="login-button" onClick={handleRegister}>
+        Create account
+      </button>
+
+      {/* <button className="buttons-color" onClick={handleSignInWithGoogle}>
           Sign in with Google
-        </button>
-      </div>
+        </button> */}
+      {error && <div className="filling-text">{error}</div>}
     </div>
   );
-}
+};
 
 export default RegisterPage;
