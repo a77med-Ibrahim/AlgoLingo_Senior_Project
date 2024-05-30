@@ -4,7 +4,7 @@ import StackImplementation from "./StackImplementation";
 import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import { useAuth } from "../Menu/AuthContext";
-import { doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 import Celebration from "../Celebration/Celebration";
@@ -140,14 +140,33 @@ function FirstLevel() {
       const earnedPoints = calculatePoints(timeTaken);
       setPoints(earnedPoints); 
       
-      if (currentUser) {
-        const userDocRef = doc(db, "users", currentUser.uid);
+      const handleLevelCompletion = async (earnedPoints) => {
+        if (currentUser) {
+          const userDocRef = doc(db, "users", currentUser.uid);
+          if (typeof earnedPoints !== 'undefined') {
+            const userDocSnap = await getDoc(userDocRef);
+        const userData = userDocSnap.data();
+        const updatedCompletedLevels = {
+          ...userData.completedLevels,
+          FirstLevel: true, 
+        };
+        const updatedPoints = {
+          ...userData.Points,
+          points:earnedPoints,
+        }
+  
+  
         await updateDoc(userDocRef, {
-          completedLevels:{FirstLevel:true},
-          Points:{points:earnedPoints},
+          completedLevels: updatedCompletedLevels,
+          Points : updatedPoints,
           
         });
-      }
+          }
+        }
+      };
+       
+      handleLevelCompletion(earnedPoints);
+
     } else {
       setCheckResult("Incorrect");
       setCelebrate(false);
