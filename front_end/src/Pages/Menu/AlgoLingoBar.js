@@ -31,7 +31,7 @@ function AlgoLingoBar() {
       <br></br>
       <br></br>
       <button className="algolingo-button" onClick={goToProfile}>
-        Profile
+        profile
       </button>
       <br></br>
       <br></br>
@@ -44,7 +44,7 @@ function AlgoLingoBar() {
       <br></br>
       <br></br>
       <button className="algolingo-button" onClick={goToLeaderboard}>
-        Leaderboard
+        leaderboard
       </button>
     </div>
   );

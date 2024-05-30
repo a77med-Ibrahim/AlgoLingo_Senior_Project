@@ -1,38 +1,38 @@
 import React, { useState, useEffect } from "react";
 import "./ThirdLevel.css";
-import StackImplementation from "./StackImplementation"; 
-import LevelsBar from "./LevelBar"; 
+import StackImplementation from "./StackImplementation";
+import LevelsBar from "./LevelBar";
 import AlgoLingoBar from "../Menu/AlgoLingoBar";
 import Celebration from "../Celebration/Celebration";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
-import Timer from "../Menu/Timer"; 
+import Timer from "../Menu/Timer";
 import { useAuth } from "../Menu/AuthContext";
-import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore"; 
+import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
 
 function ThirdLevel() {
   const { currentUser } = useAuth();
   const [stack, setStack] = useState(new StackImplementation());
   const [poppedShapes, setPoppedShapes] = useState([]);
-  const [questionText, setQuestionText] = useState(""); 
-  const [operations, setOperations] = useState([]); 
-  const [userAnswer, setUserAnswer] = useState(""); 
+  const [questionText, setQuestionText] = useState("");
+  const [operations, setOperations] = useState([]);
+  const [userAnswer, setUserAnswer] = useState("");
   const [checkResult3, setCheckResult3] = useState("");
-  const [thirdLevelCompleted, setThirdLevelCompleted] = useState(false); 
-  const [fadeOut, setFadeOut] = useState(false); 
+  const [thirdLevelCompleted, setThirdLevelCompleted] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
-  const [timerActive, setTimerActive] = useState(true); 
-  const [timeTaken, setTimeTaken] = useState(0); 
-  const [points3, setPoints3] = useState(0); 
+  const [timerActive, setTimerActive] = useState(true);
+  const [timeTaken, setTimeTaken] = useState(0);
+  const [points3, setPoints3] = useState(0);
 
   const generateRandomShapes = () => {
-    const newStack = new StackImplementation(); 
+    const newStack = new StackImplementation();
 
     const shapes = ["triangle", "square", "rectangle", "octagon"];
 
     const newStackShapes = [];
-    const selectedShapes = new Set(); 
+    const selectedShapes = new Set();
 
     while (selectedShapes.size < shapes.length) {
       const randomIndex = Math.floor(Math.random() * shapes.length);
@@ -58,7 +58,7 @@ function ThirdLevel() {
     newOperations.push({ type: "pop", count: numberOfShapesToPop });
 
     setOperations(newOperations);
-    setStack(newStack); 
+    setStack(newStack);
     setQuestionText(generateQuestion(newStackShapes, numberOfShapesToPop));
   };
 
@@ -90,9 +90,8 @@ function ThirdLevel() {
     generateRandomShapes();
   }, []);
 
-  
   const applyOperationAndGetStack = (operations) => {
-    let newStack = new StackImplementation(); 
+    let newStack = new StackImplementation();
     let newPoppedShapes = [];
 
     operations.forEach((operation) => {
@@ -116,7 +115,7 @@ function ThirdLevel() {
     if (operations.length > 0) {
       applyOperationAndGetStack(operations);
     }
-  }, [operations]); 
+  }, [operations]);
 
   const TOTAL_TIME = 60;
   const handleTimeUpdate = (timeLeft) => {
@@ -136,21 +135,20 @@ function ThirdLevel() {
       const updateCompletedSection = {
         ...userData.Sections,
         Section1: true,
-      }
+      };
       const updatedCompletedLevels = {
         ...userData.completedLevels,
         ThirdLevel: true,
       };
       const updatedPoints = {
         ...userData.Points,
-        points3:earnedPoints,
-      }
-
+        points3: earnedPoints,
+      };
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
         Points: updatedPoints,
-        Sections:updateCompletedSection,
+        Sections: updateCompletedSection,
       });
     }
   };
@@ -183,7 +181,7 @@ function ThirdLevel() {
       <div className="other">
         <h1 className="title-styling">Stack</h1>
         <h2 className="title-styling">Third Level</h2>
-        
+
         <LevelsBar
           pushClicked={true}
           popClicked={true}
@@ -224,7 +222,10 @@ function ThirdLevel() {
             />
             {checkResult3 && <p>{checkResult3}</p>}
           </div>
-          <button className="check-button" onClick={handleCheck}>
+          <button
+            className="stack-level-first-game-buttons"
+            onClick={handleCheck}
+          >
             Check
           </button>
           <Celebration active={celebrate} />

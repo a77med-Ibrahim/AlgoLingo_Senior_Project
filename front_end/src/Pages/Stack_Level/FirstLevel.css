@@ -8,6 +8,17 @@
 .input-class {
   width: 90%;
 }
+.values-container {
+  background-color: inherit;
+  width: 11%;
+  height: auto;
+  border-top: 5px solid inherit;
+  border-right: 6px solid black;
+  border-left: 6px solid black;
+  border-bottom: 6px solid black;
+  margin: 1em 0;
+  position: relative;
+}
 
 .stack-level-first-game-buttons {
   appearance: button;

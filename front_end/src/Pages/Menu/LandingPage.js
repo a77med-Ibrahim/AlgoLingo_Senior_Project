@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import "./LandingPage.css";
 import { useNavigate } from "react-router-dom";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { firebaseApp } from "./firebaseConfig"; 
-import { doc, getDoc, setDoc } from "firebase/firestore";
-import { firebaseAuth, db } from "./firebaseConfig";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { firebaseApp } from "./firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "./firebaseConfig";
 
-const auth = getAuth(firebaseApp); 
+const auth = getAuth(firebaseApp);
 
 function LandingPage() {
   const [email, setEmail] = useState("");
@@ -17,12 +17,14 @@ function LandingPage() {
 
   const handleLogin = async () => {
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       navigate("/menu");
     } catch (error) {
-      console.error("Error during sign in:", error);
-      setError(error.message); 
+      setError(error.message);
     }
   };
 
@@ -31,65 +33,55 @@ function LandingPage() {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const displayName = user.displayName;
-      const email = user.email;
 
       const userDocRef = doc(db, "users", user.uid);
       await setDoc(userDocRef, {
-        name: displayName,
-        email: email,
+        name: user.displayName,
+        email: user.email,
         completedLevels: {},
-        points: {}
+        points: {},
       });
 
-      navigate('/menu');
+      navigate("/menu");
     } catch (error) {
-      console.error("Error signing in with Google: ", error);
-      setError(error.message); 
+      setError(error.message);
     }
   };
-  
 
   return (
     <div className="container">
+      <h2>Sign in to AlgoLingo</h2>
+      <button className="google-signin" onClick={handleSignInWithGoogle}>
+        <img
+          src="https://img.icons8.com/color/16/000000/google-logo.png"
+          alt="Google icon"
+        />{" "}
+        Continue with Google
+      </button>
+      <p className="filling-text">or</p>
       {error && <div className="error-message">{error}</div>}
-      <div className="input-group">
-        <label>Email</label>
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-      </div>
-      <div className="input-group">
-        <label>Password</label>
-        <input
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => {
-            setError(""); 
-            setPassword(e.target.value);
-          }}
-        />
-      </div>
-      <div className="login-signup-buttons">
-        <button className="buttons-color" onClick={handleLogin}>
-          Login
-        </button>
-        <button
-          className="buttons-color"
-          onClick={() => navigate("/register")}
-        >
-          Sign up
-        </button>
-      </div>
-      <div className="register-button">
-        <button className="buttons-color" onClick={handleSignInWithGoogle}>
-          Sign in with Google
-        </button>
-      </div>
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => {
+          setError("");
+          setPassword(e.target.value);
+        }}
+      />
+      <button className="login-button" onClick={handleLogin}>
+        Log in
+      </button>
+      <p className="filling-text">No account?</p>
+      <button className="signup-button" onClick={() => navigate("/register")}>
+        Sign up
+      </button>
     </div>
   );
 }

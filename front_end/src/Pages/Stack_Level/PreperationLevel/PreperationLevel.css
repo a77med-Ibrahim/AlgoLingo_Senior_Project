@@ -119,6 +119,7 @@
   height: 70px;
   background-color: #d9d9d9;
   position: absolute;
+  border: 2px solid black;
   top: 0;
   left: 0;
   transition: transform 0.5s ease-in-out;
