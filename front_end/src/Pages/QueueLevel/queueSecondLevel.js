@@ -154,9 +154,9 @@ function QueueSecondLevel() {
           ))}
         </div>
         <input
-          type="number"
           value={userGuess}
           onChange={(e) => setUserGuess(e.target.value)}
+          className="queue-first-level-input"
           placeholder="Enter your guess of the sum"
         />
         <button onClick={handleGuessSubmit} className="queue-buttons-styling">
@@ -186,7 +186,7 @@ function QueueSecondLevel() {
           <button onClick={handleDeQueue} className="queue-buttons-styling">
             deQueue
           </button>
-          <h2>Selected Values:</h2>
+          <h2 className="selected-values">Selected Values:</h2>
           <div className="sidebar-items">
             {selectedValues.map((item, index) => (
               <div key={index} className="sidebar-item">

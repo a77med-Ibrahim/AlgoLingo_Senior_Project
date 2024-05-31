@@ -3,15 +3,44 @@
   background-color: #d2d2d2;
   width: 17vw;
   height: 98vh;
-  border: 2px solid grey;
+  /* border: 2px solid grey; */
   border-radius: 50px;
 }
 .algolingo-button {
+  margin-top: 15px;
   height: 90px;
-  width: 17vw;
+  width: 15vw;
   background-color: transparent;
   text-align: center;
-  border: 2px solid gray;
+  border: 6px solid rgb(65, 65, 173);
+  border-radius: 50px;
+  font-size: 1.7vw;
+  font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+.leaderboard {
+  margin-top: 15px;
+  height: 90px;
+  width: 15vw;
+  background-color: transparent;
+  text-align: center;
+  /* border: 2px solid gray; */
+  border: none;
+  border-radius: 50px;
+  font-size: 1.7vw;
+  font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+.profile {
+  flex: end;
+  height: 90px;
+  width: 15vw;
+  background-color: transparent;
+  text-align: center;
+  /* border: 2px solid gray; */
+  border: none;
   border-radius: 50px;
   font-size: 2vw;
   font-family: "Major Mono Display", monospace;
@@ -19,27 +48,55 @@
   font-weight: bold;
 }
 /* .menu-bar {
-  position: fixed; 
-  top: 10;
-  left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   text-align: center;
   background-color: #d2d2d2;
   width: 17vw;
-  height: 100vh; 
-  border: 2px solid grey;
-  border-radius: 50px 50px 50px 50px; 
-  z-index: 1000; 
+  height: 98vh;
+  border-radius: 50px;
+  padding: 20px 0; 
 }
 
 .algolingo-button {
+  margin-top: 15px;
   height: 90px;
-  width: 100%; 
+  width: 15vw;
   background-color: transparent;
   text-align: center;
-  border: 2px solid gray;
+  border: 6px solid rgb(78, 78, 78);
+  border-radius: 50px;
+  font-size: 1.7vw;
+  font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+
+.leaderboard {
+  margin-top: 15px;
+  height: 90px;
+  width: 15vw;
+  background-color: transparent;
+  text-align: center;
+  border: none;
+  border-radius: 50px;
+  font-size: 1.7vw;
+  font-family: "Major Mono Display", monospace;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  font-weight: bold;
+}
+
+.profile {
+  height: 90px;
+  width: 15vw;
+  background-color: transparent;
+  text-align: center;
+  border: none;
   border-radius: 50px;
   font-size: 2vw;
   font-family: "Major Mono Display", monospace;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
   font-weight: bold;
-} */
+  margin-top: auto; /* pushes the profile button to the bottom */
+/* }  */

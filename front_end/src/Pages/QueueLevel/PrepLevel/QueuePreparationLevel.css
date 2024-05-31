@@ -108,9 +108,10 @@
 }
 
 .queue-item {
-  background-color: #d9d9d9;
+  /* background-color: #d9d9d9; */
+  background-color: rgb(186, 218, 237);
   padding: 3.5vh 4vw;
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 5px;
   text-align: center;
   margin-right: 10px;
@@ -167,8 +168,9 @@
 
 .queue-code-container {
   text-align: center;
-  background-color: #d2d2d2;
-  width: 95%; /* Full width on small screens */
+  /* background-color: #d2d2d2; */
+  background-color: #ffffff;
+  width: 95%;
   height: 28%;
   border: 2px solid grey;
   border-radius: 20px;

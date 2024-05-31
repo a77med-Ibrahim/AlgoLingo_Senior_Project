@@ -40,6 +40,7 @@ h2 {
 
 .error-message {
   color: red;
+  background-color: inherit;
   margin-bottom: 10px;
 }
 

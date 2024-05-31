@@ -20,31 +20,12 @@ function AlgoLingoBar() {
       <button className="algolingo-button" onClick={goToMainPage}>
         Algolingo
       </button>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <button className="algolingo-button" onClick={goToProfile}>
-        profile
-      </button>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <button className="algolingo-button" onClick={goToLeaderboard}>
+
+      <button className="leaderboard" onClick={goToLeaderboard}>
         leaderboard
+      </button>
+      <button className="profile" onClick={goToProfile}>
+        profile
       </button>
     </div>
   );

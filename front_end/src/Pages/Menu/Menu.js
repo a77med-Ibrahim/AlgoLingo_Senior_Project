@@ -21,24 +21,13 @@ function Menu() {
   const { currentUser } = useAuth();
   const auth = getAuth(firebaseApp);
   const [circleData, setCircleData] = useState([
-    
-    { id: 1, top: "40px", left: "210px", isOpen: true, image: stackImage },
-    { id: 2, top: "120px", left: "100px", isOpen: true, image: queueImage },
-    {
-      id: 3,
-      top: "200px",
-      left: "-10px",
-      isOpen: true,
-      image: linkedList,
-      size: "small",
-    },
-    // { id: 4, top: "350px", left: "0px", isOpen: true, image: Heap },
-    { id: 4, top: "340px", left: "-40px", isOpen: true, image: Heap },
-    // { id: 5, top: "420px", left: "-30px", isOpen: true },
-    { id: 5, top: "420px", left: "-60px", isOpen: false },
-    // { id: 6, top: "600px", left: "-7px", isOpen: true },
-    { id: 6, top: "500px", left: "-80px", isOpen: false },
-    { id: 7, top: "580px", left: "-200px", isOpen: false },
+    { id: 1, top: "10px", left: "210px", isOpen: true, image: stackImage },
+    { id: 2, top: "90px", left: "100px", isOpen: true, image: queueImage },
+    { id: 3, top: "170px", left: "-10px", isOpen: true, image: linkedList },
+    { id: 4, top: "270px", left: "-40px", isOpen: true, image: Heap },
+    { id: 5, top: "350px", left: "-60px", isOpen: false },
+    { id: 6, top: "430px", left: "-80px", isOpen: false },
+    { id: 7, top: "510px", left: "-200px", isOpen: false },
   ]);
   const navigate = useNavigate();
 
@@ -55,19 +44,19 @@ function Menu() {
       }
     };
     fetchUserData();
-  }, [currentUser])
+  }, [currentUser]);
 
   const updateLevels = (userProgress) => {
     const { completedLevels } = userProgress;
 
     const updatedCircles = circleData.map((circle, index) => {
       if (index === 0) {
-        return { ...circle, isOpen: true }; 
+        return { ...circle, isOpen: true };
       }
-      
+
       const prevLevel = circleData[index - 1];
-      const prevLevelKey = `Level${prevLevel.id}`; 
-      
+      const prevLevelKey = `Level${prevLevel.id}`;
+
       return {
         ...circle,
         isOpen: completedLevels[prevLevelKey] || false,
@@ -76,30 +65,24 @@ function Menu() {
 
     setCircleData(updatedCircles);
   };
-  
 
   const isLevelUnlocked = (circleId) => {
     const circle = circleData.find((circle) => circle.id === circleId);
-    
-    const sectionKey = `Section${circle.id}`; 
-    
-    if (circle.id === 1) {
-        return true;
-    }
-      else if (circle.id === 2) {
-        return userData?.Sections?.Section1;
-    }
-    else if (circle.id === 3) {
-      return userData?.Sections?.Section2;
-  }
-  else if (circle.id === 4) {
-    return userData?.Sections?.Section3;
-}
-    
-    return circle.isOpen && userData?.Sections?.[sectionKey];
-};
 
-  
+    const sectionKey = `Section${circle.id}`;
+
+    if (circle.id === 1) {
+      return true;
+    } else if (circle.id === 2) {
+      return userData?.Sections?.Section1;
+    } else if (circle.id === 3) {
+      return userData?.Sections?.Section2;
+    } else if (circle.id === 4) {
+      return userData?.Sections?.Section3;
+    }
+
+    return circle.isOpen && userData?.Sections?.[sectionKey];
+  };
 
   const handleCircleClick = (circleId) => {
     if (activeCircle === circleId) {
@@ -134,16 +117,13 @@ function Menu() {
         setDefinitionOfLevel("");
       }
     }
-
-    
   };
-  
+
   const handleStartButtonClick = () => {
     if (activeCircle && isLevelUnlocked(lastClickedCircle)) {
       if (lastClickedCircle === 1) {
         navigate("/preperation-level");
       } else if (lastClickedCircle === 2) {
-       
         navigate("/queue-preparation");
       } else if (lastClickedCircle === 3) {
         navigate("/LinkedListPrepLevel");
@@ -152,11 +132,12 @@ function Menu() {
       }
     }
   };
+
   return (
     <div className="main-div">
       <AlgoLingoBar />
       <div className="levels-bar">
-        <button className="levels-button">levels</button>
+        <h1 className="levels-button">levels</h1>
         <div className="levels-space">
           {circleData.map((circle) => (
             <button
@@ -168,10 +149,17 @@ function Menu() {
               {circle.isOpen ? circle.id : "X"}
             </button>
           ))}
-          <h2 className="sorting-line">--------sorting--------</h2>
+          {/* <h2 className="sorting-line">--------sorting--------</h2> */}
         </div>
       </div>
       <div className="start-bar">
+        {!activeCircle && (
+          <p className="default-message">
+            Click on a level to start your
+            <br></br>
+            algorithmic journey.
+          </p>
+        )}
         <div className={`image-container ${activeCircle ? "visible" : ""}`}>
           {activeCircle && circleData[activeCircle - 1].image && (
             <img
@@ -185,14 +173,16 @@ function Menu() {
         {definitionOfLevel && (
           <p className="level-definition">{definitionOfLevel}</p>
         )}
-        <button
-          onClick={handleStartButtonClick}
-          className={`start-button ${
-            activeCircle && isLevelUnlocked(activeCircle) ? "" : "locked"
-          }`}
-        >
-          start
-        </button>
+        {activeCircle && (
+          <button
+            onClick={handleStartButtonClick}
+            className={`start-button ${
+              activeCircle && isLevelUnlocked(activeCircle) ? "" : "locked"
+            }`}
+          >
+            start
+          </button>
+        )}
       </div>
     </div>
   );
