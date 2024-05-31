@@ -2,7 +2,22 @@
 .main-div {
   display: flex;
 }
+.profmain-div {
+  display: flex;
+  justify-content: center;  
+  align-items: center;      
+  height: 100vh;
+}
+.almain-div {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  padding: 20px;
 
+}
 .profile-container {
   background-color: inherit;
   padding: 20px;
@@ -14,10 +29,12 @@
   flex-direction: column;
   align-items: center;
   font-family: "60s Scoreboard", sans-serif;
+
 }
 
 .profile-details {
   width: 100%;
+  
 }
 
 .profile-info {
@@ -59,6 +76,7 @@
   color: rgb(0, 0, 0);
   text-align: center;
   line-height: 30px;
+  font-family: '60s Scoreboard', sans-serif;
 }
 
 .profilebar-label {
@@ -66,8 +84,8 @@
   font-size: 14px;
   color: rgb(0, 0, 0);
   background-color: inherit;
-}
 
+}
 .profile-button {
   background-color: #007bff;
   color: white;
@@ -77,8 +95,10 @@
   cursor: pointer;
   font-size: 16px;
   margin-top: 20px;
+  
 }
 
 .profile-button:hover {
   background-color: #0056b3;
+  
 }
