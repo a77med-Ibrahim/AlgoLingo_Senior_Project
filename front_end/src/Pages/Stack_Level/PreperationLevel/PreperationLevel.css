@@ -1,5 +1,15 @@
 .title {
   text-align: center;
+  color: whitesmoke;
+}
+.queue-navbar-line {
+  width: 100%;
+  background-color: black;
+  height: 5px;
+}
+.navbar-container {
+  background-color: black;
+  width: 100%;
 }
 
 @media screen and (min-width: 80rem) {
@@ -117,7 +127,9 @@
 .box {
   width: 100%;
   height: 70px;
-  background-color: #d9d9d9;
+  /* background-color: #d9d9d9; */
+  background-color: rgb(186, 218, 237);
+
   position: absolute;
   border: 2px solid black;
   top: 0;

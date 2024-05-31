@@ -1,5 +1,5 @@
 * {
-  background-color: #5d7779;
+  background-color: rgb(142, 163, 196);
 }
 
 .main-div {
@@ -9,10 +9,10 @@
 .levels-bar {
   margin-left: 20px;
   text-align: center;
-  background-color: #9ba79a;
+  background-color: rgb(193, 201, 216);
   width: 38.2vw;
   height: 98vh;
-  border: 2px solid grey;
+  border: 3px solid rgb(0, 0, 0);
   border-radius: 50px;
 }
 
@@ -21,8 +21,6 @@
   width: 38.2vw;
   background-color: transparent;
   text-align: center;
-  border: 2px solid gray;
-  border-radius: 50px;
   font-size: 3vw;
   font-family: "Major Mono Display", monospace;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
@@ -40,28 +38,26 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between; /* Aligns items to the top and bottom */
+  justify-content: space-between;
   padding-top: 5px;
 }
 
 .start-button {
   height: 90px;
-  width: 38.2vw;
-  background-color: #589357;
+  width: 60%;
+  background-color: rgb(65, 65, 173);
   text-align: center;
   border: 2px solid gray;
-  border-radius: 50px;
+  border-radius: 40px;
   font-size: 3vw;
   color: aliceblue;
-  /* margin-top: 20px; */
   margin-bottom: 7px;
-  font-family: "Major Mono Display", monospace;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
   font-weight: bold;
 }
 
 .start-button.locked {
-  background-color: grey;
+  background-color: rgb(65, 65, 173);
   cursor: not-allowed;
 }
 
@@ -70,15 +66,13 @@
   position: relative;
 }
 
-/* THISSSS */
-
 .circles {
-  background-color: #589357;
+  background-color: #d2d2d2;
   border-radius: 50%;
   width: 70px;
   height: 70px;
   font-size: 30px;
-  color: white;
+  color: rgb(0, 0, 0);
   border: 1px solid #589357;
   position: relative;
 }
@@ -94,14 +88,14 @@
 }
 
 .circles:hover::before {
-  border-color: transparent transparent transparent #589357;
+  border-color: transparent transparent transparent rgb(65, 65, 173);
   top: 32%;
   left: -31px;
   margin-top: -10px;
 }
 
 .circles:hover::after {
-  border-color: transparent #589357 transparent transparent;
+  border-color: transparent rgb(65, 65, 173) transparent transparent;
   top: 32%;
   right: -31px;
   margin-top: -10px;
@@ -155,78 +149,10 @@
   margin-top: 10px;
 }
 
-.main-menu-circles {
-  appearance: button;
-  background-color: #294050;
-  border: solid transparent;
-  border-radius: 50%;
-  border-width: 0 0 4px;
-  box-sizing: border-box;
-  color: #f9f9f9;
-  cursor: pointer;
-  display: inline-block;
-  font-family: din-round, sans-serif;
-  /* font-size: 15px; */
-  font-size: 2vw;
-  font-weight: 700;
-  letter-spacing: 0.8px;
-  line-height: 20px;
-  margin: 0 5px;
-  outline: none;
-  overflow: visible;
-  padding: 13px 16px;
+.default-message {
+  font-size: 1.8vw;
+  color: rgb(0, 0, 0);
+  margin-top: 200px;
   text-align: center;
-  text-transform: uppercase;
-  touch-action: manipulation;
-  transform: translateZ(0);
-  transition: filter 0.2s;
-  user-select: none;
-  -webkit-user-select: none;
-  vertical-align: middle;
-  white-space: nowrap;
-  width: 90px;
-  height: 90px;
-  position: relative;
-}
-
-.main-menu-circles:after {
-  background-clip: padding-box;
-  background-color: #589357;
-  border: solid transparent;
-  border-radius: 50%;
-  border-width: 0 0 4px;
-  bottom: -4px;
-  content: "";
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: -1;
-}
-
-.main-menu-circles:main,
-.main-menu-circles:focus {
-  user-select: auto;
-}
-
-.main-menu-circles:hover:not(:disabled) {
-  filter: brightness(1.1);
-  -webkit-filter: brightness(1.1);
-}
-
-.main-menu-circles:disabled {
-  cursor: auto;
-}
-
-.main-menu-circles:active {
-  border-width: 4px 0 0;
-  background: none;
-}
-.sorting-line {
-  padding-top: 26vh;
-  font-family: din-round, sans-serif;
-  /* color: #d2d2d2; */
-  color: rgb(90, 89, 89);
-
-  background-color: transparent;
+  background-color: inherit;
 }

@@ -44,9 +44,10 @@
 }
 
 .enqueued-value-block {
-  background-color: #d9d9d9;
+  /* background-color: #d9d9d9; */
+  background-color: rgb(186, 218, 237);
   padding: 2vh 2.5vw;
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 5px;
   text-align: center;
   margin-right: 10px;
@@ -80,9 +81,9 @@
 }
 
 .sidebar-item {
-  background-color: #d9d9d9;
+  background-color: rgb(186, 218, 237);
   padding: 3.5vh 4vw;
-  border: 1px solid black;
+  border: 2px solid black;
   border-radius: 5px;
   text-align: center;
   margin-right: 10px;
@@ -97,4 +98,22 @@
 
 .dequeue-button {
   margin-top: 10px;
+}
+.selected-values {
+  padding-top: 1%;
+}
+.queue-first-level-input {
+  width: 25%;
+}
+.note {
+  color: rgb(106, 0, 255);
+}
+.question {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.question p {
+  margin: 0 5px; /* optional: to add some space between the paragraphs */
 }

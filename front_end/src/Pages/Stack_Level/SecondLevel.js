@@ -183,7 +183,8 @@ function SecondLevel() {
       <div className="other">
         <h1 className="title-styling">Stack</h1>
 
-        <h2 className="title-styling">First Level</h2>
+        <h2 className="title-styling">Second Level</h2>
+        <div className="queue-navbar-line"></div>
 
         <LevelsBar
           pushClicked={true}

@@ -220,6 +220,8 @@ function PreperationLevel() {
         <h1 className="title">Stack</h1>
         <h2 className="title">Preparation</h2>
 
+        <div className="queue-navbar-line"></div>
+
         <LevelsBar
           activeButtonIndex={activeButtonIndex}
           handleButtonClick={handleButtonClick}

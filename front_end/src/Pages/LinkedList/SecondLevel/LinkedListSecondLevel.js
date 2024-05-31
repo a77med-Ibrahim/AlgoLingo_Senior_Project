@@ -7,9 +7,9 @@ import update from "immutability-helper";
 import "./LinkedListSecondLevel.css";
 import Celebration from "../../Celebration/Celebration";
 import TryAgainAnimation from "../../TryAgainAnimation/TryAgain";
-import Timer from "../../Menu/Timer"; 
+import Timer from "../../Menu/Timer";
 import { useAuth } from "../../Menu/AuthContext";
-import { doc, updateDoc, getDoc } from "firebase/firestore"; 
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../Menu/firebaseConfig";
 
 const NodeType = "node";
@@ -99,9 +99,9 @@ const LinkedListSecondLevel = () => {
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
-  const [timerActive, setTimerActive] = useState(true); 
-  const [timeTaken, setTimeTaken] = useState(0); 
-  const [points, setPoints] = useState(0); 
+  const [timerActive, setTimerActive] = useState(true);
+  const [timeTaken, setTimeTaken] = useState(0);
+  const [points, setPoints] = useState(0);
 
   const TOTAL_TIME = 100;
   const handleTimeUpdate = (timeLeft) => {
@@ -120,16 +120,16 @@ const LinkedListSecondLevel = () => {
       const updateCompletedSection = {
         ...userData.Sections,
         Section3: true,
-      }
-      
+      };
+
       const updatedCompletedLevels = {
         ...userData.completedLevels,
         LinkedListSecondLevel: true,
       };
       const updatedPoints = {
         ...userData.Points,
-        pointsLinkedListSecondLevel:earnedPoints,
-      }
+        pointsLinkedListSecondLevel: earnedPoints,
+      };
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
@@ -161,8 +161,7 @@ const LinkedListSecondLevel = () => {
       setCelebrate(true);
       setTryAgain(false);
       setTimerActive(false);
-      handleLevelCompletion(earnedPoints); 
-
+      handleLevelCompletion(earnedPoints);
     } else {
       setCelebrate(false);
       setTryAgain(true);
@@ -184,9 +183,9 @@ const LinkedListSecondLevel = () => {
           <div className="q">
             <p>
               Arrange the blocks to add a new node 'Y' in the middle of the
-              linked list. 'X' is the node we want to add 'Y' after
+              linked list. 'X' is the node after which we want to add 'Y'.
             </p>
-            <p style={{ color: "red" }}>
+            <p className="note">
               Note: The steps should be in the correct order to not lose the
               data stored in the linked list{" "}
             </p>

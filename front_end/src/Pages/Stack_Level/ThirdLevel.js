@@ -179,8 +179,11 @@ function ThirdLevel() {
     <div className="all-div">
       <AlgoLingoBar />
       <div className="other">
-        <h1 className="title-styling">Stack</h1>
-        <h2 className="title-styling">Third Level</h2>
+        <div>
+          <h1 className="title-styling">Stack</h1>
+          <h2 className="title-styling">Third Level</h2>
+        </div>
+        <div className="queue-navbar-line"></div>
 
         <LevelsBar
           pushClicked={true}

@@ -337,7 +337,7 @@ function LinkedListPrepLevel() {
                 type="number"
                 value={value1}
                 onChange={handleChange1}
-                style={{ width: "200px" }}
+                style={{ width: "230px" }}
                 className="linkedlist-first-level-input-field"
                 placeholder="Enter the value to insert after"
               />
@@ -345,7 +345,7 @@ function LinkedListPrepLevel() {
                 type="number"
                 value={value2}
                 onChange={handleChange2}
-                style={{ width: "200px" }}
+                style={{ width: "210px" }}
                 className="linkedlist-first-level-input-field"
                 placeholder="Enter the new node value"
               />

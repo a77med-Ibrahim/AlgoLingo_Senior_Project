@@ -1,11 +1,10 @@
-@import url('https://fonts.cdnfonts.com/css/60s-scoreboard');
+@import url("https://fonts.cdnfonts.com/css/60s-scoreboard");
 .main-div {
   display: flex;
-  
 }
 
 .profile-container {
-  background-color: #5d7779;
+  background-color: inherit;
   padding: 20px;
   border-radius: 8px;
   width: 80%;
@@ -14,7 +13,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: '60s Scoreboard', sans-serif;
+  font-family: "60s Scoreboard", sans-serif;
 }
 
 .profile-details {
@@ -25,7 +24,7 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
-  font-family: '60s Scoreboard', sans-serif;
+  font-family: "60s Scoreboard", sans-serif;
 }
 
 .profile-info-item {
@@ -35,7 +34,6 @@
   color: white;
   margin-bottom: 10px;
   text-align: center;
- 
 }
 
 .progress-bars {
@@ -46,19 +44,19 @@
   display: flex;
   align-items: center;
   margin-top: 10px;
-  background-color: #4b6b6e; 
+  background-color: #d2d2d2;
   padding: 5px;
   border-radius: 8px;
   width: 100%;
-  font-family: '60s Scoreboard', sans-serif;
+  font-family: "60s Scoreboard", sans-serif;
 }
 
 .profilebar {
-  height: 30px; 
+  height: 30px;
   background: linear-gradient(to right, yellow, orange);
   border-radius: 5px;
   transition: width 0.3s ease;
-  color: white;
+  color: rgb(0, 0, 0);
   text-align: center;
   line-height: 30px;
 }
@@ -66,7 +64,8 @@
 .profilebar-label {
   margin-left: 10px;
   font-size: 14px;
-  color: white;
+  color: rgb(0, 0, 0);
+  background-color: inherit;
 }
 
 .profile-button {

@@ -1,48 +1,46 @@
-@import url('https://fonts.cdnfonts.com/css/60s-scoreboard');
+@import url("https://fonts.cdnfonts.com/css/60s-scoreboard");
 .main-div {
-    display: flex;
-    
-  }
-  
-  .leaderboard-container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: #5d7779;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  .rank-cell {
-    font-weight: bold;  
-    color: #d4aa01;     
-    font-size: 1.2em;   
-  }
-  
-  .leaderboardname{
-    align-items: center;
-    font-family: '60s Scoreboard', sans-serif;
-    color: #d4aa01;
-                                                
-  }
-  th, td {
-    padding: 10px;
-    text-align: left;
-    border: 2px solid #000000;
-    border-style: groove;
-    box-shadow: 0 2px 4px black;
-  }
-  
-  th {
-    background-color: #ffcc00;
-    color: #333;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-  }
-  
+  display: flex;
+}
+
+.leaderboard-container {
+  width: 80%;
+  margin: 20px auto;
+  background-color: inherit;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.rank-cell {
+  font-weight: bold;
+  color: #535353;
+  font-size: 1.2em;
+}
+
+.leaderboardname {
+  align-items: center;
+  font-family: "60s Scoreboard", sans-serif;
+  color: #e2b811;
+}
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border: 2px solid #000000;
+  border-style: groove;
+  box-shadow: 0 2px 4px black;
+}
+
+th {
+  background-color: #ffcc00;
+  color: #333;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}

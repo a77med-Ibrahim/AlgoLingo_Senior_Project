@@ -108,7 +108,7 @@ function QueueFirstLevel() {
 
   const handleBlockClick = (value) => {
     setSelectedValues((prevSelectedValues) => {
-      if (prevSelectedValues.length < 10) {
+      if (prevSelectedValues.length < 7) {
         return [...prevSelectedValues, value];
       } else {
         return prevSelectedValues;
@@ -128,12 +128,16 @@ function QueueFirstLevel() {
         <h2 className="title-styling">First Level</h2>
         <div className="navbar-line" />
         <LevelsBar levelUnlocked={true} level2Unlocked={level2Unlocked} />
-        <div>
+        <div className="question">
           <p>
             Apply the following changes to a queue, what will the final array
             contain?
           </p>
+          <p className="note">
+            Note: Don't add spaces between commas and numbers.Ex:10,12,22
+          </p>
         </div>
+
         <div className="operations-container">
           {operations.map((op, index) => (
             <React.Fragment key={index}>
@@ -142,11 +146,13 @@ function QueueFirstLevel() {
             </React.Fragment>
           ))}
         </div>
+
         <input
           type="text"
           value={userGuess}
           onChange={(e) => setUserGuess(e.target.value)}
           placeholder="Enter your guess of the queue's content"
+          className="queue-first-level-input"
         />
         <button onClick={handleGuessSubmit} className="queue-buttons-styling">
           Submit Guess
@@ -166,6 +172,11 @@ function QueueFirstLevel() {
         <div>
           <p>Points: {points}</p>
         </div>
+        <h3>
+          {" "}
+          You can use the following blocks to enQueue and deQueue to visualize
+          the process.(This will not affect your answer)
+        </h3>
         <div className="enqueued-values-container">
           {enqueuedValues.map((value, index) => (
             <div
@@ -181,7 +192,7 @@ function QueueFirstLevel() {
           <button onClick={handleDeQueue} className="queue-buttons-styling">
             deQueue
           </button>
-          <h2>Selected Values:</h2>
+          <h2 className="selected-values">Selected Values:</h2>
           <div className="sidebar-items">
             {selectedValues.map((item, index) => (
               <div key={index} className="sidebar-item">
