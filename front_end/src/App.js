@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { AuthProvider } from "./Pages/Menu/AuthContext"; 
+import { AuthProvider } from "./Pages/Menu/AuthContext";
 import LandingPage from "./Pages/Menu/LandingPage";
 import MenuPage from "./Pages/Menu/Menu";
 import PreperationLevel from "./Pages/Stack_Level/PreperationLevel/PreperationLevel";
@@ -19,10 +19,11 @@ import LinkedListFirstLevel from "./Pages/LinkedList/FirstLevel/LinkedListFirstL
 import LinkedListSecondLevel from "./Pages/LinkedList/SecondLevel/LinkedListSecondLevel";
 import QueueFirstLevel from "./Pages/QueueLevel/queueFirstLevel";
 import QueueSecondLevel from "./Pages/QueueLevel/queueSecondLevel";
-import ProfilePage from "./Pages/Menu/ProfilePage"; 
+import ProfilePage from "./Pages/Menu/ProfilePage";
 import "./App.css";
 import Leaderboard from "./Pages/Menu/Leaderboard";
-import PrivateRoute from './PrivateRoute';
+import PrivateRoute from "./PrivateRoute";
+import TestConnection from "./TestConnection";
 
 const App = () => {
   return (
@@ -32,20 +33,45 @@ const App = () => {
           <div>
             <Routes>
               <Route path="/menu" element={<MenuPage />} />
+              <Route path="/testconnection" element={<TestConnection />} />
               <Route path="/" element={<LandingPage />} />
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/register" element={<RegisterPage />} />
-              <Route path="/preperation-level/first-level" element={<FirstLevel />} />
-              <Route path="/preperation-level/third-level" element={<ThirdLevel />} />
+              <Route
+                path="/preperation-level/first-level"
+                element={<FirstLevel />}
+              />
+              <Route
+                path="/preperation-level/third-level"
+                element={<ThirdLevel />}
+              />
               <Route path="/queuefirstlevel" element={<QueueFirstLevel />} />
               <Route path="/queueSecondLevel" element={<QueueSecondLevel />} />
-              <Route path="/preperation-level/" element={<PreperationLevel />} />
-              <Route path="/LinkedListFirstLevel" element={<LinkedListFirstLevel />} />
-              <Route path="/LinkedListSecondLevel" element={<LinkedListSecondLevel />} />
-              <Route path="/preperation-level/second-level" element={<SecondLevel />} />
-              <Route path="/queue-preparation/" element={<QueuePreparationLevel />} />
-              <Route path="/LinkedListPrepLevel" element={<LinkedListPrepLevel />} />
+              <Route
+                path="/preperation-level/"
+                element={<PreperationLevel />}
+              />
+              <Route
+                path="/LinkedListFirstLevel"
+                element={<LinkedListFirstLevel />}
+              />
+              <Route
+                path="/LinkedListSecondLevel"
+                element={<LinkedListSecondLevel />}
+              />
+              <Route
+                path="/preperation-level/second-level"
+                element={<SecondLevel />}
+              />
+              <Route
+                path="/queue-preparation/"
+                element={<QueuePreparationLevel />}
+              />
+              <Route
+                path="/LinkedListPrepLevel"
+                element={<LinkedListPrepLevel />}
+              />
               <Route path="/PrepLevel" element={<PrepLevel />} />
               <Route path="/FirstLevel" element={<LevelOne />} />
               <Route path="/BSLevel2" element={<BSLevel2 />} />
@@ -55,6 +81,6 @@ const App = () => {
       </DndProvider>
     </AuthProvider>
   );
-}
+};
 
 export default App;
