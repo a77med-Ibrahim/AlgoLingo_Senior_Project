@@ -9,6 +9,7 @@ import { db } from "../Menu/firebaseConfig";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 import Celebration from "../Celebration/Celebration";
 import Timer from "../Menu/Timer";
+import axios from "axios";
 
 function FirstLevel() {
   const { currentUser } = useAuth();
@@ -25,44 +26,28 @@ function FirstLevel() {
   const [timerActive, setTimerActive] = useState(true);
   const [timeTaken, setTimeTaken] = useState(0);
   const [points, setPoints] = useState(0);
+  const [randomizeElements, setRandomizeElements] = useState(null);
+  const [manualElementCount, setManualElementCount] = useState(0);
 
-  const generateRandomValues = () => {
-    const newStack = new StackImplementation();
-    const initialStackValues = Array.from({ length: 2 }, () =>
-      Math.floor(Math.random() * 100)
-    );
+  const initializeStack = async (elementCount) => {
+    try {
+      console.log(`Requesting stack with ${elementCount} elements`); // Log the request
+      const response = await axios.get(`http://127.0.0.1:5000/fill_stack?count=${elementCount}`);
+      const initialStackValues = response.data;
+      console.log("Received stack values:", initialStackValues); // Log the received data
 
-    initialStackValues.forEach((value) => newStack.push(value));
+      const newStack = new StackImplementation();
+      initialStackValues.forEach((value) => newStack.push(value));
 
-    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
-    const newStackValues = Array.from({ length: numberOfFieldsDynamic }, () =>
-      Math.floor(Math.random() * 100)
-    ); // Generate random values
+      const popCount = Math.floor(Math.random() * Math.min(elementCount, 3)) + 1;
+      const newOperations = [{ type: "pop", count: popCount }];
 
-    const newOperations = [];
-
-    const numberOfValuesToPush = Math.min(
-      Math.floor(Math.random() * 7) + 4,
-      newStackValues.length
-    );
-    const valuesToPush = newStackValues.slice(0, numberOfValuesToPush);
-
-    valuesToPush.forEach((value) => {
-      newStack.push(value);
-      newOperations.push({ type: "push", values: [value] });
-    });
-
-    const remainingCapacity = newStack.stack.length;
-
-    const popCount = Math.min(
-      Math.floor(Math.random() * Math.min(remainingCapacity, 3)) + 1,
-      remainingCapacity
-    );
-    newOperations.push({ type: "pop", count: popCount });
-
-    setStack(newStack);
-    setQuestionText(generateQuestion(valuesToPush, popCount));
-    setOperations(newOperations);
+      setStack(newStack);
+      setQuestionText(generateQuestion(initialStackValues, popCount));
+      setOperations(newOperations);
+    } catch (error) {
+      console.error("Error initializing stack:", error);
+    }
   };
 
   const generateQuestion = (stackValues, popCount) => {
@@ -77,8 +62,11 @@ function FirstLevel() {
   };
 
   useEffect(() => {
-    generateRandomValues();
-  }, []);
+    if (randomizeElements !== null) {
+      const elementCount = randomizeElements ? Math.floor(Math.random() * 5) + 3 : manualElementCount;
+      initializeStack(elementCount);
+    }
+  }, [randomizeElements, manualElementCount]);
 
   const handleButtonClick = (index) => {
     setActiveButtonIndex(index);
@@ -116,59 +104,81 @@ function FirstLevel() {
 
     return newStack.stack;
   };
+
   const TOTAL_TIME = 60;
   const handleTimeUpdate = (timeLeft) => {
     setTimeTaken(TOTAL_TIME - timeLeft);
   };
+
   const calculatePoints = (timeTaken) => {
     return TOTAL_TIME - timeTaken;
   };
 
   const handleCheck = async () => {
-    const userAnswerNum = parseInt(userAnswer);
-    const lastPoppedValue = poppedValues[poppedValues.length - 1];
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/check_answer", {
+        user_answer: userAnswer,
+        popped_values: poppedValues,
+      });
 
-    if (userAnswerNum === lastPoppedValue) {
-      setCheckResult("Great!");
-      setFirstLevelCompleted(true);
-      setCelebrate(true);
-      setTryAgain(false);
-      setTimerActive(false);
-      const earnedPoints = calculatePoints(timeTaken);
-      setPoints(earnedPoints);
+      const { result, is_correct } = response.data;
 
-      const handleLevelCompletion = async (earnedPoints) => {
-        if (currentUser) {
-          const userDocRef = doc(db, "users", currentUser.uid);
-          if (typeof earnedPoints !== "undefined") {
-            const userDocSnap = await getDoc(userDocRef);
-            const userData = userDocSnap.data();
-            const updatedCompletedLevels = {
-              ...userData.completedLevels,
-              FirstLevel: true,
-            };
-            const updatedPoints = {
-              ...userData.Points,
-              points: earnedPoints,
-            };
+      setCheckResult(result);
+      if (is_correct) {
+        setFirstLevelCompleted(true);
+        setCelebrate(true);
+        setTryAgain(false);
+        setTimerActive(false);
+        const earnedPoints = calculatePoints(timeTaken);
+        setPoints(earnedPoints);
 
-            await updateDoc(userDocRef, {
-              completedLevels: updatedCompletedLevels,
-              Points: updatedPoints,
-            });
+        const handleLevelCompletion = async (earnedPoints) => {
+          if (currentUser) {
+            const userDocRef = doc(db, "users", currentUser.uid);
+            if (typeof earnedPoints !== "undefined") {
+              const userDocSnap = await getDoc(userDocRef);
+              const userData = userDocSnap.data();
+              const updatedCompletedLevels = {
+                ...userData.completedLevels,
+                FirstLevel: true,
+              };
+              const updatedPoints = {
+                ...userData.Points,
+                points: (userData.Points?.points || 0) + earnedPoints,
+              };
+
+              await updateDoc(userDocRef, {
+                completedLevels: updatedCompletedLevels,
+                Points: updatedPoints,
+              });
+            }
           }
-        }
-      };
+        };
 
-      handleLevelCompletion(earnedPoints);
-    } else {
-      setCheckResult("Incorrect");
-      setCelebrate(false);
-      setTryAgain(true);
+        handleLevelCompletion(earnedPoints);
+      } else {
+        setCelebrate(false);
+        setTryAgain(true);
+      }
+      setTimeout(() => {
+        setTryAgain(false);
+      }, 500);
+    } catch (error) {
+      console.error("Error checking answer:", error);
     }
-    setTimeout(() => {
-      setTryAgain(false);
-    }, 500);
+  };
+
+  const handleManualCountChange = (e) => {
+    setManualElementCount(parseInt(e.target.value));
+  };
+
+  const handlePromptResponse = (response) => {
+    if (response === "random") {
+      setRandomizeElements(true);
+    } else {
+      setRandomizeElements(false);
+      setManualElementCount(0); // Reset manual count when switching to manual input
+    }
   };
 
   return (
@@ -178,6 +188,42 @@ function FirstLevel() {
         <h1 className="title-styling">Stack</h1>
         <h2 className="title-styling">First Level</h2>
         <div className="queue-navbar-line"></div>
+        <div className="prompt-container">
+          <h3>Do you want the number of elements in the stack to be randomized or manually entered?</h3>
+          <button
+            className="stack-level-first-game-buttons"
+            onClick={() => handlePromptResponse("random")}
+          >
+            Randomize
+          </button>
+          <button
+            className="stack-level-first-game-buttons"
+            onClick={() => handlePromptResponse("manual")}
+          >
+            Manual
+          </button>
+          {randomizeElements === false && (
+            <div>
+              <h3>Enter the number of elements you want to play with (max 7):</h3>
+              <input
+                type="number"
+                placeholder="Number of elements"
+                min="1"
+                max="7"
+                step="1"
+                value={manualElementCount}
+                onChange={handleManualCountChange}
+                className="input-class"
+              />
+              <button
+                className="stack-level-first-game-buttons"
+                onClick={() => setRandomizeElements(false)}
+              >
+                Start
+              </button>
+            </div>
+          )}
+        </div>
         <LevelsBar
           pushClicked={true}
           popClicked={true}

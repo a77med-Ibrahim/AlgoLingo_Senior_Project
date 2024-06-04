@@ -8,6 +8,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
 import Celebration from "./../Celebration/Celebration";
 import TryAgainAnimation from "./../TryAgainAnimation/TryAgain";
+import axios from "axios";
 
 function QueueFirstLevel() {
   const { currentUser } = useAuth();
@@ -25,7 +26,7 @@ function QueueFirstLevel() {
   const [tryAgain, setTryAgain] = useState(false);
 
   useEffect(() => {
-    generateOperations();
+    initializeQueue();
   }, []);
 
   useEffect(() => {
@@ -42,47 +43,50 @@ function QueueFirstLevel() {
   const handleTimeUpdate = (timeLeft) => {
     setTimeTaken(TOTAL_TIME - timeLeft);
   };
+
   const calculatePoints = (timeTaken) => {
     return TOTAL_TIME - timeTaken;
   };
 
-  const handleGuessSubmit = () => {
-    if (userGuess === queue.join(",")) {
-      setResultMessage("Correct!");
-      setLevel2Unlocked(true);
-      setTimerActive(false);
-      setCelebrate(true);
-      const earnedPoints = calculatePoints(timeTaken);
-      setPoints(earnedPoints);
-      handleLevelCompletion(earnedPoints);
-    } else {
-      setTryAgain(true);
-      setResultMessage("Incorrect, try again");
-      setTimeout(() => {
-        setTryAgain(false);
-      }, 500);
+  const initializeQueue = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/generate_queue_operations_level1");
+      const { operations: newOperations, queue: initialQueue, enqueued_values: newEnqueuedValues } = response.data;
+
+      setOperations(newOperations);
+      setQueue(initialQueue);
+      setEnqueuedValues(newEnqueuedValues);
+    } catch (error) {
+      console.error("Error initializing queue:", error);
     }
   };
 
-  const generateOperations = () => {
-    let tempQueue = [];
-    const newOperations = [];
-    const newEnqueuedValues = [];
-    const count = Math.floor(Math.random() * 10) + 5;
-    for (let i = 0; i < count; i++) {
-      if (Math.random() > 0.5 || tempQueue.length === 0) {
-        const value = Math.floor(Math.random() * 100) + 1;
-        newOperations.push(`enqueue(${value})`);
-        tempQueue.push(value);
-        newEnqueuedValues.push(value);
+  const handleGuessSubmit = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/check_queue_answer_level1", {
+        user_answer: userGuess.split(",").map(Number),
+        correct_queue: queue,
+      });
+
+      const { result, is_correct } = response.data;
+
+      setResultMessage(result);
+      if (is_correct) {
+        setLevel2Unlocked(true);
+        setTimerActive(false);
+        setCelebrate(true);
+        const earnedPoints = calculatePoints(timeTaken);
+        setPoints(earnedPoints);
+        handleLevelCompletion(earnedPoints);
       } else {
-        newOperations.push("dequeue()");
-        tempQueue.shift();
+        setTryAgain(true);
+        setTimeout(() => {
+          setTryAgain(false);
+        }, 500);
       }
+    } catch (error) {
+      console.error("Error checking answer:", error);
     }
-    setQueue(tempQueue);
-    setOperations(newOperations);
-    setEnqueuedValues(newEnqueuedValues);
   };
 
   const handleLevelCompletion = async (earnedPoints) => {

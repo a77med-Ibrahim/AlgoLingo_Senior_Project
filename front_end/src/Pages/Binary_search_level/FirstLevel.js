@@ -10,6 +10,7 @@ import Timer from "../Menu/Timer"; // Import the Timer component
 import { useAuth } from "../Menu/AuthContext";
 import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
 import { db } from "../Menu/firebaseConfig";
+import axios from "axios";
 
 function DraggableNode({ id, number, onMoveNode, style }) {
   const [{ isDragging }, drag] = useDrag(
@@ -54,7 +55,7 @@ function DraggableNode({ id, number, onMoveNode, style }) {
   };
 
   return (
-    <div ref={ref} style={style} id={`node-${id}`}>
+    <div ref={ref} style={nodeStyle} id={`node-${id}`}>
       {number}
     </div>
   );
@@ -70,57 +71,19 @@ const nodePositions = [
   { x: 70.5, y: 73.67 },
 ];
 
-function generateRandomNumber() {
-  return Math.floor(Math.random() * 100) + 1; // Generates a random number between 1 and 100
-}
-
-const initialHeap = Array.from({ length: 7 }, (_, index) => ({
-  id: index,
-  number: generateRandomNumber(),
-  position: nodePositions[index],
-}));
-
-function isMaxHeapFunction(heap) {
-  for (let i = 0; i < heap.length; i++) {
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-    if (
-      (left < heap.length && heap[i].number < heap[left].number) ||
-      (right < heap.length && heap[i].number < heap[right].number)
-    ) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function isMinHeap(heap) {
-  for (let i = 0; i < heap.length; i++) {
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-    if (
-      (left < heap.length && heap[i].number > heap[left].number) ||
-      (right < heap.length && heap[i].number > heap[right].number)
-    ) {
-      return false;
-    }
-  }
-  return true;
-}
-
 function FirstLevel() {
   const { currentUser } = useAuth();
-  const [heap, setHeap] = useState(initialHeap);
+  const [heap, setHeap] = useState([]);
   const [isMaxHeap, setIsMaxHeap] = useState(true);
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
   const [tryAgain, setTryAgain] = useState(false);
-  const [timerActive, setTimerActive] = useState(true); 
-  const [timeTaken, setTimeTaken] = useState(0); 
-  const [points, setPoints] = useState(0); 
+  const [timerActive, setTimerActive] = useState(true);
+  const [timeTaken, setTimeTaken] = useState(0);
+  const [points, setPoints] = useState(0);
 
-  const TOTAL_TIME = 120; 
+  const TOTAL_TIME = 120;
   const handleTimeUpdate = (timeLeft) => {
     setTimeTaken(TOTAL_TIME - timeLeft);
   };
@@ -140,8 +103,8 @@ function FirstLevel() {
       };
       const updatedPoints = {
         ...userData.Points,
-        pointsBSLevel1:earnedPoints,
-      }
+        pointsBSLevel1: earnedPoints,
+      };
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
@@ -151,39 +114,64 @@ function FirstLevel() {
   };
 
   useEffect(() => {
+    initializeHeap();
+  }, []);
+
+  useEffect(() => {
     if (taskCompleted) {
       setCelebrate(true);
       const earnedPoints = calculatePoints(timeTaken);
       setPoints(earnedPoints);
-      handleLevelCompletion(earnedPoints); 
+      handleLevelCompletion(earnedPoints);
       setTimerActive(false);
       setPoints(earnedPoints);
     }
   }, [taskCompleted]);
 
-  function checkHeap() {
-    const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
-    if (isValidHeap) {
-      setMessage(`Correct! This is a ${isMaxHeap ? "max" : "min"} heap.`);
-      if (isMaxHeap) {
-        setIsMaxHeap(false);
-        setTaskCompleted(false);
-      } else {
-        setTaskCompleted(true);
-        
-        
-      }
-      setTryAgain(false); 
-    } else {
-      setMessage(
-        `Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`
-      );
-      setTryAgain(true);
-      setTimeout(() => {
-        setTryAgain(false);
-      }, 500);
+  const initializeHeap = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/generate_heap");
+      const newNodes = response.data.nodes;
+
+      const initialHeap = newNodes.map((node, index) => ({
+        ...node,
+        position: nodePositions[index],
+      }));
+
+      setHeap(initialHeap);
+    } catch (error) {
+      console.error("Error initializing heap:", error);
     }
-  }
+  };
+
+  const checkHeap = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/check_heap", {
+        heap,
+        is_max_heap: isMaxHeap,
+      });
+
+      const { result, is_correct } = response.data;
+
+      setMessage(result);
+      if (is_correct) {
+        if (isMaxHeap) {
+          setIsMaxHeap(false);
+          setTaskCompleted(false);
+        } else {
+          setTaskCompleted(true);
+        }
+        setTryAgain(false);
+      } else {
+        setTryAgain(true);
+        setTimeout(() => {
+          setTryAgain(false);
+        }, 500);
+      }
+    } catch (error) {
+      console.error("Error checking heap:", error);
+    }
+  };
 
   const moveNode = (fromId, toId) => {
     const newHeap = [...heap];
@@ -204,92 +192,91 @@ function FirstLevel() {
 
   return (
     <div className="flexing">
-    <AlgoLingoBar />
-    <div className="width-of-objects">
-      <h1 className="title-styling">Binary Search</h1>
-      <h2 className="title-styling">Level 1</h2>
-      <div className="navbar-line" />
-      <LevelsBar
-        maxHeapClicked={true}
-        minHeapClicked={true}
-        taskCompleted={taskCompleted}
-      />
-      <div className="heap-container">
-        {heap.map((node, index) => (
-          <DraggableNode
-            key={node.id}
-            id={node.id}
-            number={node.number}
-            onMoveNode={moveNode}
-            style={{
-              position: "absolute",
-              left: `${node.position.x}%`,
-              top: `${node.position.y}%`,
-              width: "5vw",
-              height: "5vw",
-              borderRadius: "50%",
-              backgroundColor: "#f0f0f0",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              margin: "1vw",
-              zIndex: 1,
-            }}
-          />
-        ))}
-        {heap.map((node, idx) => {
-          let leftChildIdx = 2 * idx + 1;
-          let rightChildIdx = 2 * idx + 2;
-          return (
-            <>
-              {leftChildIdx < heap.length && (
-                <Xarrow
-                  start={`node-${node.id}`}
-                  end={`node-${leftChildIdx}`}
-                  color="black"
-                  curveness={0}
-                  headSize={0}
-                />
-              )}
-              {rightChildIdx < heap.length && (
-                <Xarrow
-                  start={`node-${node.id}`}
-                  end={`node-${rightChildIdx}`}
-                  color="black"
-                  curveness={0}
-                  headSize={0}
-                />
-              )}
-            </>
-          );
-        })}
-      </div>
-      <button onClick={checkHeap} className="first-heap-level-buttons">
-        Check Heap
-      </button>
-      <p>
-        Current task: {isMaxHeap ? "Create a Max Heap" : "Create a Min Heap"}
-      </p>
-      {message && <p>{message}</p>}
-      {taskCompleted && !isMaxHeap && (
-        <p>Well done! You've completed both tasks!</p>
-      )}
-      <Celebration active={celebrate} />
-      <TryAgainAnimation active={tryAgain} />
-      <div>
-      <Timer
+      <AlgoLingoBar />
+      <div className="width-of-objects">
+        <h1 className="title-styling">Heap Sort</h1>
+        <h2 className="title-styling">Level 1</h2>
+        <div className="navbar-line" />
+        <LevelsBar
+          maxHeapClicked={true}
+          minHeapClicked={true}
+          taskCompleted={taskCompleted}
+        />
+        <div className="heap-container">
+          {heap.map((node, index) => (
+            <DraggableNode
+              key={node.id}
+              id={node.id}
+              number={node.number}
+              onMoveNode={moveNode}
+              style={{
+                position: "absolute",
+                left: `${node.position.x}%`,
+                top: `${node.position.y}%`,
+                width: "5vw",
+                height: "5vw",
+                borderRadius: "50%",
+                backgroundColor: "#f0f0f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                margin: "1vw",
+                zIndex: 1,
+              }}
+            />
+          ))}
+          {heap.map((node, idx) => {
+            let leftChildIdx = 2 * idx + 1;
+            let rightChildIdx = 2 * idx + 2;
+            return (
+              <>
+                {leftChildIdx < heap.length && (
+                  <Xarrow
+                    start={`node-${node.id}`}
+                    end={`node-${heap[leftChildIdx].id}`}
+                    color="black"
+                    curveness={0}
+                    headSize={0}
+                  />
+                )}
+                {rightChildIdx < heap.length && (
+                  <Xarrow
+                    start={`node-${node.id}`}
+                    end={`node-${heap[rightChildIdx].id}`}
+                    color="black"
+                    curveness={0}
+                    headSize={0}
+                  />
+                )}
+              </>
+            );
+          })}
+        </div>
+        <button onClick={checkHeap} className="first-heap-level-buttons">
+          Check Heap
+        </button>
+        <p>
+          Current task: {isMaxHeap ? "Create a Max Heap" : "Create a Min Heap"}
+        </p>
+        {message && <p>{message}</p>}
+        {taskCompleted && !isMaxHeap && (
+          <p>Well done! You've completed both tasks!</p>
+        )}
+        <Celebration active={celebrate} />
+        <TryAgainAnimation active={tryAgain} />
+        <div>
+          <Timer
             isActive={timerActive}
             onTimeUpdate={handleTimeUpdate}
             totalTime={TOTAL_TIME}
           />
+        </div>
+        <div>
+          <p>Points: {points}</p>
+        </div>
       </div>
-      <div>
-            <p>Points: {points}</p>
-          </div>
     </div>
-  </div>
-);
+  );
 }
 
 export default FirstLevel;
-
