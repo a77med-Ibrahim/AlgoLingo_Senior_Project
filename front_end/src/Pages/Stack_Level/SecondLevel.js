@@ -7,12 +7,12 @@ import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
 import Celebration from "../Celebration/Celebration";
 import Timer from "../Menu/Timer";
 import { useAuth } from "../Menu/AuthContext";
-import { doc, updateDoc, arrayUnion, getDoc } from "firebase/firestore";
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
+import axios from "axios";
 
 function SecondLevel() {
   const { currentUser } = useAuth();
-  const [activeButtonIndex, setActiveButtonIndex] = useState(null);
   const [stack, setStack] = useState(new StackImplementation());
   const [poppedValues, setPoppedValues] = useState([]);
   const [questionText, setQuestionText] = useState("");
@@ -26,50 +26,31 @@ function SecondLevel() {
   const [timeTaken, setTimeTaken] = useState(0);
   const [points2, setPoints2] = useState(0);
 
-  const generateRandomValues = () => {
-    const newStack = new StackImplementation();
-    const initialStackValues = Array.from({ length: 2 }, () =>
-      Math.floor(Math.random() * 100)
-    );
+  const initializeStack = async (elementCount) => {
+    try {
+      console.log(`Requesting stack with ${elementCount} elements`); // Log the request
+      const response = await axios.get(`http://127.0.0.1:5000/fill_stack?count=${elementCount}`);
+      const initialStackValues = response.data;
+      console.log("Received stack values:", initialStackValues); // Log the received data
 
-    initialStackValues.forEach((value) => newStack.push(value));
+      const newStack = new StackImplementation();
+      initialStackValues.forEach((value) => newStack.push(value));
 
-    const numberOfFieldsDynamic = Math.floor(Math.random() * 5) + 3; // Random number between 1 and 5 for additional push values
-    const newStackValues = Array.from({ length: numberOfFieldsDynamic }, () =>
-      Math.floor(Math.random() * 100)
-    ); // Generate random values
+      const popCount = Math.floor(Math.random() * Math.min(elementCount, 3)) + 1;
+      const newOperations = [{ type: "pop", count: popCount }];
 
-    const newOperations = [];
-
-    const numberOfValuesToPush = Math.min(
-      Math.floor(Math.random() * 7) + 4,
-      newStackValues.length
-    );
-    const valuesToPush = newStackValues.slice(0, numberOfValuesToPush);
-
-    valuesToPush.forEach((value) => {
-      newStack.push(value);
-      newOperations.push({ type: "push", values: [value] });
-    });
-
-    const remainingCapacity = newStack.stack.length;
-
-    const popCount = Math.min(
-      Math.floor(Math.random() * Math.min(remainingCapacity, 3)) + 1,
-      remainingCapacity
-    );
-    newOperations.push({ type: "pop", count: popCount });
-
-    setStack(newStack);
-    setQuestionText(generateQuestion(valuesToPush, popCount));
-    setOperations(newOperations);
+      setStack(newStack);
+      setQuestionText(generateQuestion(initialStackValues, popCount));
+      setOperations(newOperations);
+    } catch (error) {
+      console.error("Error initializing stack:", error);
+    }
   };
 
   const generateQuestion = (stackValues, popCount) => {
     const questionArray = [];
 
     questionArray.push(`Push ${stackValues.join(", ")}`);
-
     questionArray.push(`Pop ${popCount} values`);
 
     const question = questionArray.join(" AND ");
@@ -78,12 +59,8 @@ function SecondLevel() {
   };
 
   useEffect(() => {
-    generateRandomValues();
+    initializeStack(5); // Use a fixed element count of 5 for the second level
   }, []);
-
-  const handleButtonClick = (index) => {
-    setActiveButtonIndex(index);
-  };
 
   useEffect(() => {
     console.log(applyOperationAndGetStack(stack.stack));
@@ -113,68 +90,72 @@ function SecondLevel() {
     });
 
     setStack(newStack);
-
     setPoppedValues(newPoppedValues);
 
     return newStack.stack;
   };
+
   const TOTAL_TIME = 60;
   const handleTimeUpdate = (timeLeft) => {
     setTimeTaken(TOTAL_TIME - timeLeft);
   };
+
   const calculatePoints = (timeTaken) => {
     return TOTAL_TIME - timeTaken;
   };
 
   const handleCheck = async () => {
-    const userAnswerNum = parseInt(userAnswer);
-    const lastPoppedValue = poppedValues[poppedValues.length - 1];
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/check_answer", {
+        user_answer: userAnswer,
+        popped_values: poppedValues,
+      });
 
-    if (userAnswerNum === lastPoppedValue) {
-      setCheckResult2("Great!");
-      setSecondLevelCompleted(true);
-      setCelebrate(true);
-      setTryAgain(false);
-      const earnedPoints = calculatePoints(timeTaken);
-      setPoints2(earnedPoints);
+      const { result, is_correct } = response.data;
 
-      const handleLevelCompletion = async (earnedPoints) => {
-        if (currentUser) {
-          const userDocRef = doc(db, "users", currentUser.uid);
-          if (typeof earnedPoints !== "undefined") {
-            const userDocSnap = await getDoc(userDocRef);
-            const userData = userDocSnap.data();
-            const updatedCompletedLevels = {
-              ...userData.completedLevels,
-              SecondLevel: true,
-            };
-            const updatedPoints = {
-              ...userData.Points,
-              points2: earnedPoints,
-            };
+      setCheckResult2(result);
+      if (is_correct) {
+        setSecondLevelCompleted(true);
+        setCelebrate(true);
+        setTryAgain(false);
+        setTimerActive(false);
+        const earnedPoints = calculatePoints(timeTaken);
+        setPoints2(earnedPoints);
 
-            await updateDoc(userDocRef, {
-              completedLevels: updatedCompletedLevels,
-              Points: updatedPoints,
-            });
+        const handleLevelCompletion = async (earnedPoints) => {
+          if (currentUser) {
+            const userDocRef = doc(db, "users", currentUser.uid);
+            if (typeof earnedPoints !== "undefined") {
+              const userDocSnap = await getDoc(userDocRef);
+              const userData = userDocSnap.data();
+              const updatedCompletedLevels = {
+                ...userData.completedLevels,
+                SecondLevel: true,
+              };
+              const updatedPoints = {
+                ...userData.Points,
+                points2: earnedPoints,
+              };
+
+              await updateDoc(userDocRef, {
+                completedLevels: updatedCompletedLevels,
+                Points: updatedPoints,
+              });
+            }
           }
-        }
-      };
+        };
 
-      handleLevelCompletion(earnedPoints);
-    } else {
-      setCheckResult2("Failed");
-      setSecondLevelCompleted(false);
-      setCelebrate(false);
-      setTryAgain(true);
+        handleLevelCompletion(earnedPoints);
+      } else {
+        setCelebrate(false);
+        setTryAgain(true);
+      }
+      setTimeout(() => {
+        setTryAgain(false);
+      }, 500);
+    } catch (error) {
+      console.error("Error checking answer:", error);
     }
-    setTimeout(() => {
-      setTryAgain(false);
-    }, 500);
-  };
-
-  const handlePopArrowClick = () => {
-    document.querySelector(".popped-values").classList.add("fade-out");
   };
 
   return (
@@ -182,10 +163,8 @@ function SecondLevel() {
       <AlgoLingoBar />
       <div className="other">
         <h1 className="title-styling">Stack</h1>
-
         <h2 className="title-styling">Second Level</h2>
         <div className="queue-navbar-line"></div>
-
         <LevelsBar
           pushClicked={true}
           popClicked={true}
@@ -194,7 +173,7 @@ function SecondLevel() {
           checkResult={"Great!"}
           checkResult2={secondLevelCompleted ? "Great!" : ""}
         />
-        <br />
+        <br></br>
         <div className="second-level-container">
           <div className="bucket-container">
             <div className="arrow push-arrow">
@@ -209,18 +188,16 @@ function SecondLevel() {
                   </div>
                 ))}
               </div>
-
               {[...stack.stack].reverse().map((value, index) => (
                 <div key={index} className="stack-value">
                   {value}
                 </div>
               ))}
             </div>
-
-            <button className="arrow pop-arrow" onClick={handlePopArrowClick}>
+            <div className="arrow pop-arrow">
               <div>Pop</div>
               <div className="arrow-down"></div>
-            </button>
+            </div>
           </div>
           <div className="question">
             <h3>What will be the last popped value after</h3>
@@ -234,7 +211,6 @@ function SecondLevel() {
               onChange={(e) => setUserAnswer(e.target.value)}
               className="input-class"
             />
-            {/* Display check result */}
             {checkResult2 && <p>{checkResult2}</p>}
           </div>
           <button

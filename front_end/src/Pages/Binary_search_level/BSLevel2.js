@@ -10,6 +10,7 @@ import Timer from "../Menu/Timer";
 import { useAuth } from "../Menu/AuthContext";
 import { doc, updateDoc, getDoc } from "firebase/firestore"; 
 import { db } from "../Menu/firebaseConfig";
+import axios from "axios";
 
 function DraggableNode({ id, number, onMoveNode, style }) {
   const [{ isDragging }, drag] = useDrag(
@@ -60,44 +61,10 @@ const nodePositions = [
   { x: 90, y: 83 },
 ];
 
-function isMaxHeapFunction(heap) {
-  for (let i = 0; i < heap.length; i++) {
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-    if (
-      (left < heap.length && heap[i].number < heap[left].number) ||
-      (right < heap.length && heap[i].number < heap[right].number)
-    ) {
-      return false;
-    }
-  }
-  return true;
-}
-
-function isMinHeap(heap) {
-  for (let i = 0; i < heap.length; i++) {
-    let left = 2 * i + 1;
-    let right = 2 * i + 2;
-    if (
-      (left < heap.length && heap[i].number > heap[left].number) ||
-      (right < heap.length && heap[i].number > heap[right].number)
-    ) {
-      return false;
-    }
-  }
-  return true;
-}
-
 function BSLevel2() {
   const { currentUser } = useAuth();
-  const [heap, setHeap] = useState(
-    Array.from({ length: 15 }, (_, index) => ({
-      id: index,
-      number: Math.floor(Math.random() * 1000) + 1,
-      position: nodePositions[index],
-    }))
-  );
-  const [isMaxHeap, setIsMaxHeap] = useState(true); 
+  const [heap, setHeap] = useState([]);
+  const [isMaxHeap, setIsMaxHeap] = useState(true);
   const [taskCompleted, setTaskCompleted] = useState(false);
   const [message, setMessage] = useState("");
   const [celebrate, setCelebrate] = useState(false);
@@ -142,6 +109,10 @@ function BSLevel2() {
   };
 
   useEffect(() => {
+    initializeHeap();
+  }, []);
+
+  useEffect(() => {
     if (taskCompleted) {
       setCelebrate(true);
       const earnedPoints = calculatePoints(timeTaken);
@@ -150,6 +121,51 @@ function BSLevel2() {
       setTimerActive(false);
     }
   }, [taskCompleted]);
+
+  const initializeHeap = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/generate_heap2");
+      const newNodes = response.data.nodes;
+
+      const initialHeap = newNodes.map((node, index) => ({
+        ...node,
+        position: nodePositions[index],
+      }));
+
+      setHeap(initialHeap);
+    } catch (error) {
+      console.error("Error initializing heap:", error);
+    }
+  };
+
+  const checkHeap = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/check_heap2", {
+        heap,
+        is_max_heap: isMaxHeap,
+      });
+
+      const { result, is_correct } = response.data;
+
+      setMessage(result);
+      if (is_correct) {
+        if (isMaxHeap) {
+          setIsMaxHeap(false);
+          setTaskCompleted(false);
+        } else {
+          setTaskCompleted(true);
+        }
+        setTryAgain(false);
+      } else {
+        setTryAgain(true);
+        setTimeout(() => {
+          setTryAgain(false);
+        }, 500);
+      }
+    } catch (error) {
+      console.error("Error checking heap:", error);
+    }
+  };
 
   const moveNode = (fromId, toId) => {
     const newHeap = [...heap];
@@ -168,39 +184,17 @@ function BSLevel2() {
     setHeap(newHeap);
   };
 
-  function checkHeap() {
-    const isValidHeap = isMaxHeap ? isMaxHeapFunction(heap) : isMinHeap(heap);
-    if (isValidHeap) {
-      setMessage(`Correct! This is a ${isMaxHeap ? "max" : "min"} heap.`);
-      if (isMaxHeap) {
-        setIsMaxHeap(false); 
-        setTaskCompleted(false); 
-      } else {
-        setTaskCompleted(true); 
-      }
-      setTryAgain(false); 
-    } else {
-      setMessage(
-        `Incorrect, this is not a ${isMaxHeap ? "max" : "min"} heap. Try again.`
-      );
-      setTryAgain(true);
-      setTimeout(() => {
-        setTryAgain(false);
-      }, 500);
-    }
-  }
-
   return (
     <div className="flexing">
       <AlgoLingoBar />
       <div className="width-of-objects">
-        <h1 className="title-styling">Binary Search</h1>
+        <h1 className="title-styling">Heap Sort</h1>
         <h2 className="title-styling">Level 2</h2>
         <div className="navbar-line" />
         <LevelsBar
           maxHeapClicked={true}
           minHeapClicked={true}
-          taskCompleted={true}
+          taskCompleted={taskCompleted}
         />
         <div className="heap-container">
           {heap.map((node, index) => (

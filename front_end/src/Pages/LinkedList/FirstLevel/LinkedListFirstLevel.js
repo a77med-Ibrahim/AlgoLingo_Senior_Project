@@ -9,6 +9,7 @@ import Timer from "../../Menu/Timer"; // Import the Timer component
 import { useAuth } from "../../Menu/AuthContext";
 import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
 import { db } from "../../Menu/firebaseConfig";
+import axios from "axios";
 
 function LinkedListFirstLevel() {
   const { currentUser } = useAuth();
@@ -22,16 +23,10 @@ function LinkedListFirstLevel() {
   const [timerActive, setTimerActive] = useState(true); 
   const [timeTaken, setTimeTaken] = useState(0); 
   const [points, setPoints] = useState(0); 
+  const [remainingValues, setRemainingValues] = useState([]); 
 
   useEffect(() => {
-    const nodeCount = Math.floor(Math.random() * 3) + 3; // 3-5 nodes
-    const newNodes = Array.from({ length: nodeCount }, (_, index) => ({
-      id: `node-${index}`,
-      value: Math.floor(Math.random() * 100),
-    }));
-    setNodes(newNodes);
-    // Select a random node to be deleted, not the head
-    setDeleteStep(Math.floor(Math.random() * (nodeCount - 1)) + 1);
+    initializeLinkedList();
   }, []);
 
   useEffect(() => {
@@ -49,6 +44,19 @@ function LinkedListFirstLevel() {
     return TOTAL_TIME - timeTaken;
   };
 
+  const initializeLinkedList = async () => {
+    try {
+      const response = await axios.get("http://127.0.0.1:5000/generate_linked_list_operations1");
+      const { nodes: newNodes, delete_step: newDeleteStep, remaining_values: newRemainingValues } = response.data;
+
+      setNodes(newNodes);
+      setDeleteStep(newDeleteStep);
+      setRemainingValues(newRemainingValues);
+    } catch (error) {
+      console.error("Error initializing linked list:", error);
+    }
+  };
+
   const handleLevelCompletion = async (earnedPoints) => {
     if (currentUser) {
       const userDocRef = doc(db, "users", currentUser.uid);
@@ -60,8 +68,8 @@ function LinkedListFirstLevel() {
       };
       const updatedPoints = {
         ...userData.Points,
-        pointsLinkedListFirstLevel:earnedPoints,
-      }
+        pointsLinkedListFirstLevel: earnedPoints,
+      };
 
       await updateDoc(userDocRef, {
         completedLevels: updatedCompletedLevels,
@@ -70,28 +78,36 @@ function LinkedListFirstLevel() {
     }
   };
 
-  function handleGuessSubmit() {
-    const remainingNodes = nodes.filter((_, index) => index !== deleteStep);
-    const remainingValues = remainingNodes.map((node) => node.value).join(",");
-    if (userGuess === remainingValues) {
-      const earnedPoints = calculatePoints(timeTaken);
-      setPoints(earnedPoints);
-      setResultMessage("Correct!");
-      setTaskCompleted(true);
-      setTryAgain(false); 
-      setTimerActive(false);
-      handleLevelCompletion(earnedPoints); 
-    } else {
-      setResultMessage("Incorrect, try again.");
-      setTaskCompleted(false);
-      setCelebrate(false);
-      setTryAgain(true); 
+  const handleGuessSubmit = async () => {
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/check_linked_list_answer1", {
+        user_guess: userGuess,
+        correct_values: remainingValues,
+      });
+
+      const { result, is_correct } = response.data;
+
+      setResultMessage(result);
+      if (is_correct) {
+        const earnedPoints = calculatePoints(timeTaken);
+        setPoints(earnedPoints);
+        setTaskCompleted(true);
+        setTryAgain(false); 
+        setTimerActive(false);
+        handleLevelCompletion(earnedPoints); 
+      } else {
+        setTaskCompleted(false);
+        setCelebrate(false);
+        setTryAgain(true); 
   
-      setTimeout(() => {
-        setTryAgain(false);
-      }, 500);
+        setTimeout(() => {
+          setTryAgain(false);
+        }, 500);
+      }
+    } catch (error) {
+      console.error("Error checking answer:", error);
     }
-  }
+  };
 
   return (
     <div>
