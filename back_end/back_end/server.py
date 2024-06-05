@@ -1,19 +1,53 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from functions import fill_stack_randomly, generate_queue_operations_level1, generate_queue_operations_level2, generate_linked_list_operations1, check_linked_list_answer1, generate_heap, check_heap, generate_heap2, check_heap2
+from firebase_admin import auth, firestore, initialize_app
+
+
 
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
 
-@app.route('/fill_stack', methods=['GET'])
-def fill_stack():
-    try:
-        element_count = int(request.args.get('count', 5))
-        stack = fill_stack_randomly(element_count)
-        print(f"Generated stack: {stack}")  # Log the generated stack
-        return jsonify(stack)
-    except ValueError:
-        return jsonify({"error": "Invalid count value"}), 400
+
+firebase_app = initialize_app()
+db = firestore.client()
+
+@app.route('/register', methods=['OPTIONS', 'POST'])
+def register():
+    if request.method == 'OPTIONS':
+       
+        response = app.response_class()
+        response.headers['Access-Control-Allow-Origin'] = '*'  # Set allowed origin
+        response.headers['Access-Control-Allow-Methods'] = 'POST'  # Specify allowed methods
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'  # Specify allowed headers
+        return response
+    elif request.method == 'POST':
+        try:
+            data = request.json
+            name = data.get('name')
+            email = data.get('email')
+            password = data.get('password')
+
+           
+            user = auth.create_user(
+                email=email,
+                password=password,
+                display_name=name
+            )
+
+            # Save user data to Firestore
+            user_ref = db.collection('users').document(user.uid)
+            user_ref.set({
+                'name': name,
+                'email': email,
+                'completedLevels': {},
+                'points': {}
+            })
+
+            # Return a success response
+            return jsonify({"message": "Registration successful"}), 201
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
 
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
@@ -147,3 +181,6 @@ def check_heap_route2():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
