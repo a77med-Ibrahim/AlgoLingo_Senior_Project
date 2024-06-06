@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import {
-  getAuth,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  GoogleAuthProvider,
-} from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { firebaseApp } from "./firebaseConfig";
-import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
-import { firebaseConfig } from "../Menu/firebaseConfig";
+import axios from "axios";
 
 const auth = getAuth(firebaseApp);
-const db = getFirestore(firebaseApp); // Initialize Firestore
 
 const RegisterPage = () => {
   const [name, setName] = useState("");
@@ -33,24 +26,17 @@ const RegisterPage = () => {
     }
 
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
+      const response = await axios.post("http://localhost:5000/register", {
+        name,
         email,
-        password
-      );
-      const user = userCredential.user;
-
-      await setDoc(doc(db, "users", user.uid), {
-        name: name,
-        email: email,
-        completedLevels: {},
-        points: {},
+        password,
       });
-
-      navigate("/");
+      if (response.status === 201) {
+        navigate("/");
+      }
     } catch (error) {
       console.error("Registration failed:", error);
-      setError("Registration failed: " + error.message);
+      setError("Registration failed. Please try again later.");
     }
   };
 
@@ -59,21 +45,18 @@ const RegisterPage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const displayName = user.displayName;
-      const email = user.email;
 
-      const userDocRef = doc(db, "users", user.uid);
-      await setDoc(userDocRef, {
-        name: displayName,
-        email: email,
-        completedLevels: {},
-        points: {},
+      const response = await axios.post('http://localhost:5000/Googleregister', {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
       });
-
-      navigate("/menu");
+      if (response.status === 201) {
+        navigate("/menu");
+      }
     } catch (error) {
       console.error("Error signing in with Google: ", error);
-      setError(error.message);
+      setError("Sign in with Google failed. Please try again later.");
     }
   };
 
@@ -122,9 +105,6 @@ const RegisterPage = () => {
         Create account
       </button>
 
-      {/* <button className="buttons-color" onClick={handleSignInWithGoogle}>
-          Sign in with Google
-        </button> */}
       {error && <div className="filling-text">{error}</div>}
     </div>
   );
