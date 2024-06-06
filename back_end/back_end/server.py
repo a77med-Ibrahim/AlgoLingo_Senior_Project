@@ -1,9 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from functions import fill_stack_randomly, generate_queue_operations_level1, generate_queue_operations_level2, generate_linked_list_operations1, check_linked_list_answer1, generate_heap, check_heap, generate_heap2, check_heap2
-from firebase_admin import auth, firestore, initialize_app
-
-
+from firebase_admin import auth, credentials, initialize_app, firestore, exceptions
+import firebase_admin
 
 app = Flask(__name__)
 CORS(app)  # Allow cross-origin requests
@@ -33,9 +32,7 @@ def register():
                 email=email,
                 password=password,
                 display_name=name
-            )
-
-            # Save user data to Firestore
+            )     
             user_ref = db.collection('users').document(user.uid)
             user_ref.set({
                 'name': name,
@@ -49,6 +46,61 @@ def register():
         except Exception as e:
             return jsonify({"error": str(e)}), 500
 
+@app.route('/Googleregister', methods=['OPTIONS', 'POST'])
+def Googleregister():
+    if request.method == 'OPTIONS':
+        response = app.response_class()
+        response.headers['Access-Control-Allow-Origin'] = '*'  # Set allowed origin
+        response.headers['Access-Control-Allow-Methods'] = 'POST'  # Specify allowed methods
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'  # Specify allowed headers
+        return response
+    elif request.method == 'POST':
+        try:
+            data = request.json
+            uid = data.get('uid')
+            name = data.get('name')
+            email = data.get('email')
+
+            user_ref = db.collection('users').document(uid)
+            user_ref.set({
+                'name': name,
+                'email': email,
+                'completedLevels': {},
+                'points': {}
+            })
+
+            # Return a success response
+            return jsonify({"message": "Google Registration successful"}), 201
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
+@app.route('/login', methods=['OPTIONS', 'POST'])
+def login():
+    if request.method == 'OPTIONS':
+        response = app.response_class()
+        response.headers['Access-Control-Allow-Origin'] = '*'  # Set allowed origin
+        response.headers['Access-Control-Allow-Methods'] = 'POST'  # Specify allowed methods
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'  # Specify allowed headers
+        return response
+    elif request.method == 'POST':
+        try:
+            data = request.json
+            id_token = data.get('idToken')
+
+            decoded_token = auth.verify_id_token(id_token)
+            uid = decoded_token['uid']
+
+            user_ref = db.collection('users').document(uid)
+            user_data = user_ref.get()
+            if user_data.exists:
+                return jsonify({"message": "Login successful", "user": user_data.to_dict()}), 200
+            else:
+                return jsonify({"error": "User not found"}), 404
+        except exceptions.FirebaseError as e:
+            return jsonify({"error": str(e)}), 500
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+        
 @app.route('/check_answer', methods=['POST'])
 def check_answer():
     try:

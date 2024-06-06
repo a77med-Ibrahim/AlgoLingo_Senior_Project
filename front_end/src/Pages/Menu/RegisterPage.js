@@ -45,13 +45,11 @@ const RegisterPage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const displayName = user.displayName;
-      const email = user.email;
 
-      const response = await axios.post("http://localhost:5000/register", {
-        name: displayName,
-        email: email,
-        password: "", // password is not required for Google sign-in
+      const response = await axios.post('http://localhost:5000/Googleregister', {
+        uid: user.uid,
+        name: user.displayName,
+        email: user.email,
       });
       if (response.status === 201) {
         navigate("/menu");
