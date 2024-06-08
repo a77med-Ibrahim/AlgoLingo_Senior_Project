@@ -84,27 +84,20 @@ function BSLevel2() {
 
   const handleLevelCompletion = async (earnedPoints) => {
     if (currentUser) {
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      const userData = userDocSnap.data();
-      const updateCompletedSection = {
-        ...userData.Sections,
-        Section4: true,
+      try {
+        const response = await axios.post("http://localhost:5000/update_user_level", { 
+          userId: currentUser.uid,
+          section:"Binary_search_level",
+          level: "BSLevel2",       
+          status: true, 
+          score: earnedPoints, 
+          
+        });
+  
+        console.log(response.data.message); 
+      } catch (error) {
+        console.error("Error updating user level:", error);
       }
-      const updatedCompletedLevels = {
-        ...userData.completedLevels,
-        BSLevel2: true,
-      };
-      const updatedPoints = {
-        ...userData.Points,
-        pointsBSLevel2:earnedPoints,
-      }
-
-      await updateDoc(userDocRef, {
-        completedLevels: updatedCompletedLevels,
-        Points: updatedPoints,
-        Sections:updateCompletedSection,
-      });
     }
   };
 

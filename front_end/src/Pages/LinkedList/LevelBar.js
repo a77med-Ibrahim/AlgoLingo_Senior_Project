@@ -6,6 +6,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "../Menu/firebaseConfig";
+import axios from "axios";
 
 function LevelsBar({
   activeButtonIndex,
@@ -24,20 +25,32 @@ function LevelsBar({
   const [userData, setUserData] = useState(null);
   const auth = getAuth(firebaseApp);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (currentUser) {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-          setUserData(userDocSnap.data());
-        } else {
-          console.log("User document does not exist");
-        }
+  const fetchUserLevelData = async (section, level) => {
+    if (currentUser) {
+      try {
+        const response = await axios.get("http://localhost:5000/get_user_level_data", {
+          params: {
+            userId: currentUser.uid,
+            section: section,
+            level: level
+          }
+        });
+
+        setUserData(prevData => ({
+          ...prevData,
+          [level]: response.data
+        }));
+      } catch (error) {
+        console.error(`Error retrieving data for ${section} - ${level}:`, error);
       }
-    };
-    fetchUserData();
-  }, [currentUser])
+    }
+  };
+
+  useEffect(() => {
+    fetchUserLevelData("LinkedList", "LinkedFirstLevel");
+    fetchUserLevelData("LinkedList", "LinkedSecondLevel");
+    
+  }, [currentUser]);
 
   const [isFirstLevelUnlocked, setIsFirstLevelUnlocked] = useState(
     JSON.parse(localStorage.getItem("isFirstLevelUnlocked")) || false
@@ -73,9 +86,9 @@ function LevelsBar({
 
   const isUnlocked = (index) => {
     if (index === 1) {
-      return isFirstLevelUnlocked || userData?.completedLevels?.LinkedListFirstLevel;
+      return isFirstLevelUnlocked || userData?.LinkedFirstLevel?.status;
     } else if (index === 2) {
-      return taskCompleted || userData?.completedLevels?.LinkedListFirstLevel;
+      return taskCompleted || userData?.LinkedSecondLevel?.status;
     } else {
       return true;
     }

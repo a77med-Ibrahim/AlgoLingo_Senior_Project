@@ -11,6 +11,7 @@ import { firebaseAuth, db } from "./firebaseConfig";
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "./firebaseConfig";
 import { useAuth } from "./AuthContext";
+import axios from "axios";
 
 function Menu() {
   const [activeCircle, setActiveCircle] = useState(null);
@@ -20,6 +21,7 @@ function Menu() {
   const [userData, setUserData] = useState(null);
   const { currentUser } = useAuth();
   const auth = getAuth(firebaseApp);
+  const[userLevelData, setUserLevelData] = useState(null);
   const [circleData, setCircleData] = useState([
     { id: 1, top: "10px", left: "210px", isOpen: true, image: stackImage },
     { id: 2, top: "90px", left: "100px", isOpen: true, image: queueImage },
@@ -66,6 +68,39 @@ function Menu() {
     setCircleData(updatedCircles);
   };
 
+  const fetchUserLevelData = async (section, level) => {
+    if (currentUser) {
+      try {
+        const response = await axios.get("http://localhost:5000/get_user_level_data", {
+          params: {
+            userId: currentUser.uid,
+            section: section,
+            level: level
+          }
+        });
+
+        setUserLevelData(prevData => ({
+          ...prevData,
+          [level]: response.data
+        }));
+      } catch (error) {
+        console.error(`Error retrieving data for ${section} - ${level}:`, error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserLevelData("Stack_Level", "FirstLevel");
+    fetchUserLevelData("Stack_Level", "SecondLevel");
+    fetchUserLevelData("Stack_Level", "ThirdLevel");
+    fetchUserLevelData("QueueLevel", "queueFirstLevel");
+    fetchUserLevelData("QueueLevel", "queueSecondLevel");    
+    fetchUserLevelData("LinkedList", "LinkedFirstLevel");
+    fetchUserLevelData("LinkedList", "LinkedSecondLevel");
+    fetchUserLevelData("Binary_search_level", "BSLevel2");
+    fetchUserLevelData("Binary_search_level", "BinaryFirstLevel");
+  }, [currentUser]);
+
   const isLevelUnlocked = (circleId) => {
     const circle = circleData.find((circle) => circle.id === circleId);
 
@@ -74,11 +109,11 @@ function Menu() {
     if (circle.id === 1) {
       return true;
     } else if (circle.id === 2) {
-      return userData?.Sections?.Section1;
+      return userLevelData?.ThirdLevel.status;
     } else if (circle.id === 3) {
-      return userData?.Sections?.Section2;
+      return userLevelData?.queueSecondLevel.status;
     } else if (circle.id === 4) {
-      return userData?.Sections?.Section3;
+      return userLevelData?.LinkedSecondLevel.status;
     }
 
     return circle.isOpen && userData?.Sections?.[sectionKey];

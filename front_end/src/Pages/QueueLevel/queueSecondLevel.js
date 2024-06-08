@@ -91,27 +91,20 @@ function QueueSecondLevel() {
 
   const handleLevelCompletion = async (earnedPoints) => {
     if (currentUser) {
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      const userData = userDocSnap.data();
-      const updateCompletedSection = {
-        ...userData.Sections,
-        Section2: true,
-      };
-      const updatedCompletedLevels = {
-        ...userData.completedLevels,
-        QueueSecondLevel: true,
-      };
-      const updatedPoints = {
-        ...userData.Points,
-        pointsQueueSecondLevel: earnedPoints,
-      };
-
-      await updateDoc(userDocRef, {
-        completedLevels: updatedCompletedLevels,
-        Points: updatedPoints,
-        Sections: updateCompletedSection,
-      });
+      try {
+        const response = await axios.post("http://localhost:5000/update_user_level", { 
+          userId: currentUser.uid,
+          section:"QueueLevel",
+          level: "queueSecondLevel",       
+          status: true, 
+          score: earnedPoints, 
+          
+        });
+  
+        console.log(response.data.message); 
+      } catch (error) {
+        console.error("Error updating user level:", error);
+      }
     }
   };
 

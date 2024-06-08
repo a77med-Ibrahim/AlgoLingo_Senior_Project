@@ -6,9 +6,9 @@ import Xarrow from "react-xarrows";
 import Celebration from "../Celebration/Celebration";
 import "./FirstLevel.css";
 import TryAgainAnimation from "../TryAgainAnimation/TryAgain";
-import Timer from "../Menu/Timer"; // Import the Timer component
+import Timer from "../Menu/Timer"; 
 import { useAuth } from "../Menu/AuthContext";
-import { doc, updateDoc, getDoc } from "firebase/firestore"; // Import Firestore functions
+import { doc, updateDoc, getDoc } from "firebase/firestore"; 
 import { db } from "../Menu/firebaseConfig";
 import axios from "axios";
 
@@ -94,22 +94,20 @@ function FirstLevel() {
 
   const handleLevelCompletion = async (earnedPoints) => {
     if (currentUser) {
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      const userData = userDocSnap.data();
-      const updatedCompletedLevels = {
-        ...userData.completedLevels,
-        BSLevel1: true,
-      };
-      const updatedPoints = {
-        ...userData.Points,
-        pointsBSLevel1: earnedPoints,
-      };
-
-      await updateDoc(userDocRef, {
-        completedLevels: updatedCompletedLevels,
-        Points: updatedPoints,
-      });
+      try {
+        const response = await axios.post("http://localhost:5000/update_user_level", { 
+          userId: currentUser.uid,
+          section:"Binary_search_level",
+          level: "BinaryFirstLevel",       
+          status: true, 
+          score: earnedPoints, 
+          
+        });
+  
+        console.log(response.data.message); 
+      } catch (error) {
+        console.error("Error updating user level:", error);
+      }
     }
   };
 

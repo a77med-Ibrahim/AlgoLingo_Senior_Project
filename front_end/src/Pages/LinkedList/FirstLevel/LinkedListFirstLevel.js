@@ -59,22 +59,20 @@ function LinkedListFirstLevel() {
 
   const handleLevelCompletion = async (earnedPoints) => {
     if (currentUser) {
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      const userData = userDocSnap.data();
-      const updatedCompletedLevels = {
-        ...userData.completedLevels,
-        LinkedListFirstLevel: true,
-      };
-      const updatedPoints = {
-        ...userData.Points,
-        pointsLinkedListFirstLevel: earnedPoints,
-      };
-
-      await updateDoc(userDocRef, {
-        completedLevels: updatedCompletedLevels,
-        Points: updatedPoints,
-      });
+      try {
+        const response = await axios.post("http://localhost:5000/update_user_level", { 
+          userId: currentUser.uid,
+          section:"LinkedList",
+          level: "LinkedFirstLevel",       
+          status: true, 
+          score: earnedPoints, 
+          
+        });
+  
+        console.log(response.data.message); 
+      } catch (error) {
+        console.error("Error updating user level:", error);
+      }
     }
   };
 

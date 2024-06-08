@@ -134,27 +134,24 @@ function FirstLevel() {
 
         const handleLevelCompletion = async (earnedPoints) => {
           if (currentUser) {
-            const userDocRef = doc(db, "users", currentUser.uid);
-            if (typeof earnedPoints !== "undefined") {
-              const userDocSnap = await getDoc(userDocRef);
-              const userData = userDocSnap.data();
-              const updatedCompletedLevels = {
-                ...userData.completedLevels,
-                FirstLevel: true,
-              };
-              const updatedPoints = {
-                ...userData.Points,
-                points: (userData.Points?.points || 0) + earnedPoints,
-              };
-
-              await updateDoc(userDocRef, {
-                completedLevels: updatedCompletedLevels,
-                Points: updatedPoints,
+            try {
+              const response = await axios.post("http://localhost:5000/update_user_level", { 
+                userId: currentUser.uid,
+                section:"Stack_Level",
+                level: "FirstLevel",       
+                status: true, 
+                score: earnedPoints, 
+                
               });
+        
+              console.log(response.data.message); 
+            } catch (error) {
+              console.error("Error updating user level:", error);
             }
           }
         };
-
+        
+        
         handleLevelCompletion(earnedPoints);
       } else {
         setCelebrate(false);

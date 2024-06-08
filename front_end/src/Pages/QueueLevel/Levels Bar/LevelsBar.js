@@ -6,6 +6,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../Menu/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "../../Menu/firebaseConfig";
+import axios from "axios";
 
 function LevelsBar({ activeButtonIndex, levelUnlocked, level2Unlocked }) {
   const navigate = useNavigate();
@@ -15,26 +16,38 @@ function LevelsBar({ activeButtonIndex, levelUnlocked, level2Unlocked }) {
   const [userData, setUserData] = useState(null);
   const auth = getAuth(firebaseApp);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (currentUser) {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-          setUserData(userDocSnap.data());
-        } else {
-          console.log("User document does not exist");
-        }
+  const fetchUserLevelData = async (section, level) => {
+    if (currentUser) {
+      try {
+        const response = await axios.get("http://localhost:5000/get_user_level_data", {
+          params: {
+            userId: currentUser.uid,
+            section: section,
+            level: level
+          }
+        });
+
+        setUserData(prevData => ({
+          ...prevData,
+          [level]: response.data
+        }));
+      } catch (error) {
+        console.error(`Error retrieving data for ${section} - ${level}:`, error);
       }
-    };
-    fetchUserData();
+    }
+  };
+
+  useEffect(() => {
+    fetchUserLevelData("QueueLevel", "queueFirstLevel");
+    fetchUserLevelData("QueueLevel", "queueSecondLevel");
+    
   }, [currentUser]);
 
   const isUnlocked = (index) => {
     if (index === 1) {
-      return levelUnlocked || userData?.completedLevels?.QueueFirstLevel;
+      return levelUnlocked || userData?.queueFirstLevel?.status;
     } else if (index === 2) {
-      return level2Unlocked || userData?.completedLevels?.QueueFirstLevel;
+      return level2Unlocked || userData?.queueSecondLevel?.status;
     } else {
       return levels.slice(0, index).every((level) => level === "X");
     }
