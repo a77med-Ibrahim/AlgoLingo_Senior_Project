@@ -9,7 +9,7 @@ import Timer from "../Menu/Timer";
 import { useAuth } from "../Menu/AuthContext";
 import { doc, updateDoc, getDoc, setDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
-
+import axios from "axios";
 function ThirdLevel() {
   const { currentUser } = useAuth();
   const [stack, setStack] = useState(new StackImplementation());
@@ -128,31 +128,22 @@ function ThirdLevel() {
 
   const handleLevelCompletion = async (earnedPoints) => {
     if (currentUser) {
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      const userData = userDocSnap.data();
-
-      const updateCompletedSection = {
-        ...userData.Sections,
-        Section1: true,
-      };
-      const updatedCompletedLevels = {
-        ...userData.completedLevels,
-        ThirdLevel: true,
-      };
-      const updatedPoints = {
-        ...userData.Points,
-        points3: earnedPoints,
-      };
-
-      await updateDoc(userDocRef, {
-        completedLevels: updatedCompletedLevels,
-        Points: updatedPoints,
-        Sections: updateCompletedSection,
-      });
+      try {
+        const response = await axios.post("http://localhost:5000/update_user_level", { 
+          userId: currentUser.uid,
+          section:"Stack_Level",
+          level: "ThirdLevel",       
+          status: true, 
+          score: earnedPoints, 
+          
+        });
+  
+        console.log(response.data.message); 
+      } catch (error) {
+        console.error("Error updating user level:", error);
+      }
     }
   };
-
   const handleCheck = async () => {
     const lastPoppedShape = poppedShapes[poppedShapes.length - 1];
     if (userAnswer === lastPoppedShape) {

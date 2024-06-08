@@ -6,6 +6,7 @@ import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../Menu/firebaseConfig";
 import { getAuth } from "firebase/auth";
 import { firebaseApp } from "../Menu/firebaseConfig";
+import axios from "axios";
 
 function LevelsBar({
   activeButtonIndex,
@@ -39,20 +40,47 @@ function LevelsBar({
     fetchUserData();
   }, [currentUser])
 
+  const fetchUserLevelData = async (section, level) => {
+    if (currentUser) {
+      try {
+        const response = await axios.get("http://localhost:5000/get_user_level_data", {
+          params: {
+            userId: currentUser.uid,
+            section: section,
+            level: level
+          }
+        });
 
+        setUserData(prevData => ({
+          ...prevData,
+          [level]: response.data
+        }));
+      } catch (error) {
+        console.error(`Error retrieving data for ${section} - ${level}:`, error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserLevelData("Stack_Level", "FirstLevel");
+    fetchUserLevelData("Stack_Level", "SecondLevel");
+    fetchUserLevelData("Stack_Level", "ThirdLevel");
+    
+  }, [currentUser]);
+  
   const isUnlocked = (index) => {
   
     if (index === 1) {
-      return pushClicked && popClicked && peekClicked && isEmptyClicked || userData?.completedLevels?.FirstLevel;
+      return pushClicked && popClicked && peekClicked && isEmptyClicked ||  userData?.FirstLevel?.status;
 
     }
     else if (index === 2) {
-      return checkResult === "Great!" || userData?.completedLevels?.SecondLevel;
+      return checkResult === "Great!" || userData?.SecondLevel?.status;
 
     } 
     
     else if (index === 3) {
-      return checkResult2 === "Great!" || userData?.completedLevels?.ThirdLevel;
+      return checkResult2 === "Great!" || userData?.ThirdLevel?.status;
 
     } 
     else {

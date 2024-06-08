@@ -1,34 +1,108 @@
 import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../Menu/firebaseConfig";
+import axios from "axios";
 import AlgoLingoBar from "./AlgoLingoBar";
 import "./Leaderboard.css";
-<style>
-import url('https://fonts.cdnfonts.com/css/60s-scoreboard');
-</style>
+import { useAuth } from "../Menu/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "./firebaseConfig";
 
 const Leaderboard = () => {
   const [leaderboard, setLeaderboard] = useState([]);
+  const [userLevelData, setUserLevelData] = useState(null);
+  const { currentUser } = useAuth();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (currentUser) {
+        try {
+          const userDocRef = doc(db, "users", currentUser.uid);
+          const userDocSnap = await getDoc(userDocRef);
+          if (userDocSnap.exists()) {
+            setUserData(userDocSnap.data());
+          } else {
+            console.log("User document does not exist");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      }
+    };
+    fetchUserData();
+  }, [currentUser]);
+
+  const fetchUserLevelData = async (section, level) => {
+    if (currentUser) {
+      try {
+        const response = await axios.get("http://localhost:5000/get_user_level_data", {
+          params: {
+            userId: currentUser.uid,
+            section: section,
+            level: level
+          }
+        });
+
+        setUserLevelData(prevData => ({
+          ...prevData,
+          [level]: response.data
+        }));
+      } catch (error) {
+        console.error(`Error retrieving data for ${section} - ${level}:`, error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserLevelData("Stack_Level", "FirstLevel");
+    fetchUserLevelData("Stack_Level", "SecondLevel");
+    fetchUserLevelData("Stack_Level", "ThirdLevel");
+    fetchUserLevelData("QueueLevel", "queueFirstLevel");
+    fetchUserLevelData("QueueLevel", "queueSecondLevel");    
+    fetchUserLevelData("LinkedList", "LinkedFirstLevel");
+    fetchUserLevelData("LinkedList", "LinkedSecondLevel");
+    fetchUserLevelData("Binary_search_level", "BSLevel2");
+    fetchUserLevelData("Binary_search_level", "BinaryFirstLevel");
+  }, [currentUser]);
+
+  const calculateTotalPoints = () => {
+    let totalPoints = 0;
+    if (userLevelData) {
+      const levelsWithData = Object.values(userLevelData).filter(level => level !== null && level !== undefined);
+      for (const level of levelsWithData) {
+        totalPoints += level.score || 0;
+      }
+    }
+    return totalPoints;
+  };
+
+  const updateLeaderboard = async () => {
+    if (currentUser && userData) {
+      try {
+        const totalPoints = calculateTotalPoints();
+        await axios.post("http://localhost:5000/update_leaderboard", {
+          userId: currentUser.uid,
+          userName: userData.name || "Null",
+          totalPoints: totalPoints,
+        });
+      } catch (error) {
+        console.error("Error updating leaderboard:", error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    updateLeaderboard();
+  }, [userLevelData, userData]);
 
   useEffect(() => {
     const fetchLeaderboardData = async () => {
-      const usersCollection = collection(db, "users");
-      const usersSnapshot = await getDocs(usersCollection);
-      const usersList = usersSnapshot.docs.map((doc) => {
-        const data = doc.data();
-        const totalPoints = Object.values(data.Points || {}).reduce(
-          (sum, points) => sum + points,
-          0
-        );
-        return {
-          name: data.name || "Unknown",
-          email: data.email || "No email",
-          totalPoints,
-        };
-      });
-
-      usersList.sort((a, b) => b.totalPoints - a.totalPoints);
-      setLeaderboard(usersList);
+      try {
+        const response = await axios.get("http://localhost:5000/get_leaderboard");
+        const sortedLeaderboard = response.data.sort((a, b) => b.totalPoints - a.totalPoints); 
+        setLeaderboard(sortedLeaderboard);
+      } catch (error) {
+        console.error("Error fetching leaderboard data:", error);
+      }
     };
 
     fetchLeaderboardData();
@@ -37,11 +111,11 @@ const Leaderboard = () => {
   const getCupIcon = (index) => {
     switch (index) {
       case 0:
-        return "  🏆"; 
+        return "🏆"; 
       case 1:
-        return "  🥈"; 
+        return "🥈"; 
       case 2:
-        return "  🥉"; 
+        return "🥉"; 
       default:
         return null;
     }
@@ -63,15 +137,18 @@ const Leaderboard = () => {
           <tbody>
             {leaderboard.map((user, index) => (
               <tr key={index}>
-                <td className="rank-cell" >{index + 1} {getCupIcon(index)}</td>
-                <td>{user.name}</td>
+                <td className="rank-cell">{index + 1} {getCupIcon(index)}</td>
+                <td>{user.userName}</td>
                 <td>{user.totalPoints}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+    
+
     </div>
+ 
   );
 };
 

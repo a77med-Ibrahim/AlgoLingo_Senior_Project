@@ -11,6 +11,7 @@ import Timer from "../../Menu/Timer";
 import { useAuth } from "../../Menu/AuthContext";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { db } from "../../Menu/firebaseConfig";
+import axios from "axios";
 
 const NodeType = "node";
 
@@ -114,31 +115,22 @@ const LinkedListSecondLevel = () => {
 
   const handleLevelCompletion = async (earnedPoints) => {
     if (currentUser) {
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      const userData = userDocSnap.data();
-      const updateCompletedSection = {
-        ...userData.Sections,
-        Section3: true,
-      };
-
-      const updatedCompletedLevels = {
-        ...userData.completedLevels,
-        LinkedListSecondLevel: true,
-      };
-      const updatedPoints = {
-        ...userData.Points,
-        pointsLinkedListSecondLevel: earnedPoints,
-      };
-
-      await updateDoc(userDocRef, {
-        completedLevels: updatedCompletedLevels,
-        Points: updatedPoints,
-        Sections: updateCompletedSection,
-      });
+      try {
+        const response = await axios.post("http://localhost:5000/update_user_level", { 
+          userId: currentUser.uid,
+          section:"LinkedList",
+          level: "LinkedSecondLevel",       
+          status: true, 
+          score: earnedPoints, 
+          
+        });
+  
+        console.log(response.data.message); 
+      } catch (error) {
+        console.error("Error updating user level:", error);
+      }
     }
   };
-
   const moveNode = useCallback((dragIndex, hoverIndex) => {
     setNodes((prevNodes) =>
       update(prevNodes, {

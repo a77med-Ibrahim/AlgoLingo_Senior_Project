@@ -7,27 +7,65 @@ import { useNavigate } from "react-router-dom";
 import { getAuth, signOut } from "firebase/auth";
 import { firebaseApp } from "../Menu/firebaseConfig";
 import AlgoLingoBar from "./AlgoLingoBar";
-
+import axios from "axios";
 const auth = getAuth(firebaseApp);
 
 const ProfilePage = () => {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
+  const[userLevelData,setUserLevelData] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (currentUser) {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDocSnap = await getDoc(userDocRef);
-        if (userDocSnap.exists()) {
-          setUserData(userDocSnap.data());
-        } else {
-          console.log("User document does not exist");
+        try {
+          const response = await axios.get("http://localhost:5000/get_user_data", {
+            params: {
+              userId: currentUser.uid
+            }
+          });
+
+          setUserData(response.data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
         }
       }
     };
     fetchUserData();
+  }, [currentUser]);
+
+  const fetchUserLevelData = async (section, level) => {
+    if (currentUser) {
+      try {
+        const response = await axios.get("http://localhost:5000/get_user_level_data", {
+          params: {
+            userId: currentUser.uid,
+            section: section,
+            level: level
+          }
+        });
+
+        setUserLevelData(prevData => ({
+          ...prevData,
+          [level]: response.data
+        }));
+      } catch (error) {
+        console.error(`Error retrieving data for ${section} - ${level}:`, error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    fetchUserLevelData("Stack_Level", "FirstLevel");
+    fetchUserLevelData("Stack_Level", "SecondLevel");
+    fetchUserLevelData("Stack_Level", "ThirdLevel");
+    fetchUserLevelData("QueueLevel", "queueFirstLevel");
+    fetchUserLevelData("QueueLevel", "queueSecondLevel");    
+    fetchUserLevelData("LinkedList", "LinkedFirstLevel");
+    fetchUserLevelData("LinkedList", "LinkedSecondLevel");
+    fetchUserLevelData("Binary_search_level", "BSLevel2");
+    fetchUserLevelData("Binary_search_level", "BinaryFirstLevel");
   }, [currentUser]);
 
   const handleLogout = () => {
@@ -49,7 +87,7 @@ const ProfilePage = () => {
     const barWidth = isCompleted ? Math.min((points / maxPoints) * 100, 100) : 20; 
     const barColor = isCompleted ? "linear-gradient(to right, yellow, orange)" : "red";
     const barText = isCompleted ? `${points} Points` : "Level not completed";
-
+  
     return (
       <div className="profilebar-container">
         <div
@@ -62,6 +100,7 @@ const ProfilePage = () => {
       </div>
     );
   };
+  
 
   return (
     <div className="profmain-div">
@@ -76,48 +115,48 @@ const ProfilePage = () => {
           <div className="progress-bars">
             {renderBar(
               "Stack 1:",
-              userData?.Points?.points || 0,
-              userData?.completedLevels?.FirstLevel || false
+              userLevelData?.FirstLevel?.score || 0,
+              userLevelData?.FirstLevel?.status || false
             )}
             {renderBar(
               "Stack 2:",
-              userData?.Points?.points2 || 0,
-              userData?.completedLevels?.SecondLevel || false
+              userLevelData?.SecondLevel?.score || 0,
+              userLevelData?.SecondLevel?.status || false
             )}
             {renderBar(
               "Stack 3:",
-              userData?.Points?.points3 || 0,
-              userData?.completedLevels?.ThirdLevel || false
+              userLevelData?.ThirdLevel?.score || 0,
+              userLevelData?.ThirdLevel?.status || false
             )}
             {renderBar(
               "Queue 1:",
-              userData?.Points?.pointsQueueFirstLevel || 0,
-              userData?.completedLevels?.QueueFirstLevel || false
+              userLevelData?.queueFirstLevel?.score || 0,
+              userLevelData?.queueFirstLevel?.status || false
             )}
             {renderBar(
               "Queue 2:",
-              userData?.Points?.pointsQueueSecondLevel || 0,
-              userData?.completedLevels?.QueueSecondLevel || false
+              userLevelData?.queueSecondLevel?.score || 0,
+              userLevelData?.queueSecondLevel?.status || false
             )}
             {renderBar(
               "Linked 1:",
-              userData?.Points?.pointsLinkedListFirstLevel || 0,
-              userData?.completedLevels?.LinkedListFirstLevel || false
+              userLevelData?.LinkedFirstLevel?.score || 0,
+              userLevelData?.LinkedFirstLevel?.status || false
             )}
             {renderBar(
               "Linked 2:",
-              userData?.Points?.pointsLinkedListSecondLevel || 0,
-              userData?.completedLevels?.LinkedListSecondLevel || false
+              userLevelData?.LinkedSecondLevel?.score || 0,
+              userLevelData?.LinkedSecondLevel?.status || false
             )}
             {renderBar(
               "Binary 1:",
-              userData?.Points?.pointsBSLevel1 || 0,
-              userData?.completedLevels?.BSLevel1 || false
+              userLevelData?.BinaryFirstLevel?.score || 0,
+              userLevelData?.BinaryFirstLevel?.status || false
             )}
             {renderBar(
               "Binary 2:",
-              userData?.Points?.pointsBSLevel2 || 0,
-              userData?.completedLevels?.BSLevel2 || false
+              userLevelData?.BSLevel2?.score || 0,
+              userLevelData?.BSLevel2?.status || false
             )}
           </div>
         </div>
