@@ -9,6 +9,10 @@ Comprehensive Curriculum: From Stacks and Queues to advanced topics, AlgoLingo c
 Getting Started
 To start your learning journey with AlgoLingo, simply sign up on our website and begin exploring our comprehensive curriculum.
 
+### 📸 Screenshots
+
+## 🔍 How It Works (Demo)
+
 ## Contribution
 We welcome contributions from the community to improve AlgoLingo. If you're passionate about education and programming, feel free to contribute to our project on GitHub.
 
