@@ -10,6 +10,7 @@ Getting Started
 To start your learning journey with AlgoLingo, simply sign up on our website and begin exploring our comprehensive curriculum.
 
 ### 📸 Screenshots
+![Main menu](/IMG_1413.jpg)
 
 ## 🔍 How It Works (Demo)
 
