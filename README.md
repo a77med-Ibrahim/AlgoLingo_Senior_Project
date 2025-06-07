@@ -51,5 +51,5 @@ Have suggestions or encountered an issue? We'd love to hear from you! Please don
 # collaborators
 
 - [Ahmed Ibrahim](https://github.com/a77med-Ibrahim)
-### Khaled El Arabi 
-### Uğur Türkel
+- [Khaledazzouzii](https://github.com/Khaledazzouzii)
+- [Ugurmutturkel](https://github.com/Ugurmutturkel)
