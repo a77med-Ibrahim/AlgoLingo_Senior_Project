@@ -11,8 +11,12 @@ To start your learning journey with AlgoLingo, simply sign up on our website and
 
 ### 📸 Screenshots
 ![Main menu](/IMG_1413.jpg)
-Main menu page is a page where users can pick between different levels where each level is a different algorthim, users can't skip levels, they need to successfully complete the previous level
+The main menu page allows users to choose between different levels, each representing a different algorithm. Users cannot skip levels; they must successfully complete the previous one to unlock the next.
+When hovering over a level, a simple image is displayed to visually represent the algorithm, along with a brief description shown underneath.
+Users can also access the leaderboard, where rankings are based on the number of levels completed and the time taken to complete them — the less time a user takes, the more points they earn.
+Additionally, users can visit their profile to change their name, update their password, or log out.
 ![Linked list preparation level](/IMG_1414.jpg)
+After selecting a certain level, a preparation screen is shown first, where users can visually explore how the algorithm works, read its explanation, and review the corresponding code.
 ![Leaderboard](/IMG_1415.jpg)
 
 
