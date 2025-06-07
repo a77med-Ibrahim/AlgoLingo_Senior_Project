@@ -1,5 +1,6 @@
 ## 📚 Table of Contents
 - [Features](#features)
+- [Getting started](#Getting-Started)
 - [Screenshots](#-screenshots)
 - [How It Works (Demo)](#-how-it-works-demo)
 - [Getting Started](#getting-started)
