@@ -22,6 +22,8 @@ After selecting a certain level, a preparation screen is shown first, where user
 
 ## 🔍 How It Works (Demo)
 
+![Algolingo Demo](https://www.youtube.com/watch?v=GEijVZECr7Q)
+
 ## Contribution
 We welcome contributions from the community to improve AlgoLingo. If you're passionate about education and programming, feel free to contribute to our project on GitHub.
 
