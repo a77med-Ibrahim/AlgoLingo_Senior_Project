@@ -11,6 +11,7 @@ To start your learning journey with AlgoLingo, simply sign up on our website and
 
 ### 📸 Screenshots
 ![Main menu](/IMG_1413.jpg)
+Main menu page is a page where users can pick between different levels where each level is a different algorthim, users can't skip levels, they need to successfully complete the previous level
 ![Linked list preparation level](/IMG_1414.jpg)
 ![Leaderboard](/IMG_1415.jpg)
 
