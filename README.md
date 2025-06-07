@@ -1,3 +1,12 @@
+## 📚 Table of Contents
+- [Features](#features)
+- [Screenshots](#-screenshots)
+- [How It Works (Demo)](#-how-it-works-demo)
+- [Getting Started](#getting-started)
+- [Contribution](#contribution)
+- [Feedback](#feedback)
+- [Collaborators](#collaborators)
+
 # AlgoLingo
 
 AlgoLingo is an engaging platform designed to facilitate the learning of Data Structures and Algorithms through gamification. Our platform offers users a visual and interactive approach to mastering these fundamental concepts.
