@@ -11,6 +11,9 @@ To start your learning journey with AlgoLingo, simply sign up on our website and
 
 ### 📸 Screenshots
 ![Main menu](/IMG_1413.jpg)
+![Linked list preparation level](/IMG_1414.jpg)
+![Leaderboard](/IMG_1415.jpg)
+
 
 ## 🔍 How It Works (Demo)
 
