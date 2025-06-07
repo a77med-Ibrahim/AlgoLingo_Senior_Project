@@ -21,7 +21,7 @@ To start your learning journey with AlgoLingo, simply sign up on our website and
 ## Getting Started
 To start your learning journey with AlgoLingo, simply sign up on our website and begin exploring our comprehensive curriculum.
 
-### 📸 Screenshots
+## 📸 Screenshots
 
 ![Main menu](/IMG_1413.jpg)
 The main menu page allows users to choose between different levels, each representing a different algorithm. Users cannot skip levels; they must successfully complete the previous one to unlock the next.
